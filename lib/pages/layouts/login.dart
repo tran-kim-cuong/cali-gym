@@ -1,6 +1,7 @@
-import 'package:californiaflutter/pages/language_bottom_sheet.dart';
-import 'package:californiaflutter/pages/number_key.dart';
-import 'package:californiaflutter/pages/otp.dart';
+import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
+import 'package:californiaflutter/pages/shared/number_key.dart';
+import 'package:californiaflutter/pages/layouts/otp.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isAgreed = false;
   bool _isPhoneValid = false; // Biến kiểm tra số điện thoại
 
-  String _currentLanguage = 'vi';
+  // String _currentLanguage = 'vi';
 
   final FocusNode _focusNode = FocusNode();
 
@@ -135,6 +136,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // 1. Phần Header: Ngôn ngữ và Logo
   Widget _buildHeader() {
+    // 2. LẤY MÃ NGÔN NGỮ HIỆN TẠI ĐỂ HIỂN THỊ CỜ
+    // context.locale là biến toàn cục của thư viện
+    final String currentCode = context.locale.languageCode;
+    
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
@@ -143,16 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
           GestureDetector(
             // GỌI HÀM TỪ FILE RIÊNG TẠI ĐÂY
             onTap: () {
-              LanguageBottomSheet.show(
-                context: context,
-                currentLanguage: _currentLanguage,
-                onLanguageSelected: (newLangCode) {
-                  setState(() {
-                    _currentLanguage = newLangCode;
-                    // Tại đây bạn có thể gọi thêm logic đổi ngôn ngữ toàn app (Localization)
-                  });
-                },
-              );
+              LanguageBottomSheet.show(context: context);
             },
             child: Container(
               color: Colors.transparent,
@@ -162,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: 20,
                     height: 20,
                     child: SvgPicture.asset(
-                      _currentLanguage == 'vi'
+                      currentCode == 'vi'
                           ? 'assets/images/vietnam.svg'
                           : 'assets/images/kingdom.svg',
                       fit: BoxFit.contain,
@@ -170,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    _currentLanguage == 'vi' ? 'Tiếng Việt' : 'English',
+                    currentCode == 'vi' ? 'common.lang_vi'.tr() : 'common.lang_en'.tr(),
                     style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 ],
@@ -209,7 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
             decoration: InputDecoration(
               // 3. Ẩn dòng đếm số (ví dụ 0/10) ở dưới góc phải nếu bạn muốn giao diện sạch hơn
               counterText: "",
-              hintText: 'Số điện thoại',
+              hintText: 'login.phone_hint'.tr(),
               hintStyle: const TextStyle(color: Color(0xFFC7C7C7)),
               prefixIcon: const Padding(
                 padding: EdgeInsets.all(12),
@@ -256,23 +252,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 1.5,
               ),
               children: [
-                const TextSpan(text: 'Đồng ý với '),
+                TextSpan(text: 'login.agree_prefix'.tr()),
                 TextSpan(
-                  text: 'Điều khoản & Điều kiện',
+                  text: 'login.terms'.tr(),
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const TextSpan(text: ' và '),
+                TextSpan(text: 'login.and'.tr()),
                 TextSpan(
-                  text: 'Chính sách bảo mật',
+                  text: 'login.privacy'.tr(),
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const TextSpan(text: ' của chúng tôi'),
+                TextSpan(text: 'login.agree_suffix'.tr()),
               ],
             ),
           ),
@@ -290,7 +286,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Column(
         children: [
           _customButton(
-            text: 'Xác thực qua SMS',
+            text: 'login.verify_sms'.tr(),
             // Nếu enable thì dùng màu xám sáng, disable dùng màu tối hơn
             color: isEnabled
                 ? const Color(0xFFDA212D)
@@ -302,7 +298,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           const SizedBox(height: 16),
           _customButton(
-            text: 'Xác thực qua Zalo',
+            text: 'login.verify_zalo'.tr(),
             color: isEnabled
                 ? const Color(0xFF3E3E3E)
                 : const Color(0xFF2A2A2A),

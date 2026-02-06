@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.3.5 # Hoặc phiên bản mới nhất
   flutter_svg: ^2.2.3
+  easy_localization: ^3.0.8
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +62,7 @@ flutter:
 
   assets:
       - assets/images/
+      - assets/translations/ # Khai báo đường dẫn chứa file ngôn ngữ
 
   # To add assets to your application, add an assets section, like this:
   # assets:

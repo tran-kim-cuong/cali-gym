@@ -1,14 +1,13 @@
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class LanguageBottomSheet {
   // Hàm static để gọi từ bất cứ đâu mà không cần khởi tạo class
   static void show({
-    required BuildContext context,
-    required String
-    currentLanguage, // Ngôn ngữ đang chọn (ví dụ: 'vi' hoặc 'en')
-    required Function(String)
-    onLanguageSelected, // Callback trả về kết quả khi chọn
+    required BuildContext context, // Ngôn ngữ đang chọn (ví dụ: 'vi' hoặc 'en')
+    Function(String)? onLanguageSelected, // Callback trả về kết quả khi chọn
   }) {
     showModalBottomSheet(
       context: context,
@@ -20,11 +19,23 @@ class LanguageBottomSheet {
         ),
       ),
       builder: (context) {
+        // Lấy ngôn ngữ hiện tại trực tiếp từ Context
+        final String currentCode = context.locale.languageCode;
+
         return _LanguageBody(
-          currentLanguage: currentLanguage,
-          onSelect: (code) {
-            onLanguageSelected(code); // Trả code ngôn ngữ về màn hình cha
-            Navigator.pop(context); // Đóng modal
+          currentLanguage: currentCode,
+          onSelect: (code) async {
+            // 2. LOGIC QUAN TRỌNG NHẤT NẰM Ở ĐÂY
+            // Dòng này sẽ báo cho toàn bộ App build lại theo ngôn ngữ mới
+            await context.setLocale(Locale(code));
+
+            // Nếu màn hình cha muốn làm gì thêm thì gọi callback
+            onLanguageSelected?.call(code);
+          
+            // Đóng modal
+            if (context.mounted) {
+              Navigator.pop(context);
+            }
           },
         );
       },
@@ -52,8 +63,8 @@ class _LanguageBody extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Ngôn ngữ',
+                Text(
+                  'common.chang_lang'.tr(),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -70,14 +81,14 @@ class _LanguageBody extends StatelessWidget {
           const Divider(color: Colors.white24, height: 1),
 
           // Danh sách ngôn ngữ
-          _buildOption('vi', 'Tiếng Việt', 'assets/images/vietnam.svg'),
+          _buildOption('vi', 'common.lang_vi'.tr(), 'assets/images/vietnam.svg'),
           const Divider(
             color: Colors.white24,
             height: 1,
             indent: 20,
             endIndent: 20,
           ),
-          _buildOption('en', 'English', 'assets/images/kingdom.svg'),
+          _buildOption('en', 'common.lang_en'.tr(), 'assets/images/kingdom.svg'),
 
           const SizedBox(height: 20),
         ],

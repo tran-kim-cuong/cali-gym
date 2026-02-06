@@ -1,0 +1,17 @@
+{
+    "login": {
+        "phone_hint": "Số điện thoại",
+        "agree_prefix": "Đồng ý với ",
+        "terms": "Điều khoản & Điều kiện",
+        "and": " và ",
+        "privacy": "Chính sách bảo mật",
+        "agree_suffix": " của chúng tôi",
+        "verify_sms": "Xác thực qua SMS",
+        "verify_zalo": "Xác thực qua Zalo"
+    },
+    "common": {
+        "lang_vi": "Tiếng Việt",
+        "lang_en": "English",
+        "chang_lang": "Ngôn ngữ"
+    }
+}
