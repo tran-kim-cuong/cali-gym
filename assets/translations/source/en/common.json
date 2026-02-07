@@ -1,5 +1,10 @@
 {
   "lang_vi": "Vietnamese",
   "lang_en": "English",
-  "chang_lang": "Language"
+  "chang_lang": "Language",
+
+  "and": " and ",
+  "or": " or ",
+
+  "accept": "Accept"
 }

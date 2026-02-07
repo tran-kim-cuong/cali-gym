@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:californiaflutter/pages/layouts/home.dart';
 import 'package:californiaflutter/pages/shared/number_key.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -103,17 +105,24 @@ class _OtpScreenState extends State<OtpScreen> {
     // Giả lập logic: Nếu mã là "1234" thì thành công, ngược lại thì báo lỗi
     if (code == "1234") {
       // Thành công -> Chuyển màn hình hoặc báo thành công
-      _showTopNotification("Xác thực thành công!", isError: false);
+      _showTopNotification("otp.verify_success".tr(), isError: false);
+
+      // Sau khi thành công, chuyển trang:
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        (route) => false, // Xóa hết các route cũ
+      );
     } else {
       // Thất bại -> Hiện thông báo lỗi như hình
-      _showTopNotification("Mã OTP không chính xác", isError: true);
+      _showTopNotification("otp.verify_error".tr(), isError: true);
     }
   }
 
   // Sự kiện nút Zalo
   void _onZaloPressed() {
     _showTopNotification(
-      "Mã OTP đã được gửi qua số điện thoại bạn. Vui lòng kiểm tra và nhập mã để đăng nhập",
+      "otp.zalo_sent".tr(),
       isError: false,
     );
   }
@@ -307,8 +316,8 @@ class _OtpScreenState extends State<OtpScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Nhập mã OTP',
+          Text(
+            'otp.title'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
@@ -324,8 +333,8 @@ class _OtpScreenState extends State<OtpScreen> {
                 height: 1.5,
               ),
               children: [
-                const TextSpan(
-                  text: 'Chúng tôi đã gửi mã xác minh 4 số đến số điện thoại ',
+                TextSpan(
+                  text: 'otp.subtitle_prefix'.tr(),
                 ),
                 TextSpan(
                   text: widget.phoneNumber, // Hiển thị số điện thoại từ Login
@@ -376,7 +385,7 @@ class _OtpScreenState extends State<OtpScreen> {
           TextSpan(
             style: const TextStyle(color: Color(0xFFE8E8E8), fontSize: 14),
             children: [
-              const TextSpan(text: 'Gửi lại mã trong '),
+              TextSpan(text: 'otp.resend_in'.tr()),
               TextSpan(
                 text: _formatTime(_counter),
                 style: const TextStyle(
@@ -395,8 +404,8 @@ class _OtpScreenState extends State<OtpScreen> {
           // Logic gửi lại mã OTP mới ở đây
           _resendOtp();
         },
-        child: const Text(
-          'Gửi lại mã',
+        child: Text(
+          'otp.resend_link'.tr(),
           style: TextStyle(
             color: Colors.white,
             fontSize: 14,
@@ -438,7 +447,7 @@ class _OtpScreenState extends State<OtpScreen> {
         children: [
           // Nút Xác nhận
           _customButton(
-            text: 'Xác nhận',
+            text: 'common.accept'.tr(),
             color: isComplete
                 ? const Color(0xFFDA212D)
                 : const Color(0xFF333333),
@@ -454,10 +463,10 @@ class _OtpScreenState extends State<OtpScreen> {
                 Expanded(
                   child: Divider(color: Colors.white.withValues(alpha: 0.2)),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: Text(
-                    'hoặc',
+                    'common.or'.tr(),
                     style: TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),
@@ -470,7 +479,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
           // Nút Xác thực qua Zalo
           _customButton(
-            text: 'Xác thực qua Zalo',
+            text: 'login.verify_zalo'.tr(),
             color: const Color(0xFF2A2A2A), // Màu tối theo thiết kế
             textColor: const Color(0xFFE04A50), // Chữ màu đỏ Zalo
             onPressed: _onZaloPressed,

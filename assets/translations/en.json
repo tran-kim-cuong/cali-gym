@@ -1,17 +1,29 @@
 {
-    "login": {
-        "phone_hint": "Phone Number",
-        "agree_prefix": "Agree with ",
-        "terms": "Terms & Conditions",
-        "and": " and ",
-        "privacy": "Privacy Policy",
-        "agree_suffix": " of ours",
-        "verify_sms": "Verify via SMS",
-        "verify_zalo": "Verify via Zalo"
-    },
-    "common": {
-        "lang_vi": "Vietnamese",
-        "lang_en": "English",
-        "chang_lang": "Language"
-    }
+  "common": {
+    "lang_vi": "Vietnamese",
+    "lang_en": "English",
+    "chang_lang": "Language",
+    "and": " and ",
+    "or": " or ",
+    "accept": "Accept"
+  },
+  "login": {
+    "phone_hint": "Phone Number",
+    "agree_prefix": "Agree with ",
+    "terms": "Terms & Conditions",
+    "and": " and ",
+    "privacy": "Privacy Policy",
+    "agree_suffix": " of ours",
+    "verify_sms": "Verify via SMS",
+    "verify_zalo": "Verify via Zalo"
+  },
+  "otp": {
+    "title": "Enter OTP",
+    "subtitle_prefix": "We have sent a 4-digit verification code to ",
+    "resend_in": "Resend code in ",
+    "resend_link": "Resend code",
+    "verify_success": "Verification successful!",
+    "verify_error": "Incorrect OTP code",
+    "zalo_sent": "OTP has been sent to your phone number. Please check and enter to login"
+  }
 }

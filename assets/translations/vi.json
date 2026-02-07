@@ -1,17 +1,29 @@
 {
-    "login": {
-        "phone_hint": "Số điện thoại",
-        "agree_prefix": "Đồng ý với ",
-        "terms": "Điều khoản & Điều kiện",
-        "and": " và ",
-        "privacy": "Chính sách bảo mật",
-        "agree_suffix": " của chúng tôi",
-        "verify_sms": "Xác thực qua SMS",
-        "verify_zalo": "Xác thực qua Zalo"
-    },
-    "common": {
-        "lang_vi": "Tiếng Việt",
-        "lang_en": "English",
-        "chang_lang": "Ngôn ngữ"
-    }
+  "common": {
+    "lang_vi": "Tiếng Việt",
+    "lang_en": "English",
+    "chang_lang": "Ngôn ngữ",
+    "and": " và ",
+    "or": " hoặc ",
+    "accept": "Xác nhận"
+  },
+  "login": {
+    "phone_hint": "Số điện thoại",
+    "agree_prefix": "Đồng ý với ",
+    "terms": "Điều khoản & Điều kiện",
+    "and": " và ",
+    "privacy": "Chính sách bảo mật",
+    "agree_suffix": " của chúng tôi",
+    "verify_sms": "Xác thực qua SMS",
+    "verify_zalo": "Xác thực qua Zalo"
+  },
+  "otp": {
+    "title": "Nhập mã OTP",
+    "subtitle_prefix": "Chúng tôi đã gửi mã xác minh 4 số đến số điện thoại ",
+    "resend_in": "Gửi lại mã trong ",
+    "resend_link": "Gửi lại mã",
+    "verify_success": "Xác thực thành công!",
+    "verify_error": "Mã OTP không chính xác",
+    "zalo_sent": "Mã OTP đã được gửi qua số điện thoại bạn. Vui lòng kiểm tra và nhập mã để đăng nhập"
+  }
 }

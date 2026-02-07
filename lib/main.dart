@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 
 import 'helpers/session_manager.dart';
 
+// 1. Khai báo Global Key ở ngoài cùng
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   // Đảm bảo các dịch vụ hệ thống đã sẵn sàng
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +38,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey, // 2. Gán Key vào MaterialApp
+
       debugShowCheckedModeBanner: false, // Tắt banner debug góc phải
       // 4. Cấu hình đa ngôn ngữ cho MaterialApp
       localizationsDelegates: context.localizationDelegates,

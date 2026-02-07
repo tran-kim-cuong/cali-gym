@@ -6,33 +6,57 @@ void main() async {
   final sourceDir = Directory('assets/translations/source');
   final outputDir = Directory('assets/translations');
 
+  // 1. Tạo bộ mã hóa JSON có thụt đầu dòng (2 khoảng trắng)
+  const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+
   // Duyệt qua các folder ngôn ngữ (vi, en...)
-  await for (var langDir in sourceDir.list()) {
-    if (langDir is Directory) {
-      String langCode = langDir.path.split(Platform.pathSeparator).last;
-      Map<String, dynamic> mergedContent = {};
+  if (await sourceDir.exists()) {
+    await for (var langDir in sourceDir.list()) {
+      if (langDir is Directory) {
+        String langCode = langDir.path.split(Platform.pathSeparator).last;
+        
+        // Dùng SplayTreeMap nếu muốn key tự động sắp xếp theo alphabet (tùy chọn)
+        // Hoặc dùng Map bình thường nếu muốn giữ thứ tự insert
+        Map<String, dynamic> mergedContent = {}; 
 
-      print('Processing language: $langCode...');
+        print('Processing language: $langCode...');
 
-      // Duyệt qua từng file json con (login.json, home.json...)
-      await for (var file in langDir.list()) {
-        if (file is File && file.path.endsWith('.json')) {
-          String fileName = file.path
-              .split(Platform.pathSeparator)
-              .last
-              .replaceAll('.json', '');
-          String content = await file.readAsString();
+        // Duyệt qua từng file json con (login.json, home.json...)
+        List<FileSystemEntity> files = await langDir.list().toList();
+        
+        // Sắp xếp file để thứ tự key trong json tổng ổn định
+        files.sort((a, b) => a.path.compareTo(b.path));
 
-          // Dùng tên file làm Key lớn (giống Cách 1)
-          mergedContent[fileName] = jsonDecode(content);
+        for (var file in files) {
+          if (file is File && file.path.endsWith('.json')) {
+            String fileName = file.path
+                .split(Platform.pathSeparator)
+                .last
+                .replaceAll('.json', '');
+            
+            try {
+              String content = await file.readAsString();
+              dynamic jsonContent = jsonDecode(content);
+
+              // Dùng tên file làm Key lớn (Nested JSON)
+              mergedContent[fileName] = jsonContent;
+            } catch (e) {
+              print('Error reading file ${file.path}: $e');
+            }
+          }
         }
-      }
 
-      // Ghi ra file tổng (ví dụ: assets/translations/vi.json)
-      File outputFile = File('${outputDir.path}/$langCode.json');
-      await outputFile.writeAsString(jsonEncode(mergedContent));
-      print('--> Generated: ${outputFile.path}');
+        // Ghi ra file tổng (ví dụ: assets/translations/vi.json)
+        File outputFile = File('${outputDir.path}/$langCode.json');
+        
+        // 2. Sử dụng encoder đã tạo để ghi nội dung đã format đẹp
+        await outputFile.writeAsString(encoder.convert(mergedContent));
+        
+        print('--> Generated: ${outputFile.path} (Formatted)');
+      }
     }
+    print('Done! Run "flutter pub get" or "Hot Restart" to apply.');
+  } else {
+    print('Source directory not found: ${sourceDir.path}');
   }
-  print('Done! Run "flutter pub get" or "Hot Restart" to apply.');
 }

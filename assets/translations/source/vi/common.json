@@ -1,5 +1,10 @@
 {
     "lang_vi": "Tiếng Việt",
     "lang_en": "English",
-    "chang_lang": "Ngôn ngữ"
+    "chang_lang": "Ngôn ngữ",
+
+  "and": " và ",
+  "or": " hoặc ",
+
+  "accept": "Xác nhận"
 }
