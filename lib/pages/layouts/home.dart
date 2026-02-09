@@ -1,3 +1,5 @@
+import 'package:californiaflutter/pages/layouts/member_card.dart';
+import 'package:californiaflutter/pages/shared/common_membership_card.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +17,37 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
+  String? _activeCardId;
+
   // Màu chủ đạo lấy từ Figma
   final Color _redColor = const Color(0xFFD92229);
   final Color _greyText = const Color(0xFF6B6B6B);
   final Color _darkText = const Color(0xFF141414);
+
+  // Thêm vào trong class _HomeScreenState
+  final List<Map<String, dynamic>> _memberCards = [
+    {
+      "name": "LOAN PHAM",
+      "id": "S0100958",
+      "status": "Active",
+      "expiry": "27/01/2027",
+      "colors": [Color(0xFF574E4C), Color(0xFF231E1D)], // Màu đen (Mặc định)
+    },
+    {
+      "name": "LOAN PHAM",
+      "id": "C9998888",
+      "status": "Centuryon",
+      "expiry": "15/05/2028",
+      "colors": [Color(0xFFD4AF37), Color(0xFF8B7500)], // Màu vàng Gold
+    },
+    {
+      "name": "LOAN PHAM",
+      "id": "S1234567",
+      "status": "Expired",
+      "expiry": "01/01/2023",
+      "colors": [Color(0xFF757F9A), Color(0xFFD7DDE8)], // Màu xám bạc
+    },
+  ];
 
   @override
   void initState() {
@@ -188,77 +217,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Widget _buildHeaderBackground() {
-  //   return Container(
-  //     width: double.infinity,
-  //     height: 250, // Chiều cao cố định để làm nền
-  //     padding: const EdgeInsets.only(top: 60, left: 20, right: 20),
-  //     decoration: const BoxDecoration(
-  //       gradient: LinearGradient(
-  //         begin: Alignment.topCenter,
-  //         end: Alignment.bottomCenter,
-  //         colors: [Color(0xFF4E4B4B), Color(0xFF1F0707)],
-  //       ),
-  //     ),
-  //     child: Row(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         // Avatar + Tên
-  //         Row(
-  //           children: [
-  //             const CircleAvatar(
-  //               radius: 22,
-  //               // backgroundImage: NetworkImage(
-  //               //   "https://i.pravatar.cc/150?img=11",
-  //               // ), // Ảnh mẫu đẹp hơn
-  //               backgroundColor: Colors.grey,
-  //             ),
-  //             const SizedBox(width: 12),
-  //             Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               mainAxisSize: MainAxisSize.min,
-  //               children: [
-  //                 Text(
-  //                   'home.hello'.tr(), // "Xin chào"
-  //                   style: const TextStyle(
-  //                     color: Color(0xFFC7C7C7),
-  //                     fontSize: 13,
-  //                     fontFamily: 'Inter',
-  //                   ),
-  //                 ),
-  //                 const SizedBox(height: 4),
-  //                 const Text(
-  //                   'Loan Pham',
-  //                   style: TextStyle(
-  //                     color: Colors.white,
-  //                     fontSize: 16,
-  //                     fontFamily: 'Mulish',
-  //                     fontWeight: FontWeight.w600,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ],
-  //         ),
-
-  //         // Nút Ngôn ngữ + Chuông
-  //         Row(
-  //           children: [
-  //             _buildLanguageButton(),
-  //             const SizedBox(width: 12),
-  //             const Icon(
-  //               Icons.notifications_none,
-  //               color: Colors.white,
-  //               size: 26,
-  //             ),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   // Thanh hiển thị Điểm và Voucher (2 nút riêng biệt)
   Widget _buildStatsRow() {
     return Padding(
@@ -359,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Thẻ hội viên", // Hoặc .tr()
+                "Thẻ hội viên (${_memberCards.length})", // Hoặc .tr()
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -368,7 +326,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  // --- CODE ĐIỀU HƯỚNG MỚI ---
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      // Truyền danh sách _memberCards hiện có sang màn hình mới
+                      builder: (context) =>
+                          MemberListScreen(cards: _memberCards),
+                    ),
+                  );
+                },
                 child: Text(
                   "Xem tất cả",
                   style: TextStyle(
@@ -385,7 +353,7 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 12),
 
         // --- Thẻ Thành Viên (Membership Card) ---
-        _buildMembershipCard(),
+        _buildMembershipList(),
 
         const SizedBox(height: 24),
 
@@ -434,116 +402,156 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Widget Thẻ đen California
-  Widget _buildMembershipCard() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Container(
-        width: double.infinity,
-        height: 190,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: const LinearGradient(
-            colors: [Color(0xFF574E4C), Color(0xFF231E1D)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Stack(
-          children: [
-            // Watermark icon
-            Positioned(
-              right: -20,
-              bottom: -20,
-              child: Icon(
-                Icons.fitness_center,
-                size: 150,
-                color: Colors.white.withValues(alpha: 0.05),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Image.asset(
-                        "assets/images/logo.png", // Đường dẫn tới file logo của bạn
-                        height:
-                            20, // Chỉnh chiều cao cho vừa mắt (tương đương fontSize 18-20)
-                        fit: BoxFit.contain,
-                        color: Colors
-                            .white, // Thêm dòng này nếu bạn muốn tô logo thành màu trắng (nếu logo gốc là màu khác)
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text(
-                          "Active",
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  const Text(
-                    "LOAN PHAM",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    "S0100958",
-                    style: TextStyle(color: Colors.white70, fontSize: 14),
-                  ),
-                  const SizedBox(height: 12),
-                  const Divider(color: Colors.white24, height: 1),
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Hạn: 27/01/2027",
-                        style: TextStyle(color: Colors.white70, fontSize: 12),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white54),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text(
-                          "Hiển thị mã QR",
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+  // Widget _buildMembershipCard(Map<String, dynamic> data) {
+  //   return Container(
+  //     // Bỏ Padding bọc ngoài, thay bằng margin để các card cách nhau ra
+  //     margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+  //     width: double.infinity,
+  //     // height: 190, // Bỏ height cố định ở đây, để thằng cha quyết định
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(16),
+  //       gradient: LinearGradient(
+  //         colors: data['colors'], // Dùng màu từ data
+  //         begin: Alignment.topLeft,
+  //         end: Alignment.bottomRight,
+  //       ),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withOpacity(0.2),
+  //           blurRadius: 10,
+  //           offset: const Offset(0, 5),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Stack(
+  //       children: [
+  //         // Watermark icon
+  //         Positioned(
+  //           right: -20,
+  //           bottom: -20,
+  //           child: Icon(
+  //             Icons.fitness_center,
+  //             size: 150,
+  //             color: Colors.white.withValues(alpha: 0.05),
+  //           ),
+  //         ),
+  //         Padding(
+  //           padding: const EdgeInsets.all(20),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   Image.asset(
+  //                     "assets/images/logo.png",
+  //                     height: 20,
+  //                     fit: BoxFit.contain,
+  //                     color: Colors.white,
+  //                   ),
+  //                   Container(
+  //                     padding: const EdgeInsets.symmetric(
+  //                       horizontal: 8,
+  //                       vertical: 4,
+  //                     ),
+  //                     decoration: BoxDecoration(
+  //                       border: Border.all(color: Colors.white),
+  //                       borderRadius: BorderRadius.circular(4),
+  //                     ),
+  //                     child: Text(
+  //                       data['status'], // Dùng status từ data
+  //                       style: const TextStyle(
+  //                         color: Colors.white,
+  //                         fontSize: 10,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //               const Spacer(),
+  //               Text(
+  //                 data['name'], // Dùng tên từ data
+  //                 style: const TextStyle(
+  //                   color: Colors.white,
+  //                   fontSize: 18,
+  //                   fontWeight: FontWeight.bold,
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 4),
+  //               Text(
+  //                 data['id'], // Dùng ID từ data
+  //                 style: const TextStyle(color: Colors.white70, fontSize: 14),
+  //               ),
+  //               const SizedBox(height: 12),
+  //               const Divider(color: Colors.white24, height: 1),
+  //               const SizedBox(height: 12),
+  //               Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   Text(
+  //                     "Hạn: ${data['expiry']}", // Dùng ngày từ data
+  //                     style: const TextStyle(
+  //                       color: Colors.white70,
+  //                       fontSize: 12,
+  //                     ),
+  //                   ),
+  //                   Container(
+  //                     padding: const EdgeInsets.symmetric(
+  //                       horizontal: 8,
+  //                       vertical: 4,
+  //                     ),
+  //                     decoration: BoxDecoration(
+  //                       border: Border.all(color: Colors.white54),
+  //                       borderRadius: BorderRadius.circular(4),
+  //                     ),
+  //                     child: const Text(
+  //                       "Hiển thị mã QR",
+  //                       style: TextStyle(color: Colors.white, fontSize: 10),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  Widget _buildMembershipList() {
+    return SizedBox(
+      height: 220, // Khớp với height của CommonMembershipCard
+      child: PageView.builder(
+        controller: PageController(viewportFraction: 0.9),
+        itemCount: _memberCards.length,
+        onPageChanged: (index) {
+          // (Tùy chọn) Nếu muốn khi vuốt sang thẻ khác thì tự động đóng thẻ cũ:
+          setState(() {
+            _activeCardId = null;
+          });
+        },
+        itemBuilder: (context, index) {
+          final cardData = _memberCards[index];
+          final String cardId = cardData['id'];
+
+          return CommonMembershipCard(
+            data: cardData,
+            // Kiểm tra xem ID của thẻ này có trùng với ID đang active không
+            isExpanded: _activeCardId == cardId,
+
+            // Logic: Bấm vào thì nếu đang mở -> đóng, đang đóng -> mở thẻ này (và tự đóng thẻ khác)
+            onToggle: () {
+              setState(() {
+                if (_activeCardId == cardId) {
+                  _activeCardId = null; // Đóng lại
+                } else {
+                  _activeCardId = cardId; // Mở thẻ này
+                }
+              });
+            },
+          );
+        },
       ),
     );
   }
