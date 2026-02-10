@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:californiaflutter/helpers/session_manager.dart';
 
 class OtpScreen extends StatefulWidget {
   final String phoneNumber; // Nhận số điện thoại từ màn hình Login
@@ -105,6 +106,7 @@ class _OtpScreenState extends State<OtpScreen> {
     // Giả lập logic: Nếu mã là "1234" thì thành công, ngược lại thì báo lỗi
     if (code == "1234") {
       // Thành công -> Chuyển màn hình hoặc báo thành công
+      SessionManager.sTenKh = "tên khách";
       _showTopNotification("otp.verify_success".tr(), isError: false);
 
       // Sau khi thành công, chuyển trang:
@@ -121,10 +123,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
   // Sự kiện nút Zalo
   void _onZaloPressed() {
-    _showTopNotification(
-      "otp.zalo_sent".tr(),
-      isError: false,
-    );
+    _showTopNotification("otp.zalo_sent".tr(), isError: false);
   }
 
   // 2. Trong _OtpScreenState, thêm hàm xử lý:
@@ -333,9 +332,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 height: 1.5,
               ),
               children: [
-                TextSpan(
-                  text: 'otp.subtitle_prefix'.tr(),
-                ),
+                TextSpan(text: 'otp.subtitle_prefix'.tr()),
                 TextSpan(
                   text: widget.phoneNumber, // Hiển thị số điện thoại từ Login
                   style: const TextStyle(

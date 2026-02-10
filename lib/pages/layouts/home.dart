@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:californiaflutter/helpers/session_manager.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -191,9 +192,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'Loan Pham',
-                  style: TextStyle(
+                Text(
+                  SessionManager.sTenKh,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                     fontFamily: 'Mulish',
