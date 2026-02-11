@@ -1,3 +1,4 @@
+import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:californiaflutter/pages/shared/number_key.dart';
 import 'package:californiaflutter/pages/layouts/otp.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:californiaflutter/services/api_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,8 +27,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final FocusNode _focusNode = FocusNode();
 
   // Hàm xử lý Login (nơi bạn sẽ rap API)
-  void _handleLogin(String method) {
+  Future<void> _handleLogin(String method) async {
     String phoneNumber = _phoneController.text;
+
+    // int otp = gen4Digits();
+    // SessionManager.otp = otp.toString();
+    // SessionManager.sSdt = phoneNumber;
+    // await snedSms(otp.toString(), phoneNumber);
 
     Navigator.push(
       context,
@@ -139,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // 2. LẤY MÃ NGÔN NGỮ HIỆN TẠI ĐỂ HIỂN THỊ CỜ
     // context.locale là biến toàn cục của thư viện
     final String currentCode = context.locale.languageCode;
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
@@ -166,7 +173,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    currentCode == 'vi' ? 'common.lang_vi'.tr() : 'common.lang_en'.tr(),
+                    currentCode == 'vi'
+                        ? 'common.lang_vi'.tr()
+                        : 'common.lang_en'.tr(),
                     style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 ],
