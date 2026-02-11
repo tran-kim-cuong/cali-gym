@@ -2,6 +2,7 @@ import 'package:californiaflutter/pages/layouts/home.dart';
 import 'package:californiaflutter/pages/layouts/login.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'helpers/session_manager.dart';
 
@@ -14,6 +15,9 @@ void main() async {
 
   // 2. Khởi tạo Localization
   await EasyLocalization.ensureInitialized();
+
+  // Load file .env
+  await dotenv.load(fileName: ".env");
 
   // Kiểm tra trạng thái đăng nhập
   bool loggedIn = await SessionManager.isLoggedIn();

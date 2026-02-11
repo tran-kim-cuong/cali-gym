@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../main.dart'; // Import navigatorKey
 import '../helpers/loading_manager.dart';
 
@@ -12,7 +13,7 @@ class BaseApi {
   BaseApi._internal() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: "https://your-api-url.com/api/",
+        baseUrl: dotenv.env["CALIFORNIA_URI"] ?? "",
         connectTimeout: const Duration(seconds: 30),
       ),
     );
@@ -41,6 +42,15 @@ class BaseApi {
     );
   }
 
-  // Hàm get public để dùng
-  Dio get client => _dio;
+  /// 1. Getter dùng cho Application (Mặc định)
+  Dio get client {
+    _dio.options.baseUrl = dotenv.env["CALIFORNIA_URI"] ?? "";
+    return _dio;
+  }
+
+  /// 2. Getter dùng riêng cho SMS
+  Dio get smsClient {
+    _dio.options.baseUrl = dotenv.env["SMS_URI"] ?? "";
+    return _dio;
+  }
 }
