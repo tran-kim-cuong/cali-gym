@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:californiaflutter/models/member_model.dart';
 import 'package:californiaflutter/pages/layouts/home.dart';
 import 'package:californiaflutter/pages/shared/number_key.dart';
+import 'package:californiaflutter/services/api_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -101,12 +103,21 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   // Hàm xử lý khi nhấn nút Xác nhận (Rap API ở đây)
-  void _verifyOtp() {
+  Future<void> _verifyOtp() async {
     String code = _otpCode.join();
     // Giả lập logic: Nếu mã là "1234" thì thành công, ngược lại thì báo lỗi
-    if (code == "1234") {
+    if (code == SessionManager.otp) {
       // Thành công -> Chuyển màn hình hoặc báo thành công
-      SessionManager.sTenKh = "tên khách";
+
+      // String token = await getToken();
+      // MemberModel member = await getMember(
+      //   token,
+      //   SessionManager.sClientId,
+      //   SessionManager.sSdt,
+      // );
+      // SessionManager.sTenKh = member.firstName!;
+
+      SessionManager.sTenKh = "Tên Hội Viên";
       _showTopNotification("otp.verify_success".tr(), isError: false);
 
       // Sau khi thành công, chuyển trang:
