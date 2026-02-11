@@ -67,6 +67,7 @@ flutter:
   assets:
       - assets/images/
       - assets/images/vuesax/
+      - assets/images/loyalty/
       - assets/translations/ # Khai báo đường dẫn chứa file ngôn ngữ
       - .env
 
