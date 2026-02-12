@@ -1,8 +1,11 @@
+import 'package:californiaflutter/helpers/convert_model.dart';
+import 'package:californiaflutter/models/member_model.dart';
 import 'package:californiaflutter/pages/layouts/loyalty.dart';
 import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
+import 'package:californiaflutter/services/api_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -27,34 +30,36 @@ class _HomeScreenState extends State<HomeScreen> {
   final Color _greyText = const Color(0xFF6B6B6B);
   final Color _darkText = const Color(0xFF141414);
 
-  // Thêm vào trong class _HomeScreenState
-  final List<Map<String, dynamic>> _memberCards = [
-    {
-      "name": "LOAN PHAM",
-      "id": "S0100958",
-      "status": "Active",
-      "expiry": "27/01/2027",
-      "colors": [Color(0xFF574E4C), Color(0xFF231E1D)], // Màu đen (Mặc định)
-    },
-    {
-      "name": "LOAN PHAM",
-      "id": "C9998888",
-      "status": "Centuryon",
-      "expiry": "15/05/2028",
-      "colors": [Color(0xFFD4AF37), Color(0xFF8B7500)], // Màu vàng Gold
-    },
-    {
-      "name": "LOAN PHAM",
-      "id": "S1234567",
-      "status": "Expired",
-      "expiry": "01/01/2023",
-      "colors": [Color(0xFF757F9A), Color(0xFFD7DDE8)], // Màu xám bạc
-    },
-  ];
+  // // Thêm vào trong class _HomeScreenState
+  // final List<Map<String, dynamic>> _memberCards = [
+  //   {
+  //     "name": "LOAN PHAM",
+  //     "id": "S0100958",
+  //     "status": "Active",
+  //     "expiry": "27/01/2027",
+  //     "colors": [Color(0xFF574E4C), Color(0xFF231E1D)], // Màu đen (Mặc định)
+  //   },
+  //   {
+  //     "name": "LOAN PHAM",
+  //     "id": "C9998888",
+  //     "status": "Centuryon",
+  //     "expiry": "15/05/2028",
+  //     "colors": [Color(0xFFD4AF37), Color(0xFF8B7500)], // Màu vàng Gold
+  //   },
+  //   {
+  //     "name": "LOAN PHAM",
+  //     "id": "S1234567",
+  //     "status": "Expired",
+  //     "expiry": "01/01/2023",
+  //     "colors": [Color(0xFF757F9A), Color(0xFFD7DDE8)], // Màu xám bạc
+  //   },
+  // ];
+  List<Map<String, dynamic>> _memberCards = [];
 
   @override
   void initState() {
     super.initState();
+    _memberCards = buildMemberCards(SessionManager.member);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkNotificationPermission();
     });
