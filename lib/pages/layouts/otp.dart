@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:californiaflutter/helpers/convert_model.dart';
 import 'package:californiaflutter/models/member_model.dart';
 import 'package:californiaflutter/pages/layouts/home.dart';
 import 'package:californiaflutter/pages/shared/number_key.dart';
@@ -109,15 +110,18 @@ class _OtpScreenState extends State<OtpScreen> {
     if (code == SessionManager.otp) {
       // Thành công -> Chuyển màn hình hoặc báo thành công
 
-      // String token = await getToken();
-      // MemberModel member = await getMember(
-      //   token,
-      //   SessionManager.sClientId,
-      //   SessionManager.sSdt,
-      // );
-      // SessionManager.sTenKh = member.firstName!;
+      String token = await getToken();
+      MemberModel member = await getMember(
+        token,
+        SessionManager.sClientId,
+        SessionManager.sSdt,
+      );
+      SessionManager.member = member;
+      // List<Map<String, dynamic>> memberCards = buildMemberCards(member);
+      // print(memberCards);
+      SessionManager.sTenKh = member.firstName!;
 
-      SessionManager.sTenKh = "Tên Hội Viên";
+      // SessionManager.sTenKh = "Tên Hội Viên";
       _showTopNotification("otp.verify_success".tr(), isError: false);
 
       // Sau khi thành công, chuyển trang:

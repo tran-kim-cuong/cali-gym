@@ -1,11 +1,13 @@
+import 'package:californiaflutter/models/member_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionManager {
   static const String keyIsLoggedIn = "isLoggedIn";
   static String otp = "1234";
-  static String sSdt = "";
+  static String sSdt = "0879270997";
   static String sTenKh = "";
   static String sClientId = "s0100904";
+  static MemberModel member = MemberModel();
 
   // Lưu trạng thái đã đăng nhập
   static Future<void> setLoggedIn(bool value) async {
