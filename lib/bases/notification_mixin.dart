@@ -24,12 +24,16 @@ mixin NotificationMixin<T extends StatefulWidget> on State<T> {
 
   // Widget để bạn chèn vào Stack
   Widget buildNotificationWidget() {
+    // THÊM DÒNG NÀY: Nếu chưa kích hoạt thì không vẽ gì cả
+    if (!_show) return const SizedBox.shrink();
+
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 300),
       top: _show ? 60 : -100,
       left: 20,
       right: 20,
-      child: Material( // Cần Material để tránh lỗi render text
+      child: Material(
+        // Cần Material để tránh lỗi render text
         color: Colors.transparent,
         child: Container(
           padding: const EdgeInsets.all(12),
@@ -45,7 +49,10 @@ mixin NotificationMixin<T extends StatefulWidget> on State<T> {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(_message, style: const TextStyle(color: Colors.white, fontSize: 13)),
+                child: Text(
+                  _message,
+                  style: const TextStyle(color: Colors.white, fontSize: 13),
+                ),
               ),
             ],
           ),

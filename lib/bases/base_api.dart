@@ -39,8 +39,10 @@ class BaseApi {
   Interceptor _createInterceptor({required bool useToken}) {
     return InterceptorsWrapper(
       onRequest: (options, handler) async {
+        debugPrint(useToken.toString());
         if (useToken) {
           String? token = await SessionManager.getToken();
+          debugPrint(token);
           if (token != null) options.headers["Authorization"] = "Bearer $token";
         }
 
