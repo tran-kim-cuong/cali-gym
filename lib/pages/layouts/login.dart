@@ -1,13 +1,17 @@
+import 'package:californiaflutter/bases/base_api.dart';
+import 'package:californiaflutter/bases/loading_wrapper.dart';
+import 'package:californiaflutter/bases/notification_mixin.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:californiaflutter/pages/shared/number_key.dart';
 import 'package:californiaflutter/pages/layouts/otp.dart';
+import 'package:dio/dio.dart' as dio_form;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:californiaflutter/services/api_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,7 +20,8 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with LoadingWrapper, NotificationMixin {
   // Controller để lấy số điện thoại sau này rap API
   final TextEditingController _phoneController = TextEditingController();
   bool _isAgreed = false;
@@ -30,19 +35,49 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _handleLogin(String method) async {
     String phoneNumber = _phoneController.text;
 
-    // int otp = gen4Digits();
-    // SessionManager.otp = otp.toString();
-    // SessionManager.sSdt = phoneNumber;
-    // await snedSms(otp.toString(), phoneNumber);
+    // 1. Tạo mã OTP ngẫu nhiên (ví dụ 4 chữ số)
+    String otpCode = (1000 + (DateTime.now().millisecond % 9000)).toString();
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OtpScreen(phoneNumber: phoneNumber),
-      ),
-    );
-    // print('Calling API with Phone: $phoneNumber via $method');
-    // Implement API logic here
+    // 1. Chuyển đổi Map thành FormData để giống với --form trong curl
+    dio_form.FormData formData = dio_form.FormData.fromMap({
+      "api_key": dotenv.env["SMS_API_KEY"],
+      "message": "${dotenv.env["SMS_MESSAGE"]} $otpCode",
+      "phone_number": phoneNumber,
+      "brand_name": dotenv.env["SMS_BRAND_NAME"],
+      "sender": dotenv.env["SMS_SENDER"],
+    });
+
+    if (method == 'SMS') {
+      try {
+        // 2. Gọi API SMS qua smsClient
+        final response = await handleApi(
+          context,
+          BaseApi().smsClient.post('/api/sms/send', data: formData),
+        );
+
+        // 3. Kiểm tra kết quả trả về
+        if (response?.statusCode == 200) {
+          // Lưu thông tin vào SessionManager để đối chiếu ở màn hình OTP
+          SessionManager.otp = otpCode;
+          SessionManager.setPersonalInfo(phoneNumber);
+          // SessionManager.sSdt = phoneNumber;
+
+          // Kiểm tra mounted trước khi điều hướng để tránh lỗi async gap
+          if (mounted) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OtpScreen(phoneNumber: phoneNumber),
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        // Lỗi đã được Interceptor trong BaseApi xử lý ẩn Loading
+        debugPrint("Lỗi gửi SMS: $e");
+        // Bạn có thể hiển thị SnackBar thông báo lỗi tại đây
+      }
+    }
   }
 
   // 2. Trong _LoginScreenState, thêm hàm xử lý phím:
@@ -134,6 +169,9 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 20), // Padding đáy theo hình thiết kế
 
               if (kIsWeb) NumericKeyboard(onKeyTap: _onKeyboardTap),
+
+              // CHÈN WIDGET THÔNG BÁO VÀO CUỐI STACK
+              buildNotificationWidget(),
             ],
           ),
         ),

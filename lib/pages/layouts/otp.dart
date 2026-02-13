@@ -1,14 +1,14 @@
 import 'dart:async';
-import 'package:californiaflutter/helpers/convert_model.dart';
-import 'package:californiaflutter/models/member_model.dart';
+import 'package:californiaflutter/bases/base_api.dart';
+import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/pages/layouts/home.dart';
 import 'package:californiaflutter/pages/shared/number_key.dart';
-import 'package:californiaflutter/services/api_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class OtpScreen extends StatefulWidget {
   final String phoneNumber; // Nhận số điện thoại từ màn hình Login
@@ -19,7 +19,7 @@ class OtpScreen extends StatefulWidget {
   State<OtpScreen> createState() => _OtpScreenState();
 }
 
-class _OtpScreenState extends State<OtpScreen> {
+class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
   final List<String> _otpCode = ["", "", "", ""]; // Lưu trữ 4 số OTP
   int _counter = 119; // 01:59s = 119 giây
   Timer? _timer;
@@ -110,26 +110,52 @@ class _OtpScreenState extends State<OtpScreen> {
     if (code == SessionManager.otp) {
       // Thành công -> Chuyển màn hình hoặc báo thành công
 
-      String token = await getToken();
-      MemberModel member = await getMember(
-        token,
-        SessionManager.sClientId,
-        SessionManager.sSdt,
-      );
-      SessionManager.member = member;
-      // List<Map<String, dynamic>> memberCards = buildMemberCards(member);
-      // print(memberCards);
-      SessionManager.sTenKh = member.firstName!;
-
-      // SessionManager.sTenKh = "Tên Hội Viên";
-      _showTopNotification("otp.verify_success".tr(), isError: false);
-
-      // Sau khi thành công, chuyển trang:
-      Navigator.pushAndRemoveUntil(
+      final response = await handleApi(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-        (route) => false, // Xóa hết các route cũ
+        BaseApi().client.post(
+          '/api/login',
+          data: {
+            "email": dotenv.env["CALIFORNIA_USER_NAME"],
+            "password": dotenv.env["CALIFORNIA_PASSWORD"],
+          },
+        ),
       );
+
+      if (!mounted) return;
+
+      if (response?.statusCode == 200) {
+        SessionManager.setLoggedIn(true, response?.data['token']);
+
+        // Dùng API để lấy Client Code từ Số điện thoại.
+        SessionManager.sClientId = dotenv.env["MEMBER_ID"]!;
+
+        // // Sau khi thành công, chuyển trang:
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false, // Xóa hết các route cũ
+        );
+      }
+      // String token = await getToken();
+      // MemberModel member = await getMember(
+      //   token,
+      //   SessionManager.sClientId,
+      //   SessionManager.sSdt,
+      // );
+      // SessionManager.member = member;
+      // // List<Map<String, dynamic>> memberCards = buildMemberCards(member);
+      // // print(memberCards);
+      // SessionManager.sTenKh = member.firstName!;
+
+      // // SessionManager.sTenKh = "Tên Hội Viên";
+      // _showTopNotification("otp.verify_success".tr(), isError: false);
+
+      // // Sau khi thành công, chuyển trang:
+      // Navigator.pushAndRemoveUntil(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => const HomeScreen()),
+      //   (route) => false, // Xóa hết các route cũ
+      // );
     } else {
       // Thất bại -> Hiện thông báo lỗi như hình
       _showTopNotification("otp.verify_error".tr(), isError: true);
@@ -432,7 +458,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
   void _resendOtp() {
     // 1. Gọi API gửi lại mã ở đây (nếu có)
-    print("Đang gửi lại mã OTP mới đến ${widget.phoneNumber}...");
+    debugPrint("Đang gửi lại mã OTP mới đến ${widget.phoneNumber}...");
 
     // 2. Reset lại đồng hồ đếm ngược
     setState(() {
@@ -445,7 +471,9 @@ class _OtpScreenState extends State<OtpScreen> {
     // 4. (Tùy chọn) Xóa mã OTP cũ đã nhập
     _invisibleController.clear();
     setState(() {
-      for (int i = 0; i < 4; i++) _otpCode[i] = "";
+      for (int i = 0; i < 4; i++) {
+        _otpCode[i] = "";
+      }
     });
   }
 

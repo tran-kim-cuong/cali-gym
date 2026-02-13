@@ -1,3 +1,6 @@
+import 'package:californiaflutter/bases/base_api.dart';
+import 'package:californiaflutter/bases/loading_wrapper.dart';
+import 'package:californiaflutter/bases/notification_mixin.dart';
 import 'package:californiaflutter/helpers/convert_model.dart';
 import 'package:californiaflutter/models/member_model.dart';
 import 'package:californiaflutter/pages/layouts/loyalty.dart';
@@ -5,9 +8,10 @@ import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
-import 'package:californiaflutter/services/api_service.dart';
+import 'package:dio/dio.dart' as dio_form;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +24,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with LoadingWrapper, NotificationMixin {
   int _selectedIndex = 0;
 
   String? _activeCardId;
@@ -59,8 +64,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
     _memberCards = buildMemberCards(SessionManager.member);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchMemberCards();
       _checkNotificationPermission();
     });
   }
@@ -73,6 +81,48 @@ class _HomeScreenState extends State<HomeScreen> {
       if (status.isGranted || status.isDenied || status.isPermanentlyDenied) {
         await prefs.setBool('has_requested_notification', true);
       }
+    }
+  }
+
+  Future<void> _fetchMemberCards() async {
+    try {
+      dio_form.FormData formData = dio_form.FormData.fromMap({
+        "clientcode": dotenv.env["MEMBER_ID"],
+        "phone_number": SessionManager.getPhoneNumber(),
+      });
+
+      // Gọi API thông qua Mixin để tự động hiện Loading
+      final response = await handleApi(
+        context,
+        BaseApi().client.post(
+          '/api/booking/check/member',
+          // Lưu ý: Nếu URL đầy đủ khác với baseUrl trong BaseApi,
+          // bạn có thể truyền full URL vào đây.
+          data: formData,
+        ),
+      );
+
+      if (response?.statusCode == 200 && response?.data != null) {
+        // Giả sử API trả về data là thông tin member
+        final member = MemberModel.fromJson(response!.data);
+
+        if (!mounted) return;
+
+        setState(() {
+          // 1. Cập nhật SessionManager nếu cần
+          // SessionManager.member = MemberModel.fromJson(memberData);
+          SessionManager.member = member;
+          SessionManager.sTenKh = member.firstName!;
+
+          // 2. Chuyển đổi dữ liệu từ API sang dạng Map để hiển thị trên UI
+          // Ở đây tôi giả định bạn dùng hàm convert có sẵn
+          _memberCards = buildMemberCards(SessionManager.member);
+        });
+      }
+    } catch (e) {
+      debugPrint("Lỗi khi lấy thông tin thẻ: $e");
+      // Bạn có thể hiển thị thông báo lỗi tại đây
+      showTopNotification("Không thể cập nhật thông tin thẻ", isError: true);
     }
   }
 
@@ -154,6 +204,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+
+          // CHÈN WIDGET THÔNG BÁO VÀO CUỐI STACK
+          buildNotificationWidget(),
         ],
       ),
       // ... (FloatingActionButton và BottomNavBar giữ nguyên)
@@ -624,7 +677,9 @@ class _HomeScreenState extends State<HomeScreen> {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06), // Bóng mờ nhẹ tinh tế
+                color: Colors.black.withValues(
+                  alpha: 0.06,
+                ), // Bóng mờ nhẹ tinh tế
                 spreadRadius: 2,
                 blurRadius: 15,
                 offset: const Offset(0, 4),
@@ -753,7 +808,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       onTap: () {
         // Debug: In ra log để chắc chắn đã nhận sự kiện
-        print("Đã bấm nút ngôn ngữ");
+        debugPrint("Đã bấm nút ngôn ngữ");
         LanguageBottomSheet.show(context: context);
       },
       // Quan trọng: Giúp nhận diện cú chạm ngay cả khi nền trong suốt
