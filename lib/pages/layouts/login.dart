@@ -155,25 +155,31 @@ class _LoginScreenState extends State<LoginScreen>
             colors: [Color(0xFF4A0D0D), Color(0xFF1A1D22)],
           ),
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              _buildHeader(), // Phần Tiếng Việt sát trên cùng
-              const SizedBox(height: 60), // Tạo khoảng cách từ đỉnh xuống Logo
+        child: Stack(
+          children: [
+            SafeArea(
+              child: Column(
+                children: [
+                  _buildHeader(), // Phần Tiếng Việt sát trên cùng
+                  const SizedBox(
+                    height: 60,
+                  ), // Tạo khoảng cách từ đỉnh xuống Logo
 
-              _buildMainContent(), // Logo + Input + Agreement
+                  _buildMainContent(), // Logo + Input + Agreement
 
-              const Spacer(), // Đẩy tất cả phần dưới xuống đáy màn hình
+                  const Spacer(), // Đẩy tất cả phần dưới xuống đáy màn hình
 
-              _buildActionButtons(), // 2 Nút xác thực nằm ở dưới cùng
-              const SizedBox(height: 20), // Padding đáy theo hình thiết kế
+                  _buildActionButtons(), // 2 Nút xác thực nằm ở dưới cùng
+                  const SizedBox(height: 20), // Padding đáy theo hình thiết kế
 
-              if (kIsWeb) NumericKeyboard(onKeyTap: _onKeyboardTap),
+                  if (kIsWeb) NumericKeyboard(onKeyTap: _onKeyboardTap),
+                ],
+              ),
+            ),
 
-              // CHÈN WIDGET THÔNG BÁO VÀO CUỐI STACK
-              buildNotificationWidget(),
-            ],
-          ),
+            // CHÈN WIDGET THÔNG BÁO VÀO CUỐI STACK
+            buildNotificationWidget(),
+          ],
         ),
       ),
     );

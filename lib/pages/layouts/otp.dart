@@ -211,6 +211,8 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Thêm dòng này để UI không bị đẩy lên quá gắt khi có bàn phím
+      resizeToAvoidBottomInset: true,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -222,48 +224,51 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
         child: Stack(
           children: [
             SafeArea(
-              child: Stack(
-                // Dùng Stack để giấu TextField ẩn
-                children: [
-                  // TextField ẩn để hứng sự kiện từ bàn phím hệ thống (Mobile)
-                  if (!kIsWeb)
-                    SizedBox(
-                      width: 0,
-                      height: 0,
-                      child: TextField(
-                        controller: _invisibleController,
-                        focusNode: _focusNode,
-                        keyboardType: TextInputType.number,
-                        maxLength: 4,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                        autofocus: true,
+              child: SingleChildScrollView(
+                child: Stack(
+                  // Dùng Stack để giấu TextField ẩn
+                  children: [
+                    // TextField ẩn để hứng sự kiện từ bàn phím hệ thống (Mobile)
+                    if (!kIsWeb)
+                      SizedBox(
+                        width: 0,
+                        height: 0,
+                        child: TextField(
+                          controller: _invisibleController,
+                          focusNode: _focusNode,
+                          keyboardType: TextInputType.number,
+                          maxLength: 4,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          autofocus: true,
+                        ),
                       ),
+
+                    Column(
+                      children: [
+                        _buildHeader(),
+                        const SizedBox(height: 40),
+                        _buildTitleSection(),
+                        const SizedBox(height: 32),
+
+                        // Khi click vào vùng này trên mobile sẽ mở lại bàn phím
+                        GestureDetector(
+                          onTap: () => _focusNode.requestFocus(),
+                          child: _buildOtpInputs(),
+                        ),
+                        const SizedBox(height: 20), // Thêm khoảng cách
+                        _buildTimerText(),
+                        // 2. THAY Spacer() THÀNH SizedBox ĐỂ TRÁNH LỖI TRONG SCROLLVIEW
+                        const SizedBox(height: 60),
+                        _buildActionButtons(),
+
+                        // CHỈ HIỆN BÀN PHÍM TÙY CHỈNH TRÊN WEB
+                        if (kIsWeb) NumericKeyboard(onKeyTap: _onKeyboardTap),
+                      ],
                     ),
-
-                  Column(
-                    children: [
-                      _buildHeader(),
-                      const SizedBox(height: 40),
-                      _buildTitleSection(),
-                      const SizedBox(height: 32),
-
-                      // Khi click vào vùng này trên mobile sẽ mở lại bàn phím
-                      GestureDetector(
-                        onTap: () => _focusNode.requestFocus(),
-                        child: _buildOtpInputs(),
-                      ),
-                      const SizedBox(height: 20), // Thêm khoảng cách
-                      _buildTimerText(),
-                      const Spacer(),
-                      _buildActionButtons(),
-
-                      // CHỈ HIỆN BÀN PHÍM TÙY CHỈNH TRÊN WEB
-                      if (kIsWeb) NumericKeyboard(onKeyTap: _onKeyboardTap),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
 

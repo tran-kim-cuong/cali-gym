@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
@@ -86,25 +88,28 @@ class _HomeScreenState extends State<HomeScreen>
 
   Future<void> _fetchMemberCards() async {
     try {
-      dio_form.FormData formData = dio_form.FormData.fromMap({
+      final String? phoneNumber = await SessionManager.getPhoneNumber();
+      final Map<String, dynamic> requestBody = {
         "clientcode": dotenv.env["MEMBER_ID"],
-        "phone_number": SessionManager.getPhoneNumber(),
-      });
+        "phone_number": phoneNumber,
+      };
 
       // Gọi API thông qua Mixin để tự động hiện Loading
       final response = await handleApi(
+        // ignore: use_build_context_synchronously
         context,
         BaseApi().client.post(
           '/api/booking/check/member',
           // Lưu ý: Nếu URL đầy đủ khác với baseUrl trong BaseApi,
           // bạn có thể truyền full URL vào đây.
-          data: formData,
+          data: requestBody,
         ),
       );
 
       if (response?.statusCode == 200 && response?.data != null) {
         // Giả sử API trả về data là thông tin member
-        final member = MemberModel.fromJson(response!.data);
+        // final data = jsonDecode(response!.data);
+        final member = MemberModel.fromJson(response?.data);
 
         if (!mounted) return;
 
