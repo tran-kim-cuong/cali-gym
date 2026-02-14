@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
@@ -10,7 +9,6 @@ import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
-import 'package:dio/dio.dart' as dio_form;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -109,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen>
       if (response?.statusCode == 200 && response?.data != null) {
         // Giả sử API trả về data là thông tin member
         // final data = jsonDecode(response!.data);
-        final member = MemberModel.fromJson(response?.data);
+        final member = MemberModel.fromJson(response?.data['data']);
 
         if (!mounted) return;
 
