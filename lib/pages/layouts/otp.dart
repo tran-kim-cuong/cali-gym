@@ -195,6 +195,7 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
       // Kiểm tra lại sau khi điền xong
       if (!_otpCode.contains("")) {
         // Đã nhập đủ 4 số
+        _focusNode.unfocus();
       }
     }
   }
@@ -211,9 +212,12 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF1A1D22),
       // Thêm dòng này để UI không bị đẩy lên quá gắt khi có bàn phím
       resizeToAvoidBottomInset: true,
       body: Container(
+        width: double.infinity, // Thêm dòng này
+        height: double.infinity, // Thêm dòng này
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -225,6 +229,8 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
           children: [
             SafeArea(
               child: SingleChildScrollView(
+                // Thêm dòng này để nội dung luôn có thể kéo hoặc chiếm full màn hình
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: Stack(
                   // Dùng Stack để giấu TextField ẩn
                   children: [
@@ -395,16 +401,26 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
   }
 
   Widget _buildOtpInputs() {
+    int focusedIndex = _invisibleController.text.length;
+    if (focusedIndex > 3) focusedIndex = 3;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: List.generate(4, (index) {
+        // Kiểm tra xem ô này có đang được "focus" ảo hay không
+        bool isCurrentFocus = index == focusedIndex;
+
         return Container(
           width: 60,
           height: 70,
           decoration: BoxDecoration(
             color: const Color(0xFF141414),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFF6B6B6B)),
+            // Thay đổi màu viền nếu ô đang được focus
+            border: Border.all(
+              color: isCurrentFocus ? Colors.white : const Color(0xFF6B6B6B),
+              width: isCurrentFocus ? 2 : 1,
+            ),
           ),
           child: Center(
             child: Text(
