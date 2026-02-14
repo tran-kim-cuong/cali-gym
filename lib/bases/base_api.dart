@@ -1,6 +1,4 @@
-import 'package:californiaflutter/helpers/loading_manager.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
-import 'package:californiaflutter/main.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -36,32 +34,59 @@ class BaseApi {
     _dioSms.interceptors.add(_createInterceptor(useToken: false));
   }
 
+  Future<String?> _performReLogin() async {
+    try {
+      // Sử dụng một instance Dio mới hoàn toàn để tránh bị dính Interceptor cũ (gây lặp vô tận)
+      final refreshDio = Dio(
+        BaseOptions(baseUrl: dotenv.env["CALIFORNIA_URI"] ?? ""),
+      );
+
+      final response = await refreshDio.post(
+        '/api/login',
+        data: {
+          "email": dotenv.env["CALIFORNIA_USER_NAME"],
+          "password": dotenv.env["CALIFORNIA_PASSWORD"],
+        },
+      );
+
+      if (response.statusCode == 200) {
+        String newToken = response.data['token'];
+        // Cập nhật token mới vào Session
+        await SessionManager.setLoggedIn(true, newToken);
+        return newToken;
+      }
+    } catch (e) {
+      debugPrint("Lỗi khi tự động Login lại: $e");
+    }
+    return null;
+  }
+
   Interceptor _createInterceptor({required bool useToken}) {
     return InterceptorsWrapper(
       onRequest: (options, handler) async {
-        debugPrint(useToken.toString());
         if (useToken) {
           String? token = await SessionManager.getToken();
-          debugPrint(token);
+          // debugPrint(token);
           if (token != null) options.headers["Authorization"] = "Bearer $token";
         }
 
-        // FIX LỖI OVERLAY: Kiểm tra Overlay trước khi hiện Loading
-        final context = navigatorKey.currentContext; //
-        if (context != null && context.mounted) {
-          // Kiểm tra xem context có Overlay không để tránh lỗi '_overlay != null'
-          if (Overlay.maybeOf(context) != null) {
-            LoadingManager().show(context); //
-          }
-        }
         return handler.next(options);
       },
       onResponse: (r, h) {
-        LoadingManager().hide();
         return h.next(r);
       },
-      onError: (e, h) {
-        LoadingManager().hide();
+      onError: (e, h) async {
+        if (useToken && e.response?.statusCode == 401) {
+          debugPrint("Token expired. Re-logging in...");
+          String? newToken = await _performReLogin();
+
+          if (newToken != null) {
+            e.requestOptions.headers["Authorization"] = "Bearer $newToken";
+            final retryResponse = await _dioMain.fetch(e.requestOptions);
+            return h.resolve(retryResponse);
+          }
+        }
+
         return h.next(e);
       },
     );
