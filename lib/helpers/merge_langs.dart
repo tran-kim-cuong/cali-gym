@@ -1,7 +1,8 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 
 // Chạy lệnh này: dart merge_langs.dart
 void main() async {
@@ -21,7 +22,7 @@ void main() async {
         // Hoặc dùng Map bình thường nếu muốn giữ thứ tự insert
         Map<String, dynamic> mergedContent = {}; 
 
-        debugPrint('Processing language: $langCode...');
+        dev.log('Processing language: $langCode...');
 
         // Duyệt qua từng file json con (login.json, home.json...)
         List<FileSystemEntity> files = await langDir.list().toList();
@@ -43,7 +44,7 @@ void main() async {
               // Dùng tên file làm Key lớn (Nested JSON)
               mergedContent[fileName] = jsonContent;
             } catch (e) {
-              debugPrint('Error reading file ${file.path}: $e');
+              dev.log('Error reading file ${file.path}: $e');
             }
           }
         }
@@ -54,11 +55,11 @@ void main() async {
         // 2. Sử dụng encoder đã tạo để ghi nội dung đã format đẹp
         await outputFile.writeAsString(encoder.convert(mergedContent));
         
-        debugPrint('--> Generated: ${outputFile.path} (Formatted)');
+        dev.log('--> Generated: ${outputFile.path} (Formatted)');
       }
     }
-    debugPrint('Done! Run "flutter pub get" or "Hot Restart" to apply.');
+    dev.log('Done! Run "flutter pub get" or "Hot Restart" to apply.');
   } else {
-    debugPrint('Source directory not found: ${sourceDir.path}');
+    dev.log('Source directory not found: ${sourceDir.path}');
   }
 }

@@ -7,6 +7,9 @@
     "or": " or ",
     "accept": "Accept"
   },
+  "home": {
+    "hello": "Hi"
+  },
   "login": {
     "phone_hint": "Phone Number",
     "agree_prefix": "Agree with ",
