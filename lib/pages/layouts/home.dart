@@ -1,4 +1,3 @@
-
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
@@ -16,6 +15,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
+
+import '../../models/schedule_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -61,6 +62,9 @@ class _HomeScreenState extends State<HomeScreen>
   // ];
   List<Map<String, dynamic>> _memberCards = [];
 
+  // Thêm biến này vào phần khai báo state
+  List<ScheduleModel> _upcomingClasses = [];
+
   @override
   void initState() {
     super.initState();
@@ -69,8 +73,84 @@ class _HomeScreenState extends State<HomeScreen>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchMemberCards();
+      _fetchUpcomingClasses(); // Gọi thêm hàm lấy lớp học
       _checkNotificationPermission();
     });
+  }
+
+  Future<void> _fetchUpcomingClasses() async {
+    try {
+      // 1. Khởi tạo mốc thời gian động (Ví dụ: từ hôm nay đến 3 ngày tới)
+      final now = DateTime.now();
+      final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+
+      final String fromDate = formatter.format(
+        DateTime(now.year, now.month, now.day, 0, 0, 0),
+      );
+      final String toDate = formatter.format(
+        now
+            .add(const Duration(days: 3))
+            .copyWith(hour: 23, minute: 59, second: 59),
+      );
+
+      // 2. Định nghĩa Query Parameters một cách rõ ràng
+      final Map<String, dynamic> params = {
+        "from_date": fromDate,
+        "to_date": toDate,
+        "club_code": "AMY,AMU", // Bạn có thể truyền biến vào đây nếu cần
+      };
+      final response = await handleApi(
+        context,
+        BaseApi().client.get(
+          '/api/booking/get/schedules',
+          queryParameters: params,
+        ),
+      );
+
+      if (response?.statusCode == 200 && response?.data != null) {
+        final List<dynamic> rawData = response?.data is List
+            ? response?.data
+            : (response?.data['data'] ?? []);
+
+        final List<ScheduleModel> fetchedClasses = rawData
+            .map((e) => ScheduleModel.fromJson(e))
+            .toList();
+
+        // --- LOGIC SẮP XẾP CHUYÊN NGHIỆP ---
+        final now = DateTime.now();
+        final soonThreshold = now.add(const Duration(minutes: 15));
+
+        fetchedClasses.sort((a, b) {
+          if (a.startDate == null || b.startDate == null) return 0;
+
+          // Hàm xác định độ ưu tiên (Category)
+          int getPriority(DateTime time) {
+            if (time.isAfter(now) && time.isBefore(soonThreshold))
+              return 0; // Sắp diễn ra (15p tới)
+            if (time.isAfter(now)) return 1; // Tương lai xa hơn
+            return 2; // Đã qua
+          }
+
+          int priorityA = getPriority(a.startDate!);
+          int priorityB = getPriority(b.startDate!);
+
+          // Nếu khác nhóm ưu tiên, sắp xếp theo nhóm (0 < 1 < 2)
+          if (priorityA != priorityB) {
+            return priorityA.compareTo(priorityB);
+          }
+
+          // Nếu cùng nhóm, sắp xếp tăng dần theo thời gian (giờ gần hơn lên trước)
+          return a.startDate!.compareTo(b.startDate!);
+        });
+
+        setState(() {
+          // Chuyển đổi list JSON sang list Object thông qua Model
+          _upcomingClasses = fetchedClasses;
+        });
+      }
+    } catch (e) {
+      debugPrint("Lỗi lấy danh sách lớp: $e");
+    }
   }
 
   Future<void> _checkNotificationPermission() async {
@@ -442,7 +522,10 @@ class _HomeScreenState extends State<HomeScreen>
         _buildSection(
           title: "Lớp học sắp tới",
           actionText: "Xem tất cả",
-          child: _buildEmptyState("Không có lớp học nào", "Đăng ký ngay"),
+          // Kiểm tra nếu danh sách trống thì hiện EmptyState, ngược lại hiện List
+          child: _upcomingClasses.isEmpty
+              ? _buildEmptyState("Không có lớp học nào", "Đăng ký ngay")
+              : _buildClassList(),
         ),
 
         const SizedBox(height: 12),
@@ -609,20 +692,21 @@ class _HomeScreenState extends State<HomeScreen>
         },
         itemBuilder: (context, index) {
           final cardData = _memberCards[index];
-          final String cardId = cardData['id'];
+          // TẠO UNIQUE KEY: Kết hợp vị trí index và ID để đảm bảo không bị trùng lặp
+          final String uniqueKey = "${index}_${cardData['id']}";
 
           return CommonMembershipCard(
             data: cardData,
             // Kiểm tra xem ID của thẻ này có trùng với ID đang active không
-            isExpanded: _activeCardId == cardId,
+            isExpanded: _activeCardId == uniqueKey,
 
             // Logic: Bấm vào thì nếu đang mở -> đóng, đang đóng -> mở thẻ này (và tự đóng thẻ khác)
             onToggle: () {
               setState(() {
-                if (_activeCardId == cardId) {
+                if (_activeCardId == uniqueKey) {
                   _activeCardId = null; // Đóng lại
                 } else {
-                  _activeCardId = cardId; // Mở thẻ này
+                  _activeCardId = uniqueKey; // Mở thẻ này
                 }
               });
             },
@@ -845,6 +929,132 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // Widget hiển thị danh sách cuộn ngang
+  Widget _buildClassList() {
+    return SizedBox(
+      height: 320, // Chiều cao đủ cho card
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _upcomingClasses.length,
+        itemBuilder: (context, index) {
+          final item = _upcomingClasses[index];
+          return _buildClassCard(item);
+        },
+      ),
+    );
+  }
+
+  // Widget card lớp học chi tiết (Thiết kế theo ảnh image_3d8eaa.png)
+  Widget _buildClassCard(ScheduleModel data) {
+    return Container(
+      width: 240,
+      margin: const EdgeInsets.only(right: 16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF333333), // Màu nền tối theo hình
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 1. Hình ảnh lớp học
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: Image.asset(
+              'assets/images/image_class.jpg',
+              height: 140,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                height: 140,
+                color: Colors.grey,
+                child: const Icon(Icons.image, color: Colors.white),
+              ),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 2. Tên lớp học
+                Text(
+                  data.className ??
+                      "N/A", // Sử dụng toán tử chấm thay vì ngoặc vuông,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // 3. Ngày tháng
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.calendar_today_outlined,
+                      color: Colors.grey,
+                      size: 14,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      data.startDate != null
+                          ? DateFormat('dd/MM/yyyy').format(data.startDate!)
+                          : "--",
+                      style: const TextStyle(color: Colors.grey, fontSize: 13),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+
+                // 4. Giờ học
+                Row(
+                  children: [
+                    const Icon(Icons.access_time, color: Colors.grey, size: 14),
+                    const SizedBox(width: 6),
+                    Text(
+                      // Lấy giờ từ startDate và endDate đã được parse trong Model
+                      "${data.startDate != null ? DateFormat('HH:mm').format(data.startDate!) : '--:--'} - "
+                      "${data.endDate != null ? DateFormat('HH:mm').format(data.endDate!) : '--:--'}",
+                      style: const TextStyle(color: Colors.grey, fontSize: 13),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // 5. Nút Check-in
+                SizedBox(
+                  width: double.infinity,
+                  height: 40,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Xử lý quét mã tại đây
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF666666), // Màu xám nút
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      "Quét để Check-in",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

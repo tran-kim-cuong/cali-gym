@@ -11,7 +11,8 @@ class MemberListScreen extends StatefulWidget {
 }
 
 class _MemberListScreenState extends State<MemberListScreen> {
-  String? _activeCardId;
+  // Thay đổi kiểu dữ liệu của _activeCardId từ String sang dynamic để nhận cả Index
+  dynamic _activeCardId;
 
   // --- HÀM XỬ LÝ RIÊNG CỦA MÀN HÌNH NÀY ---
   void _showBigQrModal(BuildContext context, String qrData) {
@@ -101,17 +102,18 @@ class _MemberListScreenState extends State<MemberListScreen> {
         separatorBuilder: (context, index) => const SizedBox(height: 20),
         itemBuilder: (context, index) {
           final cardData = widget.cards[index];
-          final String cardId = cardData['id'];
+          // Sử dụng kết hợp index và id để đảm bảo tính duy nhất tuyệt đối
+          final String uniqueKey = "${index}_${cardData['id']}";
 
           return CommonMembershipCard(
             data: cardData,
             margin: EdgeInsets.zero,
-            isExpanded: _activeCardId == cardId,
+            isExpanded: _activeCardId == uniqueKey,
 
             // Xử lý đóng mở thẻ
             onToggle: () {
               setState(() {
-                _activeCardId = (_activeCardId == cardId) ? null : cardId;
+                _activeCardId = (_activeCardId == uniqueKey) ? null : uniqueKey;
               });
             },
 
