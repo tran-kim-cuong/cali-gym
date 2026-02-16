@@ -7,6 +7,9 @@
     "or": " hoặc ",
     "accept": "Xác nhận"
   },
+  "home": {
+    "hello": "Xin chào"
+  },
   "login": {
     "phone_hint": "Số điện thoại",
     "agree_prefix": "Đồng ý với ",
