@@ -43,3 +43,26 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# --- BỔ SUNG THÊM ---
+
+# 1. Bảo mật thông tin nhạy cảm
+# Chặn tất cả các file .env để không lộ SMS_API_KEY hay CALIFORNIA_URI
+.env*
+!.env.example
+
+# 2. Xử lý triệt để file tự động sinh ra trên macOS & iOS
+# Chặn file gây lỗi LF/CRLF bạn vừa gặp
+macos/Flutter/GeneratedPluginRegistrant.swift
+ios/Flutter/GeneratedPluginRegistrant.swift
+ios/Flutter/GeneratedPluginRegistrant.h
+ios/Flutter/GeneratedPluginRegistrant.m
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# 3. Dọn dẹp các file rác của hệ điều hành và IDE
+.DS_Store
+.vscode/
+.idea/
+*.iml

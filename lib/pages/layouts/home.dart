@@ -5,6 +5,7 @@ import 'package:californiaflutter/helpers/convert_model.dart';
 import 'package:californiaflutter/models/member_model.dart';
 import 'package:californiaflutter/pages/layouts/loyalty.dart';
 import 'package:californiaflutter/pages/layouts/member_card.dart';
+import 'package:californiaflutter/pages/shared/check_in_bottom_sheet.dart';
 import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
@@ -125,8 +126,9 @@ class _HomeScreenState extends State<HomeScreen>
 
           // Hàm xác định độ ưu tiên (Category)
           int getPriority(DateTime time) {
-            if (time.isAfter(now) && time.isBefore(soonThreshold))
+            if (time.isAfter(now) && time.isBefore(soonThreshold)) {
               return 0; // Sắp diễn ra (15p tới)
+            }
             if (time.isAfter(now)) return 1; // Tương lai xa hơn
             return 2; // Đã qua
           }
@@ -1034,6 +1036,8 @@ class _HomeScreenState extends State<HomeScreen>
                   child: ElevatedButton(
                     onPressed: () {
                       // Xử lý quét mã tại đây
+                      // Gọi hàm static để hiển thị Bottom Sheet đã tạo
+                      CheckInBottomSheet.show(context, data);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF666666), // Màu xám nút

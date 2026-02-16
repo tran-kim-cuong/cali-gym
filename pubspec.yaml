@@ -43,6 +43,7 @@ dependencies:
   http: ^1.2.0
   flutter_dotenv: ^5.1.0
   intl: ^0.20.2            # Thêm dòng này vào
+  mobile_scanner: ^7.1.4
 
 dev_dependencies:
   flutter_test:
