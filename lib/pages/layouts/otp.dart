@@ -127,7 +127,7 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
         SessionManager.setLoggedIn(true, response?.data['token']);
 
         // Dùng API để lấy Client Code từ Số điện thoại.
-        SessionManager.sClientId = dotenv.env["MEMBER_ID"]!;
+        SessionManager.sClientId = dotenv.env["CLIENT_ID"]!;
 
         // // Sau khi thành công, chuyển trang:
         Navigator.pushAndRemoveUntil(
