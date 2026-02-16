@@ -3,6 +3,7 @@ import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
 import 'package:californiaflutter/helpers/convert_model.dart';
 import 'package:californiaflutter/models/member_model.dart';
+import 'package:californiaflutter/pages/layouts/class_detail.dart';
 import 'package:californiaflutter/pages/layouts/loyalty.dart';
 import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/shared/check_in_bottom_sheet.dart';
@@ -944,7 +945,20 @@ class _HomeScreenState extends State<HomeScreen>
         itemCount: _upcomingClasses.length,
         itemBuilder: (context, index) {
           final item = _upcomingClasses[index];
-          return _buildClassCard(item);
+          // --- GẮN ĐOẠN CODE ĐIỀU HƯỚNG TẠI ĐÂY ---
+          return GestureDetector(
+            onTap: () {
+              // Điều hướng sang trang chi tiết và truyền dữ liệu lớp học qua
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ClassDetailScreen(schedule: item),
+                ),
+              );
+            },
+            // Card hiển thị vẫn giữ nguyên
+            child: _buildClassCard(item),
+          );
         },
       ),
     );
