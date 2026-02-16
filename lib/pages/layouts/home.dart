@@ -168,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen>
     try {
       final String? phoneNumber = await SessionManager.getPhoneNumber();
       final Map<String, dynamic> requestBody = {
-        "clientcode": dotenv.env["MEMBER_ID"],
+        "clientcode": dotenv.env["CLIENT_ID"],
         "phone_number": phoneNumber,
       };
 
