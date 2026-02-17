@@ -5,6 +5,7 @@ import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:californiaflutter/pages/shared/number_key.dart';
 import 'package:californiaflutter/pages/layouts/otp.dart';
+import 'package:californiaflutter/services/api_service.dart';
 import 'package:dio/dio.dart' as dio_form;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
@@ -36,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen>
     String phoneNumber = _phoneController.text;
 
     // 1. Tạo mã OTP ngẫu nhiên (ví dụ 4 chữ số)
-    String otpCode = (1000 + (DateTime.now().millisecond % 9000)).toString();
+    String otpCode = gen4Digits().toString();
 
     // 1. Chuyển đổi Map thành FormData để giống với --form trong curl
     dio_form.FormData formData = dio_form.FormData.fromMap({
@@ -60,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen>
           // Lưu thông tin vào SessionManager để đối chiếu ở màn hình OTP
           SessionManager.otp = otpCode;
           SessionManager.setPersonalInfo(phoneNumber);
-          // SessionManager.sSdt = phoneNumber;
+          SessionManager.sSdt = phoneNumber;
 
           // Kiểm tra mounted trước khi điều hướng để tránh lỗi async gap
           if (mounted) {

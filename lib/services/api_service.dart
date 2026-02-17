@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:californiaflutter/models/booking_class_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
 import 'package:californiaflutter/models/member_model.dart';
@@ -64,6 +65,24 @@ Future<MemberModel> getMember(
     // print(member.listMembershipCard?[2].membershipType);
     // print(member.listMembershipCard?[3].membershipType);
     return member;
+  } else {
+    throw Exception('Get member failed');
+  }
+}
+
+Future<BookingClassModel> getBookingClass(String token, String clientId) async {
+  final response = await http.post(
+    Uri.parse(
+      'https://booking-stg.cali.vn/api/booking/post/getUserBookedClasses',
+    ),
+    headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+    body: {'clientcode': clientId},
+  );
+
+  if (response.statusCode == 200) {
+    final jsonResponse = jsonDecode(response.body);
+    BookingClassModel model = BookingClassModel.fromJson(jsonResponse);
+    return model;
   } else {
     throw Exception('Get member failed');
   }
