@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:californiaflutter/helpers/size_utils.dart'; // Đảm bảo import đúng đường dẫn
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -23,23 +24,59 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with LoadingWrapper, NotificationMixin {
-  // Controller để lấy số điện thoại sau này rap API
   final TextEditingController _phoneController = TextEditingController();
-  bool _isAgreed = false;
-  bool _isPhoneValid = false; // Biến kiểm tra số điện thoại
-
-  // String _currentLanguage = 'vi';
-
   final FocusNode _focusNode = FocusNode();
+  bool _isAgreed = false;
+  bool _isPhoneValid = false;
 
-  // Hàm xử lý Login (nơi bạn sẽ rap API)
+  @override
+  void initState() {
+    super.initState();
+    _phoneController.addListener(_onPhoneChanged);
+    // Tự động focus khi vào màn hình (tuỳ chọn)
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _focusNode.requestFocus();
+    // });
+  }
+
+  @override
+  void dispose() {
+    _phoneController.removeListener(_onPhoneChanged);
+    _phoneController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _onPhoneChanged() {
+    setState(() {
+      _isPhoneValid = _phoneController.text.length >= 10;
+    });
+    if (_phoneController.text.length == 10 && _isAgreed) {
+      // TỰ ĐỘNG ẨN BÀN PHÍM: Nếu đủ 10 số và đã tích chọn đồng ý
+      _focusNode.unfocus();
+      // Tự động ẩn bàn phím khi đủ 10 số (tuỳ chọn)
+      // _focusNode.unfocus();
+    }
+  }
+
+  bool _canEnableButton() => _isAgreed && _isPhoneValid;
+
+  // --- LOGIC API GIỮ NGUYÊN ---
   Future<void> _handleLogin(String method) async {
     String phoneNumber = _phoneController.text;
+    // Validate cơ bản trước khi gọi API
+    if (phoneNumber.isEmpty || phoneNumber.length < 10) {
+      showTopNotification("Vui lòng nhập số điện thoại hợp lệ", isError: true);
+      return;
+    }
 
-    // 1. Tạo mã OTP ngẫu nhiên (ví dụ 4 chữ số)
+    if (!_isAgreed) {
+      showTopNotification("Vui lòng đồng ý với điều khoản", isError: true);
+      return;
+    }
+
     String otpCode = gen4Digits().toString();
-
-    // 1. Chuyển đổi Map thành FormData để giống với --form trong curl
+    // ... (Phần code API giữ nguyên như cũ của bạn)
     dio_form.FormData formData = dio_form.FormData.fromMap({
       "api_key": dotenv.env["SMS_API_KEY"],
       "message": "${dotenv.env["SMS_MESSAGE"]} $otpCode",
@@ -50,20 +87,16 @@ class _LoginScreenState extends State<LoginScreen>
 
     if (method == 'SMS') {
       try {
-        // 2. Gọi API SMS qua smsClient
         final response = await handleApi(
           context,
           BaseApi().smsClient.post('/api/sms/send', data: formData),
         );
 
-        // 3. Kiểm tra kết quả trả về
         if (response?.statusCode == 200) {
-          // Lưu thông tin vào SessionManager để đối chiếu ở màn hình OTP
           SessionManager.otp = otpCode;
           SessionManager.setPersonalInfo(phoneNumber);
           SessionManager.sSdt = phoneNumber;
 
-          // Kiểm tra mounted trước khi điều hướng để tránh lỗi async gap
           if (mounted) {
             Navigator.push(
               context,
@@ -74,14 +107,14 @@ class _LoginScreenState extends State<LoginScreen>
           }
         }
       } catch (e) {
-        // Lỗi đã được Interceptor trong BaseApi xử lý ẩn Loading
         debugPrint("Lỗi gửi SMS: $e");
-        // Bạn có thể hiển thị SnackBar thông báo lỗi tại đây
+        showTopNotification("Có lỗi xảy ra khi gửi SMS", isError: true);
       }
+    } else if (method == 'Zalo') {
+      showTopNotification("Tính năng đăng nhập qua Zalo đang phát triển");
     }
   }
 
-  // 2. Trong _LoginScreenState, thêm hàm xử lý phím:
   void _onKeyboardTap(String key) {
     String currentText = _phoneController.text;
     if (key == "delete") {
@@ -94,216 +127,229 @@ class _LoginScreenState extends State<LoginScreen>
     } else if (key.isNotEmpty && currentText.length < 10) {
       _phoneController.text = currentText + key;
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // Lắng nghe thay đổi của ô nhập liệu
-    _phoneController.addListener(() {
-      setState(() {
-        // Ví dụ: số điện thoại hợp lệ khi có từ 10 chữ số trở lên
-        _isPhoneValid = _phoneController.text.length >= 10;
-      });
-    });
-
-    _phoneController.addListener(_onPhoneChanged);
-
-    // 2. THÊM ĐOẠN NÀY: Tự động Focus khi màn hình khởi động xong
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();
-    });
-  }
-
-  @override
-  void dispose() {
-    _phoneController.removeListener(_onPhoneChanged);
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  // Hàm xử lý khi nhập liệu thay đổi
-  void _onPhoneChanged() {
-    setState(() {
-      _isPhoneValid = _phoneController.text.length >= 10;
-    });
-
-    // LOGIC ẨN BÀN PHÍM TỰ ĐỘNG
-    if (_phoneController.text.length == 10) {
-      _focusNode.unfocus(); // Ẩn bàn phím hệ thống (Mobile)
-      // Đối với bàn phím Custom trên Web, ta có thể dùng biến bool để ẩn nếu cần
-    }
-  }
-
-  // Điều kiện để kích hoạt nút bấm
-  bool _canEnableButton() {
-    return _isAgreed && _isPhoneValid;
+    // Cần kích hoạt listener thủ công khi thay đổi text bằng code
+    _onPhoneChanged();
   }
 
   @override
   Widget build(BuildContext context) {
+    // 1. Lấy kích thước tổng thể màn hình (không thay đổi khi có bàn phím)
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double viewPaddingTop = MediaQuery.of(context).padding.top;
+    final double viewPaddingBottom = MediaQuery.of(context).padding.bottom;
+
+    // Tính toán 50% màn hình dựa trên kích thước thật của máy
+    final double halfHeight =
+        (screenHeight - viewPaddingTop - viewPaddingBottom) / 2;
+
     return Scaffold(
-      // Sử dụng resizeToAvoidBottomInset để khi hiện bàn phím không bị lỗi layout
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            // Màu sắc dựa trên hình ảnh bạn gửi
-            colors: [Color(0xFF4A0D0D), Color(0xFF1A1D22)],
+      backgroundColor: const Color(0xFF151515),
+      // Giữ nguyên thuộc tính này để scaffold biết tự tránh bàn phím
+      resizeToAvoidBottomInset: true,
+      body: Stack(
+        children: [
+          // 2. FIX LỖI BÀN PHÍM: Bọc toàn bộ nội dung chính trong SingleChildScrollView
+          SingleChildScrollView(
+            // Thêm physics để cuộn mượt mà hơn khi bàn phím xuất hiện
+            physics: const ClampingScrollPhysics(),
+            child: Column(
+              children: [
+                // 3. PHẦN TRÊN: HÌNH ẢNH + LANGUAGE
+                // Thay Expanded bằng SizedBox với chiều cao cố định (50% màn hình)
+                SizedBox(
+                  height: halfHeight,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Image.asset(
+                          'assets/images/background_login_v3_layer.png', // Đảm bảo đường dẫn ảnh đúng
+                          fit: BoxFit.cover,
+                          alignment: const Alignment(0.3, 0),
+                        ),
+                      ),
+                      // Lớp phủ gradient
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.black.withValues(alpha: 0.1),
+                                const Color(0xFF151515),
+                              ],
+                              stops: const [
+                                0.6,
+                                1.0,
+                              ], // Điều chỉnh điểm chuyển màu
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Language Selector
+                      SafeArea(
+                        child: Padding(
+                          // Sử dụng helper context.resW/H cho padding
+                          padding: EdgeInsets.only(
+                            right: context.resW(20),
+                            top: context.resH(10),
+                          ),
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: _buildLanguageSelector(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // 4. PHẦN DƯỚI: FORM ĐĂNG NHẬP
+                // Thay Expanded bằng Container với chiều cao cố định (50% còn lại)
+                Container(
+                  constraints: BoxConstraints(minHeight: halfHeight),
+                  width: double.infinity,
+                  color: const Color(0xFF151515),
+                  padding: EdgeInsets.symmetric(horizontal: context.resW(24)),
+                  // 5. QUAN TRỌNG: Bỏ SingleChildScrollView bên trong này đi
+                  // vì đã có cái bao bọc bên ngoài rồi.
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    // Dùng MainAxisAlignment.center nếu muốn nội dung căn giữa khi không có phím
+                    // Hoặc start và thêm padding top nếu muốn nó nằm cố định phía trên.
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'login.phone_input_title'.tr(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          // Sử dụng context.resClamp cho font chữ
+                          fontSize: context.resClamp(18, 16, 22),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: context.resH(20)),
+
+                      // TextField
+                      _buildPhoneTextField(),
+
+                      SizedBox(height: context.resH(16)),
+
+                      // Điều khoản
+                      _buildAgreementText(),
+
+                      SizedBox(height: context.resH(30)),
+
+                      // Nút bấm
+                      _buildActionButtons(),
+
+                      // Bàn phím số ảo (chỉ hiện trên Web)
+                      if (kIsWeb) ...[
+                        SizedBox(height: context.resH(20)),
+                        NumericKeyboard(onKeyTap: _onKeyboardTap),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
+          buildNotificationWidget(),
+        ],
+      ),
+    );
+  }
+
+  // ... (Các widget con: _buildLanguageSelector, _buildPhoneTextField,
+  //      _buildAgreementText, _buildActionButtons, _customButton GIỮ NGUYÊN)
+  Widget _buildLanguageSelector() {
+    final String currentCode = context.locale.languageCode;
+    return GestureDetector(
+      onTap: () => LanguageBottomSheet.show(context: context),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.black26,
+          borderRadius: BorderRadius.circular(20),
         ),
-        child: Stack(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            SafeArea(
-              child: Column(
-                children: [
-                  _buildHeader(), // Phần Tiếng Việt sát trên cùng
-                  const SizedBox(
-                    height: 60,
-                  ), // Tạo khoảng cách từ đỉnh xuống Logo
-
-                  _buildMainContent(), // Logo + Input + Agreement
-
-                  const Spacer(), // Đẩy tất cả phần dưới xuống đáy màn hình
-
-                  _buildActionButtons(), // 2 Nút xác thực nằm ở dưới cùng
-                  const SizedBox(height: 20), // Padding đáy theo hình thiết kế
-
-                  if (kIsWeb) NumericKeyboard(onKeyTap: _onKeyboardTap),
-                ],
+            SizedBox(
+              width: 20,
+              height: 20,
+              // Đảm bảo bạn đã có file svg này
+              child: SvgPicture.asset(
+                currentCode == 'vi'
+                    ? 'assets/images/vietnam.svg'
+                    : 'assets/images/kingdom.svg',
+                // Fallback icon nếu chưa có svg (xoá dòng này khi đã có icon)
+                // placeholderBuilder: (context) =>
+                //     const Icon(Icons.flag, color: Colors.white, size: 20),
               ),
             ),
-
-            // CHÈN WIDGET THÔNG BÁO VÀO CUỐI STACK
-            buildNotificationWidget(),
+            const SizedBox(width: 8),
+            Text(
+              currentCode == 'vi' ? 'Tiếng Việt' : 'English',
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
           ],
         ),
       ),
     );
   }
 
-  // 1. Phần Header: Ngôn ngữ và Logo
-  Widget _buildHeader() {
-    // 2. LẤY MÃ NGÔN NGỮ HIỆN TẠI ĐỂ HIỂN THỊ CỜ
-    // context.locale là biến toàn cục của thư viện
-    final String currentCode = context.locale.languageCode;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          GestureDetector(
-            // GỌI HÀM TỪ FILE RIÊNG TẠI ĐÂY
-            onTap: () {
-              LanguageBottomSheet.show(context: context);
-            },
-            child: Container(
-              color: Colors.transparent,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: SvgPicture.asset(
-                      currentCode == 'vi'
-                          ? 'assets/images/vietnam.svg'
-                          : 'assets/images/kingdom.svg',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    currentCode == 'vi'
-                        ? 'common.lang_vi'.tr()
-                        : 'common.lang_en'.tr(),
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+  Widget _buildPhoneTextField() {
+    return TextField(
+      controller: _phoneController,
+      focusNode: _focusNode,
+      keyboardType: TextInputType.phone,
+      maxLength: 10,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        counterText: "",
+        hintText: 'login.phone_hint'.tr(),
+        hintStyle: const TextStyle(color: Color(0xFF6B6B6B)),
+        prefixIcon: const Icon(Icons.smartphone, color: Color(0xFFC7C7C7)),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFF333333)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFFDA212D)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        filled: true,
+        fillColor: Colors.white.withValues(alpha: 0.05),
+        contentPadding: EdgeInsets.symmetric(vertical: context.resH(16)),
       ),
     );
   }
 
-  // Cập nhật lại MainContent để căn chỉnh sát hơn
-  Widget _buildMainContent() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        children: [
-          Image.asset(
-            "assets/images/logo.png",
-            width: 280, // Tăng chiều rộng để giống hình mẫu
-            fit: BoxFit.fill,
-          ),
-          const SizedBox(height: 48), // Khoảng cách từ Logo đến ô nhập
-          // TextField Số điện thoại
-          TextField(
-            controller: _phoneController,
-            // THÊM DÒNG NÀY ĐỂ LIÊN KẾT FOCUS NODE
-            focusNode: _focusNode,
-            keyboardType: TextInputType.phone,
-            readOnly: kIsWeb,
-            // 1. Set độ dài tối đa là 10
-            maxLength: 10,
-            // 2. Chỉ cho phép nhập số (0-9)
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              // 3. Ẩn dòng đếm số (ví dụ 0/10) ở dưới góc phải nếu bạn muốn giao diện sạch hơn
-              counterText: "",
-              hintText: 'login.phone_hint'.tr(),
-              hintStyle: const TextStyle(color: Color(0xFFC7C7C7)),
-              prefixIcon: const Padding(
-                padding: EdgeInsets.all(12),
-                child: Icon(
-                  Icons.smartphone,
-                  color: Color(0xFFC7C7C7),
-                ), // Icon giống hình hơn
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Color(0xFF6B6B6B)),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.white),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              filled: true,
-              fillColor: Colors.black.withValues(alpha: 0.3),
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          _buildAgreementText(),
-        ],
-      ),
-    );
-  }
-
-  // 3. Phần RichText cho điều khoản
   Widget _buildAgreementText() {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Checkbox(
-          value: _isAgreed,
-          onChanged: (val) => setState(() => _isAgreed = val!),
-          side: const BorderSide(color: Color(0xFFF6CACC)),
+        SizedBox(
+          width: 24,
+          height: 24,
+          child: Checkbox(
+            value: _isAgreed,
+            activeColor: const Color(0xFFDA212D),
+            onChanged: (val) => setState(() => _isAgreed = val!),
+            side: const BorderSide(color: Color(0xFF6B6B6B)),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
         ),
+        const SizedBox(width: 12),
         Expanded(
           child: Text.rich(
             TextSpan(
-              style: const TextStyle(
-                color: Color(0xFFC7C7C7),
-                fontSize: 12,
-                height: 1.5,
+              style: TextStyle(
+                color: const Color(0xFFC7C7C7),
+                fontSize: context.resClamp(12, 11, 14),
+                height: 1.4,
               ),
               children: [
                 TextSpan(text: 'login.agree_prefix'.tr()),
@@ -331,56 +377,43 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  // 4. Các nút bấm xác thực
   Widget _buildActionButtons() {
     bool isEnabled = _canEnableButton();
-
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          _customButton(
-            text: 'login.verify_sms'.tr(),
-            // Nếu enable thì dùng màu xám sáng, disable dùng màu tối hơn
-            color: isEnabled
-                ? const Color(0xFFDA212D)
-                : const Color(0xFF454545),
-            textColor: isEnabled ? Colors.white : Colors.white38,
-            onPressed: isEnabled
-                ? () => _handleLogin('SMS')
-                : null, // null sẽ disable button
-          ),
-          const SizedBox(height: 16),
-          _customButton(
-            text: 'login.verify_zalo'.tr(),
-            color: isEnabled
-                ? const Color(0xFF3E3E3E)
-                : const Color(0xFF2A2A2A),
-            textColor: isEnabled
-                ? const Color(0xFFE04A50)
-                : const Color(0xFF6B6B6B),
-            onPressed: isEnabled ? () => _handleLogin('Zalo') : null,
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        _customButton(
+          text: 'login.verify_sms'.tr(),
+          color: isEnabled ? const Color(0xFFDA212D) : const Color(0xFF454545),
+          textColor: isEnabled ? Colors.white : Colors.white38,
+          onPressed: isEnabled ? () => _handleLogin('SMS') : null,
+        ),
+        SizedBox(height: context.resH(16)),
+        _customButton(
+          text: 'login.verify_zalo'.tr(),
+          color: const Color(0xFF2A2A2A),
+          textColor: isEnabled
+              ? const Color(0xFFE04A50)
+              : const Color(0xFF6B6B6B),
+          onPressed: isEnabled ? () => _handleLogin('Zalo') : null,
+        ),
+      ],
     );
   }
 
-  // Widget dùng chung cho Button
-  // Cập nhật Widget Button để nhận giá trị null cho onPressed
   Widget _customButton({
     required String text,
     required Color color,
     required Color textColor,
-    required VoidCallback? onPressed, // Cho phép nhận null
+    required VoidCallback? onPressed,
   }) {
     return SizedBox(
       width: double.infinity,
-      height: 48,
+      // Scale chiều cao nút bấm
+      height: context.resH(48).clamp(44.0, 55.0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
-          disabledBackgroundColor: color, // Giữ nguyên màu khi bị disable
+          disabledBackgroundColor: color,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           elevation: 0,
         ),
@@ -390,7 +423,7 @@ class _LoginScreenState extends State<LoginScreen>
           style: TextStyle(
             color: textColor,
             fontWeight: FontWeight.w600,
-            fontSize: 16,
+            fontSize: context.resClamp(16, 14, 18),
           ),
         ),
       ),

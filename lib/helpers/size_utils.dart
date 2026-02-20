@@ -1,16 +1,26 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 extension ResponsiveSize on BuildContext {
-  // Lấy chiều rộng màn hình hiện tại
   double get screenWidth => MediaQuery.of(this).size.width;
+  double get screenHeight => MediaQuery.of(this).size.height;
 
-  // Hàm scale giá trị theo chiều rộng thiết kế chuẩn (375)
-  // Cách dùng: context.res(14)
-  double res(double value) => (value * screenWidth / 375);
+  // 1. Scale dựa trên chiều rộng (Dùng cho padding ngang, width)
+  double resW(double value) => (value * screenWidth / 375);
 
-  // Hàm scale kèm theo giới hạn (clamp) để an toàn hơn
-  // Cách dùng: context.resClamp(14, 12, 18)
-  double resClamp(double value, double min, double max) {
-    return (value * screenWidth / 375).clamp(min, max);
+  // 2. Scale dựa trên chiều cao (Dùng cho SizedBox, padding dọc)
+  double resH(double value) => (value * screenHeight / 812);
+
+  // 3. Scale an toàn nhất (Dùng cho Font chữ)
+  // Lấy tỉ lệ scale nhỏ hơn để tránh tràn khi xoay ngang màn hình
+  double res(double value) {
+    double scaleW = screenWidth / 375;
+    double scaleH = screenHeight / 812;
+    return value * min(scaleW, scaleH);
+  }
+
+  // 4. Hàm Clamp an toàn
+  double resClamp(double value, double minVal, double maxVal) {
+    return res(value).clamp(minVal, maxVal);
   }
 }
