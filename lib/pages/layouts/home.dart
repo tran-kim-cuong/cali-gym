@@ -6,6 +6,7 @@ import 'package:californiaflutter/models/member_model.dart';
 import 'package:californiaflutter/pages/layouts/class_detail.dart';
 import 'package:californiaflutter/pages/layouts/loyalty.dart';
 import 'package:californiaflutter/pages/layouts/member_card.dart';
+import 'package:californiaflutter/pages/layouts/other_benefits.dart';
 import 'package:californiaflutter/pages/shared/check_in_bottom_sheet.dart';
 import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
@@ -738,9 +739,19 @@ class _HomeScreenState extends State<HomeScreen>
           ),
 
           // Mục 2: Quyền lợi
-          _actionItem(
-            'assets/images/vuesax/gift.svg', // Thay bằng file SVG hộp quà
-            "Quyền lợi khác",
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const OtherBenefitsScreen(),
+                ),
+              );
+            },
+            child: _actionItem(
+              'assets/images/vuesax/gift.svg',
+              "Quyền lợi khác",
+            ),
           ),
 
           // Mục 3: Tập cùng PT
