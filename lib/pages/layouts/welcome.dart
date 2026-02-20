@@ -1,4 +1,5 @@
 import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/pages/layouts/login.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -104,7 +105,15 @@ class WelcomeScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        // CHUYỂN TRANG TẠI ĐÂY
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
+                            ),
+                          );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFDA2128),
                         foregroundColor: Colors.white,
