@@ -1,14 +1,16 @@
+import 'dart:ui';
+
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
-import 'package:californiaflutter/pages/shared/number_key.dart';
+// import 'package:californiaflutter/pages/shared/number_key.dart';
 import 'package:californiaflutter/pages/layouts/otp.dart';
 import 'package:californiaflutter/services/api_service.dart';
 import 'package:dio/dio.dart' as dio_form;
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -115,139 +117,140 @@ class _LoginScreenState extends State<LoginScreen>
     }
   }
 
-  void _onKeyboardTap(String key) {
-    String currentText = _phoneController.text;
-    if (key == "delete") {
-      if (currentText.isNotEmpty) {
-        _phoneController.text = currentText.substring(
-          0,
-          currentText.length - 1,
-        );
-      }
-    } else if (key.isNotEmpty && currentText.length < 10) {
-      _phoneController.text = currentText + key;
-    }
-    // Cần kích hoạt listener thủ công khi thay đổi text bằng code
-    _onPhoneChanged();
-  }
+  // void _onKeyboardTap(String key) {
+  //   String currentText = _phoneController.text;
+  //   if (key == "delete") {
+  //     if (currentText.isNotEmpty) {
+  //       _phoneController.text = currentText.substring(
+  //         0,
+  //         currentText.length - 1,
+  //       );
+  //     }
+  //   } else if (key.isNotEmpty && currentText.length < 10) {
+  //     _phoneController.text = currentText + key;
+  //   }
+  //   // Cần kích hoạt listener thủ công khi thay đổi text bằng code
+  //   _onPhoneChanged();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    // 1. Lấy kích thước tổng thể màn hình (không thay đổi khi có bàn phím)
     final double screenHeight = MediaQuery.of(context).size.height;
     final double viewPaddingTop = MediaQuery.of(context).padding.top;
     final double viewPaddingBottom = MediaQuery.of(context).padding.bottom;
+    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final bool isKeyboardOpen = keyboardHeight > 0;
 
-    // Tính toán 50% màn hình dựa trên kích thước thật của máy
-    final double halfHeight =
-        (screenHeight - viewPaddingTop - viewPaddingBottom) / 2;
+    // 1. ĐIỀU CHỈNH TỶ LỆ 50-50 CHUẨN
+    final double availableHeight =
+        screenHeight - viewPaddingTop - viewPaddingBottom;
+    final double halfHeight = availableHeight / 2;
 
     return Scaffold(
       backgroundColor: const Color(0xFF151515),
-      // Giữ nguyên thuộc tính này để scaffold biết tự tránh bàn phím
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false, // Tự xử lý đẩy nội dung
       body: Stack(
         children: [
-          // 2. FIX LỖI BÀN PHÍM: Bọc toàn bộ nội dung chính trong SingleChildScrollView
+          // LỚP 1: BACKGROUND CỐ ĐỊNH (Nằm trọn trong 50% phía trên)
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: halfHeight + viewPaddingTop,
+            child: Image.asset(
+              'assets/images/background_login_v3_layer.png',
+              fit: BoxFit
+                  .cover, // Giữ hình ảnh lấp đầy khung hình (Contain effect)
+              alignment: const Alignment(0.3, -0.2),
+            ),
+          ),
+
+          // LỚP 2: LÀM MỜ (Chỉ mờ vùng khung ảnh)
+          if (isKeyboardOpen)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: halfHeight + viewPaddingTop,
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                child: Container(color: Colors.black.withValues(alpha: 0.3)),
+              ),
+            ),
+
+          // LỚP 3: NỘI DUNG CUỘN
           SingleChildScrollView(
-            // Thêm physics để cuộn mượt mà hơn khi bàn phím xuất hiện
-            physics: const ClampingScrollPhysics(),
+            physics: isKeyboardOpen
+                ? const ClampingScrollPhysics()
+                : const NeverScrollableScrollPhysics(),
             child: Column(
               children: [
-                // 3. PHẦN TRÊN: HÌNH ẢNH + LANGUAGE
-                // Thay Expanded bằng SizedBox với chiều cao cố định (50% màn hình)
-                SizedBox(
-                  height: halfHeight,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: Image.asset(
-                          'assets/images/background_login_v3_layer.png', // Đảm bảo đường dẫn ảnh đúng
-                          fit: BoxFit.cover,
-                          alignment: const Alignment(0.3, 0),
+                // KHOẢNG TRỐNG TRÊN (Cân đối 50%)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  // Khi có phím, co lại để đẩy Form lên
+                  height: isKeyboardOpen
+                      ? (halfHeight + viewPaddingTop) * 0.3
+                      : halfHeight + viewPaddingTop,
+                  width: double.infinity,
+                  color: Colors.transparent,
+                  child: SafeArea(
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          right: context.resW(20),
+                          top: context.resH(10),
                         ),
+                        child: _buildLanguageSelector(),
                       ),
-                      // Lớp phủ gradient
-                      Positioned.fill(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.black.withValues(alpha: 0.1),
-                                const Color(0xFF151515),
-                              ],
-                              stops: const [
-                                0.6,
-                                1.0,
-                              ], // Điều chỉnh điểm chuyển màu
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Language Selector
-                      SafeArea(
-                        child: Padding(
-                          // Sử dụng helper context.resW/H cho padding
-                          padding: EdgeInsets.only(
-                            right: context.resW(20),
-                            top: context.resH(10),
-                          ),
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            child: _buildLanguageSelector(),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
 
-                // 4. PHẦN DƯỚI: FORM ĐĂNG NHẬP
-                // Thay Expanded bằng Container với chiều cao cố định (50% còn lại)
-                Container(
-                  constraints: BoxConstraints(minHeight: halfHeight),
+                // VÙNG FORM (Chiếm 50% còn lại)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  constraints: BoxConstraints(
+                    // Đảm bảo Form luôn chiếm ít nhất 50% màn hình khi không có phím
+                    minHeight: isKeyboardOpen
+                        ? screenHeight * 0.85
+                        : halfHeight + viewPaddingBottom,
+                  ),
                   width: double.infinity,
-                  color: const Color(0xFF151515),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF151515),
+                    borderRadius: isKeyboardOpen
+                        ? const BorderRadius.vertical(top: Radius.circular(24))
+                        : BorderRadius.zero,
+                  ),
                   padding: EdgeInsets.symmetric(horizontal: context.resW(24)),
-                  // 5. QUAN TRỌNG: Bỏ SingleChildScrollView bên trong này đi
-                  // vì đã có cái bao bọc bên ngoài rồi.
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    // Dùng MainAxisAlignment.center nếu muốn nội dung căn giữa khi không có phím
-                    // Hoặc start và thêm padding top nếu muốn nó nằm cố định phía trên.
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      SizedBox(height: context.resH(24)),
                       Text(
                         'login.phone_input_title'.tr(),
                         style: TextStyle(
                           color: Colors.white,
-                          // Sử dụng context.resClamp cho font chữ
                           fontSize: context.resClamp(18, 16, 22),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       SizedBox(height: context.resH(20)),
-
-                      // TextField
                       _buildPhoneTextField(),
-
                       SizedBox(height: context.resH(16)),
-
-                      // Điều khoản
                       _buildAgreementText(),
-
                       SizedBox(height: context.resH(30)),
-
-                      // Nút bấm
                       _buildActionButtons(),
 
-                      // Bàn phím số ảo (chỉ hiện trên Web)
-                      if (kIsWeb) ...[
-                        SizedBox(height: context.resH(20)),
-                        NumericKeyboard(onKeyTap: _onKeyboardTap),
-                      ],
+                      // Khoảng cách an toàn linh hoạt cho bàn phím
+                      SizedBox(
+                        height: isKeyboardOpen
+                            ? keyboardHeight + 20
+                            : context.resH(30),
+                      ),
                     ],
                   ),
                 ),
@@ -337,7 +340,13 @@ class _LoginScreenState extends State<LoginScreen>
           child: Checkbox(
             value: _isAgreed,
             activeColor: const Color(0xFFDA212D),
-            onChanged: (val) => setState(() => _isAgreed = val!),
+            onChanged: (val) {
+              setState(() => _isAgreed = val!);
+              // Nếu đã nhập đủ số và vừa tích chọn -> Ẩn phím ngay
+              if (_isPhoneValid && _isAgreed) {
+                _focusNode.unfocus();
+              }
+            },
             side: const BorderSide(color: Color(0xFF6B6B6B)),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
