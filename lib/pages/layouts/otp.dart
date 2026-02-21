@@ -1,17 +1,19 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/pages/layouts/home.dart';
-import 'package:californiaflutter/pages/shared/number_key.dart';
+import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:flutter_svg/svg.dart';
 
 class OtpScreen extends StatefulWidget {
-  final String phoneNumber; // Nhận số điện thoại từ màn hình Login
+  final String phoneNumber;
 
   const OtpScreen({super.key, required this.phoneNumber});
 
@@ -20,39 +22,36 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
-  final List<String> _otpCode = ["", "", "", ""]; // Lưu trữ 4 số OTP
-  int _counter = 119; // 01:59s = 119 giây
+  final List<String> _otpCode = ["", "", "", ""];
+  int _counter = 119;
   Timer? _timer;
 
-  // --- CẬP NHẬT 1: CÁC BIẾN QUẢN LÝ THÔNG BÁO ---
+  // Quản lý thông báo
   Timer? _notificationTimer;
   bool _showNotification = false;
-  String _notificationMessage = ""; // Nội dung thông báo
-  bool _isErrorNotification = false; // Trạng thái lỗi (True = Đỏ, False = Xanh)
+  String _notificationMessage = "";
+  bool _isErrorNotification = false;
 
-  // Controller dùng cho bàn phím hệ thống trên Mobile
+  // Controller ẩn để quản lý nhập liệu tập trung
   final TextEditingController _invisibleController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-
-    // Nếu không phải web, tự động mở bàn phím hệ thống
-    if (!kIsWeb) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _focusNode.requestFocus();
-      });
-    }
-
-    _invisibleController.addListener(() {
-      _updateOtpFromController();
+    // Tự động mở bàn phím khi vào màn hình (trừ Web)
+    // if (!kIsWeb) {
+    //   Future.delayed(const Duration(milliseconds: 300), () {
+    //     if (mounted) _focusNode.requestFocus();
+    //   });
+    // }
+    _invisibleController.addListener(_updateOtpFromController);
+    _focusNode.addListener(() {
+      if (mounted) setState(() {});
     });
-
     _startTimer();
   }
 
-  // Cập nhật mảng _otpCode khi nhập từ bàn phím thật
   void _updateOtpFromController() {
     String text = _invisibleController.text;
     setState(() {
@@ -61,15 +60,15 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
       }
     });
 
-    // YÊU CẦU 3: NHẬP ĐỦ OTP THÌ ẨN BÀN PHÍM
+    // TỰ ĐỘNG ẨN BÀN PHÍM KHI NHẬP ĐỦ 4 SỐ
     if (text.length == 4) {
-      _focusNode.unfocus(); // Đóng bàn phím hệ thống
-      // Tùy chọn: Gọi luôn hàm xác thực nếu muốn
-      // _verifyOtp();
+      _focusNode.unfocus(); // Trả giao diện về vị trí cũ (50/50)
     }
   }
 
+  // --- GIỮ NGUYÊN LOGIC TIMER & API ---
   void _startTimer() {
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_counter > 0) {
         setState(() => _counter--);
@@ -79,124 +78,45 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
     });
   }
 
-  // --- CẬP NHẬT 2: HÀM HIỂN THỊ THÔNG BÁO CHUNG ---
   void _showTopNotification(String message, {bool isError = false}) {
     setState(() {
       _notificationMessage = message;
       _isErrorNotification = isError;
       _showNotification = true;
     });
-
     _notificationTimer?.cancel();
     _notificationTimer = Timer(const Duration(seconds: 3), () {
-      if (mounted) {
-        setState(() {
-          _showNotification = false;
-        });
-      }
+      if (mounted) setState(() => _showNotification = false);
     });
   }
 
-  String _formatTime(int seconds) {
-    int mins = seconds ~/ 60;
-    int secs = seconds % 60;
-    return "${mins.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}s";
-  }
-
-  // Hàm xử lý khi nhấn nút Xác nhận (Rap API ở đây)
   Future<void> _verifyOtp() async {
     String code = _otpCode.join();
-    // Giả lập logic: Nếu mã là "1234" thì thành công, ngược lại thì báo lỗi
     if (code == SessionManager.otp) {
-      // Thành công -> Chuyển màn hình hoặc báo thành công
-
-      final response = await handleApi(
-        context,
-        BaseApi().client.post(
+      try {
+        final response = await BaseApi().client.post(
           '/api/login',
           data: {
             "email": dotenv.env["CALIFORNIA_USER_NAME"],
             "password": dotenv.env["CALIFORNIA_PASSWORD"],
           },
-        ),
-      );
-
-      if (!mounted) return;
-
-      if (response?.statusCode == 200) {
-        SessionManager.setLoggedIn(true, response?.data['token']);
-
-        // Dùng API để lấy Client Code từ Số điện thoại.
-        SessionManager.sClientId = dotenv.env["CLIENT_ID"]!;
-
-        // // Sau khi thành công, chuyển trang:
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-          (route) => false, // Xóa hết các route cũ
         );
+        if (response.statusCode == 200) {
+          SessionManager.setLoggedIn(true, response.data['token']);
+          SessionManager.sClientId = dotenv.env["CLIENT_ID"]!;
+          if (mounted) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              (route) => false,
+            );
+          }
+        }
+      } catch (e) {
+        _showTopNotification("otp.verify_error".tr(), isError: true);
       }
-      // String token = await getToken();
-      // MemberModel member = await getMember(
-      //   token,
-      //   SessionManager.sClientId,
-      //   SessionManager.sSdt,
-      // );
-      // SessionManager.member = member;
-      // // List<Map<String, dynamic>> memberCards = buildMemberCards(member);
-      // // print(memberCards);
-      // SessionManager.sTenKh = member.firstName!;
-
-      // // SessionManager.sTenKh = "Tên Hội Viên";
-      // _showTopNotification("otp.verify_success".tr(), isError: false);
-
-      // // Sau khi thành công, chuyển trang:
-      // Navigator.pushAndRemoveUntil(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => const HomeScreen()),
-      //   (route) => false, // Xóa hết các route cũ
-      // );
     } else {
-      // Thất bại -> Hiện thông báo lỗi như hình
       _showTopNotification("otp.verify_error".tr(), isError: true);
-    }
-  }
-
-  // Sự kiện nút Zalo
-  void _onZaloPressed() {
-    _showTopNotification("otp.zalo_sent".tr(), isError: false);
-  }
-
-  // 2. Trong _OtpScreenState, thêm hàm xử lý:
-  void _onKeyboardTap(String key) {
-    if (key == "delete") {
-      // Xóa từ phải qua trái
-      for (int i = 3; i >= 0; i--) {
-        if (_otpCode[i] != "") {
-          setState(() => _otpCode[i] = "");
-          break;
-        }
-      }
-    } else if (key.isNotEmpty) {
-      // Điền vào ô trống đầu tiên
-      for (int i = 0; i < 4; i++) {
-        if (_otpCode[i] == "") {
-          setState(() {
-            _otpCode[i] = key;
-
-            // YÊU CẦU 3 (CHO WEB): ẨN BÀN PHÍM CUSTOM NẾU CẦN
-            // Ở đây vì là bàn phím custom nên ta có thể để nguyên hoặc ẩn widget đi
-            // Nếu muốn ẩn widget NumericKeyboard, bạn cần thêm biến bool showKeyboard vào state
-          });
-          break;
-        }
-      }
-
-      // Kiểm tra lại sau khi điền xong
-      if (!_otpCode.contains("")) {
-        // Đã nhập đủ 4 số
-        _focusNode.unfocus();
-      }
     }
   }
 
@@ -211,81 +131,210 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
 
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final bool isKeyboardOpen = keyboardHeight > 0;
+
+    final double topPadding = MediaQuery.of(context).padding.top;
+    final double bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    // 1. CHIA TỈ LỆ 50-50 CHUẨN
+    // Tính toán chiều cao khả dụng sau khi trừ đi các khoảng padding hệ thống
+    final double availableHeight = screenHeight - topPadding - bottomPadding;
+    final double halfHeight = availableHeight / 2;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1D22),
-      // Thêm dòng này để UI không bị đẩy lên quá gắt khi có bàn phím
-      resizeToAvoidBottomInset: true,
-      body: Container(
-        width: double.infinity, // Thêm dòng này
-        height: double.infinity, // Thêm dòng này
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF4A0D0D), Color(0xFF1A1D22)],
+      backgroundColor: const Color(0xFF151515),
+      resizeToAvoidBottomInset:
+          false, // Tự xử lý đẩy nội dung để hiệu ứng mượt hơn
+      body: Stack(
+        children: [
+          // LỚP 1: BACKGROUND CỐ ĐỊNH (Nằm trọn trong 50% phía trên)
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: halfHeight + topPadding,
+            child: Image.asset(
+              'assets/images/background_login_v3_layer.png',
+              // Sử dụng cover kết hợp alignment để "contain" chủ thể vào khung hình
+              fit: BoxFit.cover,
+              alignment: const Alignment(0.3, -0.2),
+            ),
           ),
-        ),
-        child: Stack(
-          children: [
-            SafeArea(
-              child: SingleChildScrollView(
-                // Thêm dòng này để nội dung luôn có thể kéo hoặc chiếm full màn hình
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Stack(
-                  // Dùng Stack để giấu TextField ẩn
-                  children: [
-                    // TextField ẩn để hứng sự kiện từ bàn phím hệ thống (Mobile)
-                    if (!kIsWeb)
-                      SizedBox(
-                        width: 0,
-                        height: 0,
-                        child: TextField(
-                          controller: _invisibleController,
-                          focusNode: _focusNode,
-                          keyboardType: TextInputType.number,
-                          maxLength: 4,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          autofocus: true,
-                        ),
-                      ),
 
-                    Column(
-                      children: [
-                        _buildHeader(),
-                        const SizedBox(height: 40),
-                        _buildTitleSection(),
-                        const SizedBox(height: 32),
-
-                        // Khi click vào vùng này trên mobile sẽ mở lại bàn phím
-                        GestureDetector(
-                          onTap: () => _focusNode.requestFocus(),
-                          child: _buildOtpInputs(),
-                        ),
-                        const SizedBox(height: 20), // Thêm khoảng cách
-                        _buildTimerText(),
-                        // 2. THAY Spacer() THÀNH SizedBox ĐỂ TRÁNH LỖI TRONG SCROLLVIEW
-                        const SizedBox(height: 60),
-                        _buildActionButtons(),
-
-                        // CHỈ HIỆN BÀN PHÍM TÙY CHỈNH TRÊN WEB
-                        if (kIsWeb) NumericKeyboard(onKeyTap: _onKeyboardTap),
-                      ],
-                    ),
-                  ],
-                ),
+          // LỚP 2: LÀM MỜ NỀN KHI NHẬP OTP
+          if (isKeyboardOpen)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: halfHeight + topPadding,
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                child: Container(color: Colors.black.withValues(alpha: 0.3)),
               ),
             ),
 
-            // --- CẬP NHẬT 4: ANIMATED NOTIFICATION ---
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              top: _showNotification ? 60 : -150,
-              left: 20,
-              right: 20,
-              child: _buildTopNotification(),
+          // LỚP 3: NỘI DUNG CUỘN
+          SingleChildScrollView(
+            physics:
+                const ClampingScrollPhysics(), // Luôn cho phép cuộn nhẹ nếu nội dung dài hơn 50%
+            child: Column(
+              children: [
+                // KHOẢNG TRỐNG TRÊN (Chứa nút Back và Ngôn ngữ)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  // Khi có phím, co lại để đẩy Form lên, lộ 30% ảnh mờ phía sau
+                  height: isKeyboardOpen
+                      ? (halfHeight + topPadding) * 0.3
+                      : halfHeight + topPadding,
+                  width: double.infinity,
+                  color: Colors.transparent,
+                  child: SafeArea(
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              right: context.resW(20),
+                              top: context.resH(10),
+                            ),
+                            child: _buildLanguageSelector(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // VÙNG FORM (Chiếm 50% chiều cao còn lại)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  constraints: BoxConstraints(
+                    // Đảm bảo Form luôn chiếm ít nhất 50% màn hình khi không có phím
+                    minHeight: isKeyboardOpen
+                        ? screenHeight * 0.85
+                        : halfHeight + bottomPadding,
+                  ),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF151515),
+                    borderRadius: isKeyboardOpen
+                        ? const BorderRadius.vertical(top: Radius.circular(24))
+                        : BorderRadius.zero,
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: context.resW(24)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: context.resH(20)),
+                      Text(
+                        'otp.title'.tr(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: context.resClamp(24, 20, 28),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: context.resH(6)),
+                      _buildSubtitle(),
+
+                      SizedBox(height: context.resH(20)),
+
+                      GestureDetector(
+                        onTap: () => _focusNode.requestFocus(),
+                        child: _buildOtpInputs(),
+                      ),
+
+                      // TextField ẩn điều khiển bàn phím
+                      Opacity(
+                        opacity: 0,
+                        child: SizedBox(
+                          width: 1,
+                          height: 1,
+                          child: TextField(
+                            controller: _invisibleController,
+                            focusNode: _focusNode,
+                            autofocus: false,
+                            keyboardType: TextInputType.number,
+                            maxLength: 4,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: context.resH(12)),
+                      _buildTimerText(),
+                      SizedBox(height: context.resH(20)),
+                      _buildActionButtons(),
+
+                      // Khoảng cách an toàn cuối cùng
+                      SizedBox(
+                        height: isKeyboardOpen
+                            ? keyboardHeight + 20
+                            : context.resH(30),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Thông báo
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            top: _showNotification ? 60 : -150,
+            left: 20,
+            right: 20,
+            child: _buildTopNotification(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Gắn hàm build ngôn ngữ từ login.dart
+  Widget _buildLanguageSelector() {
+    final String currentCode = context.locale.languageCode;
+    return GestureDetector(
+      onTap: () => LanguageBottomSheet.show(context: context),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.black26,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: SvgPicture.asset(
+                currentCode == 'vi'
+                    ? 'assets/images/vietnam.svg'
+                    : 'assets/images/kingdom.svg',
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              currentCode == 'vi' ? 'Tiếng Việt' : 'English',
+              style: const TextStyle(color: Colors.white, fontSize: 12),
             ),
           ],
         ),
@@ -293,133 +342,52 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
     );
   }
 
-  // --- CẬP NHẬT 5: WIDGET THÔNG BÁO LINH HOẠT ---
-  Widget _buildTopNotification() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.5),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+  Widget _buildSubtitle() {
+    return Text.rich(
+      TextSpan(
+        style: const TextStyle(
+          color: Color(0xFFC7C7C7),
+          fontSize: 14,
+          height: 1.4,
+        ),
         children: [
-          // Icon thay đổi tùy trạng thái
-          _isErrorNotification
-              ? Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFF4B4B), // Màu đỏ nền icon lỗi
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.close, color: Colors.black, size: 14),
-                )
-              : const Icon(
-                  Icons.check_circle_outline,
-                  color: Color(0xFF26CE55), // Màu xanh thành công
-                  size: 24,
-                ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              _notificationMessage, // Nội dung động
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 13,
-                fontFamily: 'Inter',
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios,
+          TextSpan(text: 'otp.subtitle_prefix'.tr()),
+          const TextSpan(text: ' '),
+          TextSpan(
+            text: widget.phoneNumber,
+            style: const TextStyle(
               color: Colors.white,
-              size: 20,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTitleSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'otp.title'.tr(),
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
-          Text.rich(
-            TextSpan(
-              style: const TextStyle(
-                color: Color(0xFFC7C7C7),
-                fontSize: 14,
-                height: 1.5,
-              ),
-              children: [
-                TextSpan(text: 'otp.subtitle_prefix'.tr()),
-                TextSpan(
-                  text: widget.phoneNumber, // Hiển thị số điện thoại từ Login
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
   }
 
+  // Đồng bộ giao diện ô OTP với hình mẫu
   Widget _buildOtpInputs() {
-    int focusedIndex = _invisibleController.text.length;
-    if (focusedIndex > 3) focusedIndex = 3;
+    int currentIndex = _invisibleController.text.length;
+    // Kiểm tra bàn phím/focus có đang hoạt động không
+    bool hasFocus = _focusNode.hasFocus;
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: List.generate(4, (index) {
-        // Kiểm tra xem ô này có đang được "focus" ảo hay không
-        bool isCurrentFocus = index == focusedIndex;
+        // CHỈ HIỆN VIỀN TRẮNG KHI: Có focus VÀ đúng vị trí nhập hiện tại
+        bool isFocused =
+            hasFocus &&
+            (index == currentIndex || (index == 3 && currentIndex == 4));
 
         return Container(
-          width: 60,
-          height: 70,
+          width: context.resW(75),
+          height: context.resH(85),
           decoration: BoxDecoration(
-            color: const Color(0xFF141414),
+            color: const Color(0xFF1E1E1E),
             borderRadius: BorderRadius.circular(8),
-            // Thay đổi màu viền nếu ô đang được focus
             border: Border.all(
-              color: isCurrentFocus ? Colors.white : const Color(0xFF6B6B6B),
-              width: isCurrentFocus ? 2 : 1,
+              color: isFocused ? Colors.white : const Color(0xFF333333),
+              width: isFocused ? 2 : 1, // Làm viền dày hơn khi focus
             ),
           ),
           child: Center(
@@ -427,7 +395,7 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
               _otpCode[index],
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 24,
+                fontSize: 32,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -437,6 +405,7 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
     );
   }
 
+  // --- CÁC WIDGET PHỤ TRỢ (GIỮ LOGIC CŨ) ---
   Widget _buildTimerText() {
     if (_counter > 0) {
       return Center(
@@ -446,7 +415,7 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
             children: [
               TextSpan(text: 'otp.resend_in'.tr()),
               TextSpan(
-                text: _formatTime(_counter),
+                text: " ${_formatTime(_counter)}",
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -456,96 +425,71 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
           ),
         ),
       );
-    } else {
-      // Khi đã về 00:00: Hiển thị dạng link "Gửi lại mã"
-      return GestureDetector(
-        onTap: () {
-          // Logic gửi lại mã OTP mới ở đây
-          _resendOtp();
-        },
+    }
+    return Center(
+      child: GestureDetector(
+        onTap: _resendOtp,
         child: Text(
           'otp.resend_link'.tr(),
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
-            fontSize: 14,
             fontWeight: FontWeight.bold,
-            decoration:
-                TextDecoration.underline, // Tạo gạch chân giống dạng link
+            decoration: TextDecoration.underline,
           ),
         ),
-      );
-    }
+      ),
+    );
+  }
+
+  String _formatTime(int seconds) {
+    int mins = seconds ~/ 60;
+    int secs = seconds % 60;
+    return "${mins.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}s";
   }
 
   void _resendOtp() {
-    // 1. Gọi API gửi lại mã ở đây (nếu có)
-    debugPrint("Đang gửi lại mã OTP mới đến ${widget.phoneNumber}...");
-
-    // 2. Reset lại đồng hồ đếm ngược
-    setState(() {
-      _counter = 119; // Reset về 01:59
-    });
-
-    // 3. Chạy lại Timer
+    setState(() => _counter = 119);
     _startTimer();
-
-    // 4. (Tùy chọn) Xóa mã OTP cũ đã nhập
     _invisibleController.clear();
-    setState(() {
-      for (int i = 0; i < 4; i++) {
-        _otpCode[i] = "";
-      }
-    });
   }
 
-  // Cập nhật phần Action Buttons giống hình thiết kế
   Widget _buildActionButtons() {
     bool isComplete = !_otpCode.contains("");
+    return Column(
+      children: [
+        _customButton(
+          text: 'common.accept'.tr(),
+          color: isComplete ? const Color(0xFFDA212D) : const Color(0xFF333333),
+          textColor: isComplete ? Colors.white : Colors.white24,
+          onPressed: isComplete ? _verifyOtp : null,
+        ),
+        _buildOrDivider(),
+        _customButton(
+          text: 'login.verify_zalo'.tr(),
+          color: const Color(0xFF2A2A2A),
+          textColor: const Color(0xFFE04A50),
+          onPressed: () => _showTopNotification("otp.zalo_sent".tr()),
+        ),
+      ],
+    );
+  }
 
+  Widget _buildOrDivider() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-      child: Column(
+      padding: const EdgeInsets.symmetric(
+        vertical: 8,
+      ), // Giảm padding từ 16 xuống 12
+      child: Row(
         children: [
-          // Nút Xác nhận
-          _customButton(
-            text: 'common.accept'.tr(),
-            color: isComplete
-                ? const Color(0xFFDA212D)
-                : const Color(0xFF333333),
-            textColor: isComplete ? Colors.white : Colors.white24,
-            onPressed: isComplete ? _verifyOtp : null,
-          ),
-
-          // Dòng "hoặc"
+          Expanded(child: Divider(color: Colors.white.withValues(alpha: 0.1))),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Divider(color: Colors.white.withValues(alpha: 0.2)),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Text(
-                    'common.or'.tr(),
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  ),
-                ),
-                Expanded(
-                  child: Divider(color: Colors.white.withValues(alpha: 0.2)),
-                ),
-              ],
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Text(
+              'common.or'.tr(),
+              style: const TextStyle(color: Colors.white, fontSize: 12),
             ),
           ),
-
-          // Nút Xác thực qua Zalo
-          _customButton(
-            text: 'login.verify_zalo'.tr(),
-            color: const Color(0xFF2A2A2A), // Màu tối theo thiết kế
-            textColor: const Color(0xFFE04A50), // Chữ màu đỏ Zalo
-            onPressed: _onZaloPressed,
-          ),
-          const SizedBox(height: 10),
+          Expanded(child: Divider(color: Colors.white.withValues(alpha: 0.1))),
         ],
       ),
     );
@@ -559,7 +503,7 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
   }) {
     return SizedBox(
       width: double.infinity,
-      height: 48,
+      height: context.resH(48).clamp(44, 55),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
@@ -576,6 +520,42 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
             fontSize: 16,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTopNotification() {
+    /* Giữ nguyên widget thông báo của bạn */
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E1E1E),
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          _isErrorNotification
+              ? const Icon(Icons.cancel, color: Color(0xFFFF4B4B), size: 24)
+              : const Icon(
+                  Icons.check_circle,
+                  color: Color(0xFF26CE55),
+                  size: 24,
+                ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              _notificationMessage,
+              style: const TextStyle(color: Colors.white, fontSize: 13),
+            ),
+          ),
+        ],
       ),
     );
   }

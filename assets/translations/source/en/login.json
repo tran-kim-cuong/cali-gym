@@ -6,5 +6,6 @@
   "privacy": "Privacy Policy",
   "agree_suffix": " of ours",
   "verify_sms": "Verify via SMS",
-  "verify_zalo": "Verify via Zalo"
+  "verify_zalo": "Verify via Zalo",
+    "phone_input_title": "Please enter your phone number to login"
 }

@@ -42,7 +42,10 @@ Future<int> snedSms(String otp, String phoneNumber) async {
 
 int gen4Digits() {
   final random = Random();
-  return 1000 + random.nextInt(9999);
+  // nextInt(9000) trả về từ 0 đến 8999
+  // 1000 + 0 = 1000 (Min 4 chữ số)
+  // 1000 + 8999 = 9999 (Max 4 chữ số)
+  return 1000 + random.nextInt(9000);
 }
 
 Future<MemberModel> getMember(

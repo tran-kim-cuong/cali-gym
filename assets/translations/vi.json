@@ -18,7 +18,8 @@
     "privacy": "Chính sách bảo mật",
     "agree_suffix": " của chúng tôi",
     "verify_sms": "Xác thực qua SMS",
-    "verify_zalo": "Xác thực qua Zalo"
+    "verify_zalo": "Xác thực qua Zalo",
+    "phone_input_title": "Hãy nhập số điện thoại của bạn để đăng nhập"
   },
   "otp": {
     "title": "Nhập mã OTP",
