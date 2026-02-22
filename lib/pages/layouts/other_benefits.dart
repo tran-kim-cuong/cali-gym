@@ -1,5 +1,8 @@
-// import 'package:californiaflutter/helpers/session_manager.dart';
+import 'package:californiaflutter/helpers/convert_model.dart';
+import 'package:californiaflutter/helpers/session_manager.dart';
+import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class OtherBenefitsScreen extends StatefulWidget {
   const OtherBenefitsScreen({super.key});
@@ -9,129 +12,357 @@ class OtherBenefitsScreen extends StatefulWidget {
 }
 
 class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
-  // Quản lý số lượng sản phẩm
-  int _smallTowelCount = 1;
-  int _largeTowelCount = 1;
-  int _setTowelCount = 0;
+  // QUẢN LÝ DỮ LIỆU THẺ
+  List<Map<String, dynamic>> _memberCards = [];
+  Map<String, dynamic>? _selectedCard;
+
+  // 1. QUẢN LÝ DANH SÁCH SẢN PHẨM (Dễ dàng đấu nối API)
+  final List<Map<String, dynamic>> _products = [
+    {
+      'id': 'towel_small',
+      'name': 'Khăn nhỏ',
+      'count': 1,
+      'icon': 'assets/images/vuesax/towel-svgrepo-com 1.svg',
+    },
+    {
+      'id': 'towel_large',
+      'name': 'Khăn to',
+      'count': 1,
+      'icon': 'assets/images/vuesax/towel-svgrepo-com 1.svg',
+    },
+    {
+      'id': 'towel_set',
+      'name': 'Set khăn (1 to + 1 nhỏ)',
+      'count': 0,
+      'icon': 'assets/images/vuesax/towel-svgrepo-com 1.svg',
+    },
+    {
+      'id': 'robe',
+      'name': 'Áo choàng',
+      'count': 0,
+      'icon': 'assets/images/vuesax/wear-svgrepo-com 1.svg',
+    },
+    {
+      'id': 'shirt',
+      'name': 'Áo tập',
+      'count': 0,
+      'icon': 'assets/images/vuesax/wear-svgrepo-com 1.svg',
+    },
+    {
+      'id': 'pants',
+      'name': 'Quần tập',
+      'count': 0,
+      'icon': 'assets/images/vuesax/pant-pants-svgrepo-com 1.svg',
+    },
+    {
+      'id': 'lock',
+      'name': 'Khoá',
+      'count': 0,
+      'icon': 'assets/images/vuesax/lock-svgrepo-com 1.svg',
+    },
+    {
+      'id': 'vip',
+      'name': 'Thẻ ra vào khu vực VIP',
+      'count': 0,
+      'icon': 'assets/images/vuesax/card-svgrepo-com 1.svg',
+    },
+  ];
+
+  void _updateCount(int index, int delta) {
+    setState(() {
+      int newVal = _products[index]['count'] + delta;
+      if (newVal >= 0) _products[index]['count'] = newVal;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Khởi tạo danh sách thẻ từ MemberModel
+    _memberCards = buildMemberCards(SessionManager.member);
+    if (_memberCards.isNotEmpty) {
+      _selectedCard = _memberCards[0];
+    }
+  }
+
+  // HÀM HIỂN THỊ CHỌN THẺ (BOTTOM SHEET) THEO SNIPPET
+  void _showMemberCardsBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF151515),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              padding: EdgeInsets.only(
+                top: context.resH(8),
+                bottom: context.resH(20),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Header của Bottom Sheet
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.resW(20),
+                      vertical: context.resH(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Chọn thẻ',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: context.resClamp(16, 14, 18),
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Danh sách thẻ
+                  Flexible(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _memberCards.length,
+                      itemBuilder: (context, index) {
+                        final card = _memberCards[index];
+                        bool isCurrent = _selectedCard?['id'] == card['id'];
+
+                        return InkWell(
+                          onTap: () {
+                            setState(() => _selectedCard = card);
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: context.resW(20),
+                              vertical: context.resH(12),
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: Colors.white.withValues(alpha: 0.05),
+                                  width: 0.5,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      card['membershipType'] ?? '',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: context.resClamp(14, 12, 16),
+                                        fontFamily: 'Inter',
+                                      ),
+                                    ),
+                                    Text(
+                                      card['membershipNumber'] ?? '',
+                                      style: TextStyle(
+                                        color: const Color(0xFF9A9A9A),
+                                        fontSize: context.resClamp(12, 10, 14),
+                                        fontFamily: 'Inter',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                // Vòng tròn check chọn thẻ
+                                Container(
+                                  width: 24,
+                                  height: 24,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: const Color(0xFF6B6B6B),
+                                    ),
+                                    color: isCurrent
+                                        ? const Color(0xFFE04A50)
+                                        : Colors.transparent,
+                                  ),
+                                  child: isCurrent
+                                      ? const Icon(
+                                          Icons.check,
+                                          size: 16,
+                                          color: Colors.white,
+                                        )
+                                      : null,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(
-        0xFF242424,
-      ), // Colors-Background-bg-base-primary
-      body: Column(
+      backgroundColor: const Color(0xFF151515),
+      body: Stack(
         children: [
-          _buildHeader(context),
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color(0xFF1A1A1A), // Nền tối hơn cho phần nội dung
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [_buildMembershipSection(), _buildProductSection()],
+          // LỚP 1: BACKGROUND IMAGE THEO SNIPPET (OPACITY 12%)
+          Positioned(
+            left: -47,
+            top: -33,
+            child: Opacity(
+              opacity: 0.12,
+              child: Image.asset(
+                "assets/images/backgound_benefit_v3_layer.png",
+                width: context.resW(813),
+                height: context.resH(789),
+                fit: BoxFit.fill,
               ),
             ),
           ),
-          _buildBottomAction(),
+
+          // LỚP 2: NỘI DUNG CHÍNH
+          SafeArea(
+            child: Column(
+              children: [
+                _buildHeader(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.only(bottom: context.resH(20)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildMembershipSection(),
+                        _buildProductSection(),
+                      ],
+                    ),
+                  ),
+                ),
+                _buildBottomAction(),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
   // --- 1. Header: Tiêu đề và nút quay lại ---
-  Widget _buildHeader(BuildContext context) {
-    return SafeArea(
-      bottom: false,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-        child: Row(
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios_new,
-                color: Colors.white,
-                size: 20,
-              ),
-              onPressed: () => Navigator.pop(context),
+  Widget _buildHeader() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(top: 4, left: 8, right: 20, bottom: 4),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: Colors.white,
+              size: 20,
             ),
-            const Expanded(
-              child: Text(
-                'Quyền lợi khác',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+            onPressed: () => Navigator.pop(context),
+          ),
+          Text(
+            'Quyền lợi khác',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.resClamp(18, 16, 22),
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w600,
+              height: 1.5,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  // --- 2. Thẻ hội viên (Staff Section) ---
+  // --- 2. Thẻ hội viên (Membership Section) ---
   Widget _buildMembershipSection() {
-    // 1. Truy cập thông tin hội viên từ SessionManager
-    // final member = SessionManager.member;
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.resW(20),
+        vertical: context.resH(12),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Thẻ hội viên',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 14,
+              fontSize: context.resClamp(14, 12, 16),
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: const Color(0xFF3E3E3E),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
+          SizedBox(height: context.resH(12)),
+          GestureDetector(
+            onTap: _showMemberCardsBottomSheet, // CLICK ĐỂ MỞ DANH SÁCH THẺ
+            child: Container(
+              width: double.infinity,
+              height: context.resH(56),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: ShapeDecoration(
+                color: const Color(0xFF242424),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 2. Hiển thị tên hạng thẻ hoặc trạng thái
-                      // Giả định trường dữ liệu là membershipLevel hoặc status
-                      // Text(
-                      //   // member?.membershipType ?? 'Staff',
-                      //   'Staff',
-                      //   style: const TextStyle(
-                      //     color: Colors.white,
-                      //     fontSize: 14,
-                      //   ),
-                      // ),
-                      // 3. Hiển thị mã số hội viên
-                      // Giả định trường dữ liệu là memberCode hoặc barcode
-                      // Text(
-                      //   member ?? 'N/A',
-                      //   style: const TextStyle(
-                      //     color: Color(0xFF9A9A9A),
-                      //     fontSize: 12,
-                      //   ),
-                      // ),
+                      Text(
+                        _selectedCard?['membershipType'] ?? 'Gold',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: context.resClamp(14, 12, 16),
+                          fontFamily: 'Inter',
+                        ),
+                      ),
+                      Text(
+                        _selectedCard?['membershipNumber'] ?? 'S0100958',
+                        style: TextStyle(
+                          color: const Color(0xFF9A9A9A),
+                          fontSize: context.resClamp(12, 10, 14),
+                          fontFamily: 'Inter',
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                const Icon(Icons.credit_card, color: Color(0xFFD9D9D9)),
-              ],
+                  const Icon(
+                    Icons.arrow_drop_down,
+                    color: Color(0xFFD9D9D9),
+                    size: 24,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -142,61 +373,77 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
   // --- 3. Danh sách chọn sản phẩm ---
   Widget _buildProductSection() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Chọn sản phẩm',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 14,
+              fontSize: context.resClamp(14, 12, 16),
+              fontFamily: 'Inter',
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 8),
-          _buildProductItem(
-            'Khăn nhỏ',
-            _smallTowelCount,
-            (val) => setState(() => _smallTowelCount = val),
-          ),
-          _buildProductItem(
-            'Khăn to',
-            _largeTowelCount,
-            (val) => setState(() => _largeTowelCount = val),
-          ),
-          _buildProductItem(
-            'Set khăn (1 to + 1 nhỏ)',
-            _setTowelCount,
-            (val) => setState(() => _setTowelCount = val),
-          ),
+          SizedBox(height: context.resH(8)),
+          // Tự động render list sản phẩm
+          ...List.generate(_products.length, (index) {
+            final item = _products[index];
+            return _buildProductItem(
+              index,
+              item['name'],
+              item['count'],
+              item['icon'],
+            );
+          }),
         ],
       ),
     );
   }
 
-  // Widget con cho từng dòng sản phẩm
-  Widget _buildProductItem(String name, int count, Function(int) onChanged) {
+  Widget _buildProductItem(int index, String name, int count, String svgPath) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: context.resH(8)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(name, style: const TextStyle(color: Colors.white, fontSize: 14)),
+          // Hiển thị SVG trước tên
+          SvgPicture.asset(
+            svgPath,
+            width: context.resW(24).clamp(20.0, 26.0),
+            height: context.resW(24).clamp(20.0, 26.0),
+            // Phủ màu trắng cho icon để nổi bật trên nền tối
+            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          ),
+          SizedBox(width: context.resW(12)),
+          Expanded(
+            child: Text(
+              name,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: context.resClamp(14, 12, 16),
+                fontFamily: 'Inter',
+                height: 1.5,
+              ),
+            ),
+          ),
           Row(
             children: [
-              _buildQtyBtn(
-                Icons.remove,
-                () => count > 0 ? onChanged(count - 1) : null,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+              _buildQtyBtn(Icons.remove, () => _updateCount(index, -1)),
+              Container(
+                width: context.resW(40),
+                alignment: Alignment.center,
                 child: Text(
                   '$count',
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: context.resClamp(14, 12, 16),
+                    fontFamily: 'Inter',
+                  ),
                 ),
               ),
-              _buildQtyBtn(Icons.add, () => onChanged(count + 1)),
+              _buildQtyBtn(Icons.add, () => _updateCount(index, 1)),
             ],
           ),
         ],
@@ -208,7 +455,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: const Color(0xFF3E3E3E),
           borderRadius: BorderRadius.circular(4),
@@ -221,22 +468,34 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
   // --- 4. Nút Xác nhận ở dưới đáy ---
   Widget _buildBottomAction() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 34),
-      child: ElevatedButton(
-        onPressed: () {
-          // Xử lý xác nhận quyền lợi
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFD92229),
-          minimumSize: const Size(double.infinity, 48),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        ),
-        child: const Text(
-          'Xác nhận',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+      padding: EdgeInsets.fromLTRB(
+        20,
+        12,
+        20,
+        MediaQuery.of(context).padding.bottom + 12,
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        height: context.resH(48).clamp(44, 56),
+        child: ElevatedButton(
+          onPressed: () {
+            // Xử lý xác nhận quyền lợi
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFD92229),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
+            elevation: 0,
+          ),
+          child: Text(
+            'Xác nhận',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.resClamp(16, 14, 18),
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ),
