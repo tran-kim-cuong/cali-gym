@@ -90,8 +90,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   Future<void> _fetchMemberCards() async {
     try {
-      final String? phoneNumber = await SessionManager.getPhoneNumber();
-
       if (mounted == false) return;
 
       final response = await handleApi(
@@ -100,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen>
           '/api/booking/check/member',
           data: {
             "clientcode": dotenv.env["CLIENT_ID"],
-            "phone_number": phoneNumber,
+            "phone_number": SessionManager.sSdt,
           },
         ),
       );
@@ -293,8 +291,15 @@ class _HomeScreenState extends State<HomeScreen>
       child: Row(
         spacing: context.resW(8),
         children: [
-          CommonPointBadge(value: '500', svgPath: 'assets/images/vuesax/ranking.svg'),
-          CommonPointBadge(value: '5 voucher', svgPath: 'assets/images/vuesax/ticket-discount.svg', useGradient: false),
+          CommonPointBadge(
+            value: '500',
+            svgPath: 'assets/images/vuesax/ranking.svg',
+          ),
+          CommonPointBadge(
+            value: '5 voucher',
+            svgPath: 'assets/images/vuesax/ticket-discount.svg',
+            useGradient: false,
+          ),
         ],
       ),
     );
