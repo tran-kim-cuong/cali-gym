@@ -61,6 +61,8 @@ class MembershipCard {
   final int? advanceBookingBeforeXDays;
   final List<Club>? clubList;
   final List<Benefit>? benefitMember;
+  final String? membershipCardNumber;
+  final String? membershipNameCard;
 
   MembershipCard({
     this.membershipNumber,
@@ -72,6 +74,8 @@ class MembershipCard {
     this.advanceBookingBeforeXDays,
     this.clubList,
     this.benefitMember,
+    this.membershipCardNumber,
+    this.membershipNameCard
   });
 
   factory MembershipCard.fromJson(Map<String, dynamic> json) {
@@ -93,6 +97,8 @@ class MembershipCard {
                 .map((e) => Benefit.fromJson(e))
                 .toList()
           : [],
+      membershipCardNumber: json['mB_membership_card_number'],
+      membershipNameCard: json['mB_membership_namecard']
     );
   }
 }

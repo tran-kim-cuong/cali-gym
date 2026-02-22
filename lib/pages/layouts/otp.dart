@@ -94,14 +94,20 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
     String code = _otpCode.join();
     if (code == SessionManager.otp) {
       try {
-        final response = await BaseApi().client.post(
-          '/api/login',
-          data: {
-            "email": dotenv.env["CALIFORNIA_USER_NAME"],
-            "password": dotenv.env["CALIFORNIA_PASSWORD"],
-          },
+        final response = await handleApi(
+          context,
+          BaseApi().client.post(
+            '/api/login',
+            data: {
+              "email": dotenv.env["CALIFORNIA_USER_NAME"],
+              "password": dotenv.env["CALIFORNIA_PASSWORD"],
+            },
+          ),
         );
-        if (response.statusCode == 200) {
+
+        if (!mounted) return;
+
+        if (response != null && response.statusCode == 200) {
           SessionManager.setLoggedIn(true, response.data['token']);
           SessionManager.sClientId = dotenv.env["CLIENT_ID"]!;
           if (mounted) {

@@ -22,6 +22,9 @@ void main() async {
   // Kiểm tra trạng thái đăng nhập
   bool loggedIn = await SessionManager.isLoggedIn();
 
+  String? phoneNumber = await SessionManager.getPhoneNumber();
+  bool isPhoneNotEmpty = phoneNumber != null && phoneNumber != '';
+
   runApp(
     // 3. Bọc App bằng EasyLocalization
     EasyLocalization(
@@ -29,7 +32,7 @@ void main() async {
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
       startLocale: const Locale('vi'),
-      child: MyApp(isLoggedIn: loggedIn),
+      child: MyApp(isLoggedIn: loggedIn && isPhoneNotEmpty),
     ),
   );
 }
