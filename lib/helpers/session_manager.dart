@@ -46,9 +46,9 @@ class SessionManager {
     await prefs.setString(sSdt, phoneNumber);
   }
 
-  static Future<String?> getPhoneNumber() async {
-    final prefs =
-        await SharedPreferences.getInstance(); // Khởi tạo SharedPreferences
-    return prefs.getString(sSdt); // Trả về chuỗi token hoặc null nếu chưa có
-  }
+  // static Future<String?> getPhoneNumber() async {
+  //   final prefs =
+  //       await SharedPreferences.getInstance(); // Khởi tạo SharedPreferences
+  //   return prefs.getString(sSdt); // Trả về chuỗi token hoặc null nếu chưa có
+  // }
 }
