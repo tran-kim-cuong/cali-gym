@@ -4,11 +4,12 @@ import 'package:californiaflutter/bases/notification_mixin.dart';
 import 'package:californiaflutter/helpers/convert_model.dart';
 import 'package:californiaflutter/models/booking_class_model.dart';
 import 'package:californiaflutter/models/member_model.dart';
-import 'package:californiaflutter/pages/layouts/loyalty.dart';
+// import 'package:californiaflutter/pages/layouts/loyalty.dart';
 import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/layouts/other_benefits.dart';
+// import 'package:californiaflutter/pages/layouts/schedule.dart';
 import 'package:californiaflutter/pages/shared/check_in_bottom_sheet.dart';
-import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
+// import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_class_card.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
 import 'package:californiaflutter/pages/shared/common_point_badge.dart';
@@ -30,7 +31,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with LoadingWrapper, NotificationMixin {
-  int _selectedIndex = 0;
+  // int _selectedIndex = 0;
   String? _activeCardId;
   List<Map<String, dynamic>> _memberCards = [];
   List<BookingData> _upcomingClasses = [];
@@ -109,16 +110,21 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  void _onItemTapped(int index) {
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const LoyaltyScreen()),
-      );
-    } else {
-      setState(() => _selectedIndex = index);
-    }
-  }
+  // void _onItemTapped(int index) {
+  //   if (index == 2) {
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => const LoyaltyScreen()),
+  //     );
+  //   } else if (index == 1) {
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => const ScheduleScreen()),
+  //     );
+  //   } else {
+  //     setState(() => _selectedIndex = index);
+  //   }
+  // }
 
   Future<void> _checkNotificationPermission() async {
     final prefs = await SharedPreferences.getInstance();
@@ -130,6 +136,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final double bottomSafeHeight = MediaQuery.of(context).padding.bottom;
+
     return Scaffold(
       backgroundColor: const Color(0xFF242424),
       body: Stack(
@@ -209,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen>
                   _buildSectionHeader('Chương trình hot', 'Xem tất cả', () {}),
                   _buildHotProgram(),
 
-                  SizedBox(height: context.resH(100)), // Chừa chỗ cho FAB
+                  SizedBox(height: context.resH(100) + bottomSafeHeight), // Chừa chỗ cho FAB
                 ],
               ),
             ),
@@ -220,11 +228,11 @@ class _HomeScreenState extends State<HomeScreen>
         ],
       ),
       // floatingActionButton: _buildCaliFAB(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: CommonBottomNavBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // bottomNavigationBar: CommonBottomNavBar(
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      // ),
     );
   }
 

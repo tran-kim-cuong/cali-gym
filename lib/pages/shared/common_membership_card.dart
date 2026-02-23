@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class CommonMembershipCard extends StatefulWidget {
@@ -138,11 +140,10 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Image.asset(
-                      "assets/images/logo.png",
+                    SvgPicture.asset(
+                      "assets/images/CWG-Logo-White.svg",
                       height: 20,
                       fit: BoxFit.contain,
-                      color: Colors.white,
                       errorBuilder: (c, e, s) => const SizedBox(),
                     ),
                     // Nút đóng nhanh nếu đang mở (Optional)
@@ -190,7 +191,7 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
               color: Colors.white.withValues(alpha: 0.1),
             ),
             child: const Text(
-              "Hiển thị mã QR",
+              "Hiện mã QR",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 12,
@@ -216,11 +217,10 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
           children: [
             Text(
               "00:${_timeLeft.toString().padLeft(2, '0')}s",
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: context.resClamp(16, 14, 18),
                 fontWeight: FontWeight.bold,
-                fontFamily: 'monospace',
               ),
             ),
             const SizedBox(height: 8),

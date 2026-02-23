@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
-import 'package:californiaflutter/pages/layouts/home.dart';
+// import 'package:californiaflutter/pages/layouts/home.dart';
+import 'package:californiaflutter/pages/master.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -146,7 +147,7 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
           if (mounted) {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              MaterialPageRoute(builder: (context) => const MasterScreen()),
               (route) => false,
             );
           }
