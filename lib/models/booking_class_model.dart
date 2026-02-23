@@ -43,8 +43,8 @@ class BookingData {
   String? clubCode;
   String? clubName;
   String? code;
-  String? startDate;
-  String? endDate;
+  DateTime? startDate;
+  DateTime? endDate;
 
   BookingData({
     this.scheduleId,
@@ -62,8 +62,8 @@ class BookingData {
     clubCode = json['club_code'];
     clubName = json['club_name'];
     code = json['code'];
-    startDate = json['start_date'];
-    endDate = json['end_date'];
+    startDate = DateTime.parse(json['start_date']);
+    endDate = DateTime.parse(json['end_date']);
   }
 
   Map<String, dynamic> toJson() {
@@ -73,8 +73,8 @@ class BookingData {
     data['club_code'] = clubCode;
     data['club_name'] = clubName;
     data['code'] = code;
-    data['start_date'] = startDate;
-    data['end_date'] = endDate;
+    data['start_date'] = startDate?.toIso8601String();
+    data['end_date'] = endDate?.toIso8601String();
     return data;
   }
 }

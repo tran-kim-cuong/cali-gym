@@ -90,6 +90,31 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
     });
   }
 
+  Future<void> getClientInfo(String phone) async {
+    String clientId = dotenv.get('CLIENT_ID');
+
+    try {
+      final response = await BaseApi().crmClient.get(
+        '/api/v1/Web/clientinfo',
+        queryParameters: {'phoneNumber': phone},
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        final List<dynamic> dataList = response.data['Data'] ?? [];
+        // Giả sử API trả về ClientId trong data
+        if (dataList.isNotEmpty) {
+          // 2. Lấy phần tử đầu tiên [0] và truy cập key 'clientNumber'
+          clientId = dataList[0]['clientNumber'];
+        }
+      }
+    } catch (e) {
+      debugPrint("Lỗi lấy thông tin khách hàng từ CRM: $e");
+    }
+
+    // 3. Lưu vào Session để các màn hình khác (như Home) có thể dùng
+    await SessionManager.setClientId(clientId);
+  }
+
   Future<void> _verifyOtp() async {
     String code = _otpCode.join();
     if (code == SessionManager.otp) {
@@ -109,7 +134,15 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
 
         if (response != null && response.statusCode == 200) {
           SessionManager.setLoggedIn(true, response.data['token']);
-          SessionManager.sClientId = dotenv.env["CLIENT_ID"]!;
+
+          String? phoneNr = await SessionManager.getPhoneNumber();
+          if (phoneNr != null && phoneNr != '') {
+            await getClientInfo(phoneNr);
+          } else {
+            await SessionManager.setClientId(dotenv.get('CLIENT_ID'));
+          }
+
+          // SessionManager.sClientId = dotenv.env["CLIENT_ID"]!;
           if (mounted) {
             Navigator.pushAndRemoveUntil(
               context,
@@ -261,8 +294,14 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
                       SizedBox(height: context.resH(20)),
 
                       GestureDetector(
-                        onTap: () => _focusNode.requestFocus(),
-                        child: _buildOtpInputs(),
+                        onTap: () {
+                          // Reset focus triệt để để ép bàn phím hiện lại
+                          _focusNode.unfocus();
+                          Future.delayed(const Duration(milliseconds: 50), () {
+                            if (mounted) _focusNode.requestFocus();
+                          });
+                        },
+                        child: _buildOtpInputs(isKeyboardOpen),
                       ),
 
                       // TextField ẩn điều khiển bàn phím
@@ -287,13 +326,15 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
                       SizedBox(height: context.resH(12)),
                       _buildTimerText(),
                       SizedBox(height: context.resH(20)),
-                      _buildActionButtons(),
+                      _buildActionButtons(bottomPadding),
 
                       // Khoảng cách an toàn cuối cùng
                       SizedBox(
                         height: isKeyboardOpen
                             ? keyboardHeight + 20
-                            : context.resH(30),
+                            : (bottomPadding > 0
+                                  ? bottomPadding
+                                  : context.resH(30)),
                       ),
                     ],
                   ),
@@ -372,16 +413,16 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
   }
 
   // Đồng bộ giao diện ô OTP với hình mẫu
-  Widget _buildOtpInputs() {
+  Widget _buildOtpInputs(bool isKeyboardOpen) {
     int currentIndex = _invisibleController.text.length;
-    // Kiểm tra bàn phím/focus có đang hoạt động không
     bool hasFocus = _focusNode.hasFocus;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: List.generate(4, (index) {
-        // CHỈ HIỆN VIỀN TRẮNG KHI: Có focus VÀ đúng vị trí nhập hiện tại
+        // ĐIỀU KIỆN MỚI: Chỉ hiện viền trắng khi bàn phím đang mở
         bool isFocused =
+            isKeyboardOpen &&
             hasFocus &&
             (index == currentIndex || (index == 3 && currentIndex == 4));
 
@@ -392,8 +433,9 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
             color: const Color(0xFF1E1E1E),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
+              // Viền sẽ tự động chuyển về màu xám (#333333) khi isKeyboardOpen = false
               color: isFocused ? Colors.white : const Color(0xFF333333),
-              width: isFocused ? 2 : 1, // Làm viền dày hơn khi focus
+              width: isFocused ? 2 : 1,
             ),
           ),
           child: Center(
@@ -459,7 +501,7 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
     _invisibleController.clear();
   }
 
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(double systemPadding) {
     bool isComplete = !_otpCode.contains("");
     return Column(
       children: [
@@ -476,6 +518,11 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
           textColor: const Color(0xFFE04A50),
           onPressed: () => _showTopNotification("otp.zalo_sent".tr()),
         ),
+        // Dịch chuyển button xích lên nếu có dải nút tác vụ (3 nút hoặc gesture bar)
+        if (systemPadding > 0)
+          SizedBox(height: systemPadding)
+        else
+          const SizedBox(height: 0),
       ],
     );
   }

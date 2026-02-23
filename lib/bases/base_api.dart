@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class BaseApi {
   late Dio _dioMain; // Dùng cho API hệ thống (Cần Token)
   late Dio _dioSms; // Dùng cho API SMS (Không cần Token)
+  late Dio _dioCrm;
 
   static final BaseApi _instance = BaseApi._internal();
   factory BaseApi() => _instance;
@@ -24,6 +27,25 @@ class BaseApi {
       BaseOptions(
         baseUrl: dotenv.env["SMS_URI"] ?? "",
         connectTimeout: const Duration(seconds: 30),
+      ),
+    );
+
+    final String crmUser = dotenv.get('CRM_USER_NAME');
+    final String crmPass = dotenv.get('CRM_PASSWORD');
+
+    final String credentials = "$crmUser:$crmPass";
+    final String base64Token = base64Encode(utf8.encode(credentials));
+    final String basicAuth = 'Basic $base64Token';
+    // 3. CRM API - Tích hợp mới
+    _dioCrm = Dio(
+      BaseOptions(
+        baseUrl: dotenv.get('CRM_URI'), // URL từ curl của bạn
+        connectTimeout: const Duration(seconds: 30),
+        headers: {
+          'accept': 'text/plain',
+          // Token Basic Auth từ curl của bạn
+          'authorization': basicAuth,
+        },
       ),
     );
 
@@ -67,7 +89,10 @@ class BaseApi {
         if (useToken) {
           String? token = await SessionManager.getToken();
           // debugPrint(token);
-          if (token != null) options.headers["Authorization"] = "Bearer $token";
+          if (token != null) {
+            options.headers["Authorization"] = "Bearer $token";
+            options.headers["Content-Type"] = "application/json";
+          }
         }
 
         return handler.next(options);
@@ -95,4 +120,5 @@ class BaseApi {
   // Trả về instance riêng biệt, không còn ghi đè baseUrl của nhau
   Dio get client => _dioMain;
   Dio get smsClient => _dioSms;
+  Dio get crmClient => _dioCrm;
 }

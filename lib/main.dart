@@ -22,8 +22,9 @@ void main() async {
   // Kiểm tra trạng thái đăng nhập
   bool loggedIn = await SessionManager.isLoggedIn();
 
-  String? phoneNumber = SessionManager.sSdt;
-  bool isPhoneNotEmpty = phoneNumber != null && phoneNumber != '';
+  String? phoneNumber = await SessionManager.getPhoneNumber();
+  // debugPrint(phoneNumber);
+  bool isPhoneNotEmpty = (phoneNumber != null && phoneNumber != '');
 
   runApp(
     // 3. Bọc App bằng EasyLocalization

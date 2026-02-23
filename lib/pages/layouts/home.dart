@@ -2,24 +2,24 @@ import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
 import 'package:californiaflutter/helpers/convert_model.dart';
+import 'package:californiaflutter/models/booking_class_model.dart';
 import 'package:californiaflutter/models/member_model.dart';
-import 'package:californiaflutter/pages/layouts/class_detail.dart';
 import 'package:californiaflutter/pages/layouts/loyalty.dart';
 import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/layouts/other_benefits.dart';
+import 'package:californiaflutter/pages/shared/check_in_bottom_sheet.dart';
 import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
+import 'package:californiaflutter/pages/shared/common_class_card.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
 import 'package:californiaflutter/pages/shared/common_point_badge.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
-import '../../models/schedule_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,13 +33,15 @@ class _HomeScreenState extends State<HomeScreen>
   int _selectedIndex = 0;
   String? _activeCardId;
   List<Map<String, dynamic>> _memberCards = [];
-  List<ScheduleModel> _upcomingClasses = [];
+  List<BookingData> _upcomingClasses = [];
+  String? clientId;
 
   @override
   void initState() {
     super.initState();
     _memberCards = buildMemberCards(SessionManager.member);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      clientId = await SessionManager.getClientId();
       _fetchMemberCards();
       _fetchUpcomingClasses();
       _checkNotificationPermission();
@@ -49,36 +51,27 @@ class _HomeScreenState extends State<HomeScreen>
   // --- GIỮ NGUYÊN LOGIC API ---
   Future<void> _fetchUpcomingClasses() async {
     try {
-      final now = DateTime.now();
-      final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-      final String fromDate = formatter.format(
-        DateTime(now.year, now.month, now.day, 0, 0, 0),
-      );
-      final String toDate = formatter.format(
-        now
-            .add(const Duration(days: 3))
-            .copyWith(hour: 23, minute: 59, second: 59),
-      );
-
       final response = await handleApi(
         context,
-        BaseApi().client.get(
-          '/api/booking/get/schedules',
-          queryParameters: {
-            "from_date": fromDate,
-            "to_date": toDate,
-            "club_code": "AMY,AMU",
-          },
+        BaseApi().client.post(
+          '/api/booking/post/getUserBookedClasses',
+          data: {"clientcode": clientId},
         ),
       );
-
+      debugPrint(response.toString());
       if (response?.statusCode == 200 && response?.data != null) {
         final List<dynamic> rawData = response?.data is List
             ? response?.data
-            : (response?.data['data'] ?? []);
-        final List<ScheduleModel> fetchedClasses = rawData
-            .map((e) => ScheduleModel.fromJson(e))
+            : (response?.data['booking_data'] ?? []);
+        final List<BookingData> fetchedClasses = rawData
+            .map((e) => BookingData.fromJson(e))
             .toList();
+
+        fetchedClasses.sort((a, b) {
+          if (a.startDate == null || b.startDate == null) return 0;
+          return a.startDate!.compareTo(b.startDate!);
+        });
+
         setState(() {
           _upcomingClasses = fetchedClasses;
         });
@@ -90,6 +83,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   Future<void> _fetchMemberCards() async {
     try {
+      String? phoneNumber = await SessionManager.getPhoneNumber();
+
       if (mounted == false) return;
 
       final response = await handleApi(
@@ -97,8 +92,8 @@ class _HomeScreenState extends State<HomeScreen>
         BaseApi().client.post(
           '/api/booking/check/member',
           data: {
-            "clientcode": dotenv.env["CLIENT_ID"],
-            "phone_number": SessionManager.sSdt,
+            "clientcode": clientId,
+            "phone_number": phoneNumber,
           },
         ),
       );
@@ -545,47 +540,83 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildClassList() {
+    // Luôn lấy tối đa 3 phần tử đầu tiên từ danh sách API trả về
+    int displayCount = _upcomingClasses.length > 3
+        ? 3
+        : _upcomingClasses.length;
+
     return SizedBox(
-      height: 320,
+      height: context.resH(265).clamp(250, 280),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.only(left: context.resW(20)),
         itemCount: _upcomingClasses.length,
-        itemBuilder: (context, index) =>
-            _buildClassCard(_upcomingClasses[index]),
+        itemBuilder: (context, index) {
+          if (index < displayCount) {
+            // Hiển thị thẻ lớp học bình thường
+            return CommonClassCard(
+              data: _upcomingClasses[index],
+              index: index,
+              onCheckIn: () {
+                // Khi bấm nút ở Card, lệnh này sẽ được thực thi tại HomeScreen
+                CheckInBottomSheet.show(
+                  context,
+                  _upcomingClasses[index], // Truyền dữ liệu lớp học tương ứng
+                );
+              },
+            );
+          } else {
+            // Item cuối cùng luôn là thẻ "Xem tất cả"
+            return _buildViewAllCard();
+          }
+        },
       ),
     );
   }
 
-  Widget _buildClassCard(ScheduleModel data) {
+  Widget _buildViewAllCard() {
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ClassDetailScreen(schedule: data),
-        ),
-      ),
+      onTap: () {
+        // Điều hướng đến màn hình danh sách lịch học đầy đủ
+      },
       child: Container(
-        width: 240,
-        margin: const EdgeInsets.only(right: 16),
-        decoration: BoxDecoration(
-          color: const Color(0xFF333333),
-          borderRadius: BorderRadius.circular(12),
+        width: context.resW(150),
+        // Sử dụng margin và shadow đồng bộ với CommonClassCard
+        margin: EdgeInsets.only(right: context.resW(16), bottom: 6, top: 5),
+        decoration: ShapeDecoration(
+          color: const Color(0xFF3E3E3E),
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(width: 1, color: Color(0xFF6B6B6B)),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          shadows: const [
+            BoxShadow(
+              color: Color(0xFF545152),
+              offset: Offset(4, 4),
+              blurRadius: 0,
+            ),
+          ],
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12),
-              ),
-              child: Image.asset(
-                'assets/images/image_class.jpg',
-                height: 140,
-                width: double.infinity,
-                fit: BoxFit.cover,
+            // Icon mũi tên theo hình ảnh mẫu
+            Icon(
+              Icons.arrow_forward,
+              color: const Color(0xFF9A9A9A),
+              size: context.resW(32),
+            ),
+            SizedBox(height: context.resH(12)),
+            Text(
+              'Xem tất cả',
+              style: TextStyle(
+                color: const Color(0xFF9A9A9A),
+                fontSize: context.resClamp(14, 12, 16),
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w400,
               ),
             ),
-            // ... (Phần text nội dung card giữ nguyên từ home.dart cũ)
           ],
         ),
       ),

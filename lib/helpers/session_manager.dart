@@ -41,14 +41,25 @@ class SessionManager {
     ); // Trả về chuỗi token hoặc null nếu chưa có
   }
 
-  static Future<void> setPersonalInfo(String phoneNumber) async {
+  static Future<void> setPhoneNumber(String phoneNumber) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(sSdt, phoneNumber);
   }
 
-  // static Future<String?> getPhoneNumber() async {
-  //   final prefs =
-  //       await SharedPreferences.getInstance(); // Khởi tạo SharedPreferences
-  //   return prefs.getString(sSdt); // Trả về chuỗi token hoặc null nếu chưa có
-  // }
+  static Future<String?> getPhoneNumber() async {
+    final prefs =
+        await SharedPreferences.getInstance(); // Khởi tạo SharedPreferences
+    return prefs.getString(sSdt); // Trả về chuỗi token hoặc null nếu chưa có
+  }
+
+  static Future<void> setClientId(String clientId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(sClientId, clientId);
+  }
+
+  static Future<String?> getClientId() async {
+    final prefs =
+        await SharedPreferences.getInstance(); // Khởi tạo SharedPreferences
+    return prefs.getString(sClientId); // Trả về chuỗi token hoặc null nếu chưa có
+  }
 }
