@@ -1,5 +1,5 @@
 import 'package:californiaflutter/helpers/size_utils.dart';
-import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
+// import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_point_badge.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +11,7 @@ class LoyaltyScreen extends StatefulWidget {
 }
 
 class _LoyaltyScreenState extends State<LoyaltyScreen> {
-  int _selectedIndex = 2;
+  // int _selectedIndex = 2;
 
   // 1. MẢNG DỮ LIỆU MẪU (Dễ dàng thay thế bằng API sau này)
   final List<Map<String, dynamic>> _energyProducts = [
@@ -53,17 +53,19 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
     },
   ];
 
-  void _onItemTapped(int index) {
-    if (index == 0) {
-      // Quay về trang chủ nếu nhấn index 0
-      Navigator.pop(context);
-    } else {
-      setState(() => _selectedIndex = index);
-    }
-  }
+  // void _onItemTapped(int index) {
+  //   if (index == 0) {
+  //     // Quay về trang chủ nếu nhấn index 0
+  //     Navigator.pop(context);
+  //   } else {
+  //     setState(() => _selectedIndex = index);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final double bottomSafeHeight = MediaQuery.of(context).padding.bottom;
+
     return Scaffold(
       backgroundColor: const Color(0xFF151515),
       body: Stack(
@@ -106,7 +108,7 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                           'Khoá tập ngắn hạn',
                           _shortCourses,
                         ),
-                        SizedBox(height: context.resH(40)),
+                        SizedBox(height: context.resH(80) + bottomSafeHeight),
                       ],
                     ),
                   ),
@@ -117,10 +119,10 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
         ],
       ),
       // THÊM BOTTOM NAV BAR VÀO ĐÂY
-      bottomNavigationBar: CommonBottomNavBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+      // bottomNavigationBar: CommonBottomNavBar(
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      // ),
     );
   }
 
