@@ -1,74 +1,61 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-// import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 
 class LoadingWidget extends StatelessWidget {
-  const LoadingWidget({super.key});
+  final Widget? child; // Chuyển thành tùy chọn (nullable)
+  final bool isLoading; // Mặc định là true
+
+  const LoadingWidget({
+    super.key,
+    this.child, // Bỏ required
+    this.isLoading = true, // Gán giá trị mặc định
+  });
 
   @override
   Widget build(BuildContext context) {
-    // Màu chủ đạo của App (Lấy màu đỏ California hoặc Trắng)
-    // const Color loadingColor = Color(0xFFDA212D); // Màu đỏ brand
-    // const Color loadingColor = Colors.white; // Hoặc dùng màu trắng nếu thích
-
-    return Material(
-      // Nền đen mờ 50% để chặn thao tác click bên dưới
-      color: Colors.black.withValues(alpha: 0.5),
+    // Khối UI nội dung Loading (Vòng quay + Logo)
+    Widget loadingContent = Container(
+      color: Colors.black.withValues(alpha: 0.5), // Lớp phủ mờ toàn màn hình
       child: Center(
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: const Color(0xFF1E1E1E), // Hộp nền nhỏ màu xám đậm
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // 1. Vòng quay loading (Tự thích ứng nền tảng)
+            SizedBox(width: 70, height: 70, child: _buildIndicator()),
+            // 2. Logo bo tròn nằm chính giữa (Bỏ khung nền bao quanh)
+            ClipOval(
+              child: Image.asset(
+                'assets/images/icon_logo.png', // Đảm bảo đúng đường dẫn ảnh
+                width: 35,
+                height: 35,
+                fit: BoxFit.cover,
               ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // 1. Vòng tròn xoay
-              // Dùng Platform check để hiện đúng kiểu Android hoặc iOS
-              SizedBox(width: 32, height: 32, child: _buildIndicator()),
-
-              // 2. Dòng chữ Loading (Tùy chọn, có thể xóa nếu muốn chỉ có vòng tròn)
-              const SizedBox(height: 16),
-              const Text(
-                "Vui lòng chờ...",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  decoration: TextDecoration.none, // Bỏ gạch chân xấu xí
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+
+    // KIỂM TRA: Nếu không có child (dùng qua Manager) thì hiện thẳng loadingContent
+    if (child == null) return loadingContent;
+
+    // Nếu có child (dùng làm wrapper) thì dùng Stack
+    return Material(
+      child: Stack(children: [child!, if (isLoading) loadingContent]),
+    );
   }
 
-  // Hàm kiểm tra platform an toàn cho Web
   Widget _buildIndicator() {
-    // Nếu là Web, mặc định dùng CircularProgressIndicator hoặc check targetPlatform
     if (kIsWeb) {
       return const CircularProgressIndicator(
         strokeWidth: 3,
         valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFDA212D)),
       );
     }
-
-    // Nếu là Mobile, mới được phép check TargetPlatform
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      return const CupertinoActivityIndicator(radius: 14, color: Colors.white);
+      return const CupertinoActivityIndicator(radius: 15, color: Colors.white);
     }
-
     return const CircularProgressIndicator(
       strokeWidth: 3,
       valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFDA212D)),

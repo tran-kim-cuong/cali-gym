@@ -44,6 +44,15 @@ dependencies:
   flutter_dotenv: ^5.1.0
   intl: ^0.20.2            # Thêm dòng này vào
   mobile_scanner: ^7.1.4
+  flutter_launcher_icons: ^0.13.1
+
+# Cấu hình icon ở cuối file pubspec.yaml hoặc tạo file riêng
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/icon_logo.png" # Đường dẫn đến file ảnh của bạn
+  adaptive_icon_background: "#151515" # Màu nền cho Android (nếu cần)
+  adaptive_icon_foreground: "assets/images/icon_logo.png"
 
 dev_dependencies:
   flutter_test:

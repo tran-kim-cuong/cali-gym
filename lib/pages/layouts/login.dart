@@ -96,8 +96,8 @@ class _LoginScreenState extends State<LoginScreen>
 
         if (response?.statusCode == 200) {
           SessionManager.otp = otpCode;
-          await SessionManager.setPersonalInfo(phoneNumber);
-          SessionManager.sSdt = phoneNumber;
+          await SessionManager.setPhoneNumber(phoneNumber);
+          // SessionManager.sSdt = phoneNumber;
 
           if (mounted) {
             Navigator.push(

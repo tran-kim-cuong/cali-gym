@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../models/schedule_model.dart';
-import '../shared/check_in_bottom_sheet.dart'; //
+// import '../shared/check_in_bottom_sheet.dart'; //
 
 class ClassDetailScreen extends StatelessWidget {
   final ScheduleModel schedule;
@@ -219,7 +219,8 @@ class ClassDetailScreen extends StatelessWidget {
           ),
           Expanded(
             child: ElevatedButton(
-              onPressed: () => CheckInBottomSheet.show(context, schedule), //
+              onPressed:
+                  null, //() => CheckInBottomSheet.show(context, schedule), //
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFD92229),
                 padding: const EdgeInsets.symmetric(vertical: 12),
