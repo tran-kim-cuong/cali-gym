@@ -6,7 +6,9 @@ class SessionManager {
   static String otp = "1234";
   static String sSdt = "phone_number";
   static String sTenKh = "";
-  static String sClientId = "s0100904";
+  static String sClientId = "";
+  static String sMembershipNumber = "";
+  static String sKeyCode = "JKLM012NOBCDQRS3456TUEFGPAHIVWXYZ7890";
   static MemberModel member = MemberModel();
 
   static const String keyToken =
@@ -60,6 +62,8 @@ class SessionManager {
   static Future<String?> getClientId() async {
     final prefs =
         await SharedPreferences.getInstance(); // Khởi tạo SharedPreferences
-    return prefs.getString(sClientId); // Trả về chuỗi token hoặc null nếu chưa có
+    return prefs.getString(
+      sClientId,
+    ); // Trả về chuỗi token hoặc null nếu chưa có
   }
 }

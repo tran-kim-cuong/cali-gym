@@ -90,3 +90,33 @@ Future<BookingClassModel> getBookingClass(String token, String clientId) async {
     throw Exception('Get member failed');
   }
 }
+
+String CreateQRCheckIn(String membership, String keyCode) {
+  /// ===== SERVER TIME (GMT+7 ví dụ) =====
+  final now = DateTime.now().toUtc().add(const Duration(hours: 7));
+
+  String two(int n) => n.toString().padLeft(2, '0');
+
+  /// date + month + hour
+  String time = two(now.day) + two(now.month) + two(now.hour);
+
+  /// membership + '?' + time
+  String mbsTime = "$membership?$time";
+
+  /// ===== tính sum giống JS =====
+  int sum = 0;
+
+  for (int i = 0; i < mbsTime.length; i++) {
+    sum += keyCode.indexOf(mbsTime[i]); // kể cả -1
+  }
+
+  /// JS modulo luôn dương → Dart cần fix
+  int index = sum % keyCode.length;
+  if (index < 0) {
+    index += keyCode.length;
+  }
+
+  String key = keyCode[index];
+
+  return mbsTime + key;
+}
