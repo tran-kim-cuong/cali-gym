@@ -101,6 +101,7 @@ class _HomeScreenState extends State<HomeScreen>
         setState(() {
           SessionManager.member = member;
           SessionManager.sTenKh = member.firstName!;
+          SessionManager.sMembershipNumber = member.membershipNumber!;
           _memberCards = buildMemberCards(SessionManager.member);
         });
       }
