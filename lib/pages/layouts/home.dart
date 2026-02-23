@@ -91,10 +91,7 @@ class _HomeScreenState extends State<HomeScreen>
         context,
         BaseApi().client.post(
           '/api/booking/check/member',
-          data: {
-            "clientcode": clientId,
-            "phone_number": phoneNumber,
-          },
+          data: {"clientcode": clientId, "phone_number": phoneNumber},
         ),
       );
 
@@ -103,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen>
         setState(() {
           SessionManager.member = member;
           SessionManager.sTenKh = member.firstName!;
+          SessionManager.sMembershipNumber = member.membershipNumber!;
           _memberCards = buildMemberCards(SessionManager.member);
         });
       }
