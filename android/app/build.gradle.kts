@@ -44,11 +44,14 @@ android {
         create("release") {
             // Lấy đường dẫn file: ưu tiên biến từ Azure DevOps, nếu không có thì lấy từ file local
             val keystorePath = System.getenv("KEYSTORE_FILE_PATH") ?: keystoreProperties.getProperty("storeFile")
+            val sPassword = System.getenv("STORE_PASSWORD") ?: keystoreProperties.getProperty("storePassword")
+            val kPassword = System.getenv("KEY_PASSWORD") ?: keystoreProperties.getProperty("keyPassword")
+            val kAlias = System.getenv("KEY_ALIAS") ?: keystoreProperties.getProperty("keyAlias")
 
-            keyAlias = keystoreProperties.getProperty("keyAlias")
-            keyPassword = keystoreProperties.getProperty("keyPassword")
-            storePassword = keystoreProperties.getProperty("storePassword")
             storeFile = if (keystorePath != null) file(keystorePath) else null
+            storePassword = sPassword
+            keyPassword = kPassword
+            keyAlias = kAlias
         }
     }
 
