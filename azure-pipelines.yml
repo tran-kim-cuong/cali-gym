@@ -44,11 +44,11 @@ steps:
     KEYSTORE_FILE_PATH: $(androidKeystore.secureFilePath)
 
 # 6. Đẩy file APK lên Firebase App Distribution
-- task: FirebaseAppDistribution@0
+- task: FirebaseAppDistribution@5
   displayName: 'Upload to Firebase'
   inputs:
     appId: '$(FIREBASE_APP_ID)'
-    serviceCredentialsFile: '$(firebaseServiceAccount.secureFilePath)'
-    file: '$(Build.SourcesDirectory)/build/app/outputs/flutter-apk/app-release.apk'
-    group: 'internal-tester'
+    privateKeyPath: '$(firebaseServiceAccount.secureFilePath)'
+    filePath: '$(Build.SourcesDirectory)/build/app/outputs/flutter-apk/app-release.apk'
+    testerGroups: 'internal-tester'
     releaseNotes: 'Cập nhật tự động từ Azure DevOps. Build ID: $(Build.BuildId)'
