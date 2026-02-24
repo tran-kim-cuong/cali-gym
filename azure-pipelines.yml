@@ -18,7 +18,7 @@ steps:
 - task: DownloadSecureFile@1
   name: firebaseServiceAccount
   inputs:
-    secureFile: 'cali-gym-35f385f2c4e9.json'
+    secureFile: 'cali-gym-915a7-f608b9f106a1.json'
 
 - task: Cache@2
   displayName: 'Cache Gradle'
