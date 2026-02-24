@@ -20,6 +20,22 @@ steps:
   inputs:
     secureFile: 'cali-gym-35f385f2c4e9.json'
 
+- task: Cache@2
+  displayName: 'Cache Gradle'
+  inputs:
+    key: 'gradle | "$(Agent.OS)" | android/build.gradle.kts'
+    restoreKeys: |
+      gradle | "$(Agent.OS)"
+    path: $(HOME)/.gradle
+
+- task: Cache@2
+  displayName: 'Cache Flutter SDK and Pub'
+  inputs:
+    key: 'flutter | "$(Agent.OS)" | pubspec.lock'
+    restoreKeys: |
+      flutter | "$(Agent.OS)"
+    path: $(HOME)/.pub-cache
+
 # 3. Cài đặt Flutter SDK
 - task: FlutterInstall@0
   inputs:
@@ -39,7 +55,7 @@ steps:
   displayName: 'Build APK'
   inputs:
     projectDirectory: '.'
-    arguments: 'build apk --release --build-number=$(Build.BuildId)'
+    arguments: 'build apk --release --build-number=$(Build.BuildId) --target-platform android-arm64'
   env:
     KEYSTORE_FILE_PATH: $(androidKeystore.secureFilePath)
 
