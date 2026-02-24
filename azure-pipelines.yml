@@ -1,5 +1,5 @@
 trigger:
-- main # Pipeline sẽ tự chạy khi bạn push code lên branch main
+- develop # Pipeline sẽ tự chạy khi bạn push code lên branch main
 
 pool:
   vmImage: 'ubuntu-latest'
