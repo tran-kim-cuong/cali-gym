@@ -91,7 +91,7 @@ Future<BookingClassModel> getBookingClass(String token, String clientId) async {
   }
 }
 
-String CreateQRCheckIn(String membership, String keyCode) {
+String createQRCheckIn(String membership, String keyCode) {
   /// ===== SERVER TIME (GMT+7 ví dụ) =====
   final now = DateTime.now().toUtc().add(const Duration(hours: 7));
 
