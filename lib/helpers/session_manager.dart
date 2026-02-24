@@ -9,6 +9,7 @@ class SessionManager {
   static String sClientId = "";
   static String sMembershipNumber = "";
   static String sKeyCode = "JKLM012NOBCDQRS3456TUEFGPAHIVWXYZ7890";
+  static String sCustomerId = "58288";
   static MemberModel member = MemberModel();
 
   static const String keyToken =
