@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -84,7 +86,13 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
   void _generateNewCode() {
     if (!mounted) return;
     setState(() {
-      _qrData = "${widget.data['id']}_${DateTime.now().millisecondsSinceEpoch}";
+      // print(widget.data);
+      _qrData = createQRCheckIn(
+        widget.data['membershipNumber'],
+        SessionManager.sKeyCode,
+      );
+      //print(_qrData);
+      // _qrData = "${widget.data['id']}_${DateTime.now().millisecondsSinceEpoch}";
       _timeLeft = _cycleTime;
     });
   }
