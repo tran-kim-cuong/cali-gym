@@ -58,6 +58,10 @@ steps:
     arguments: 'build apk --release --build-number=$(Build.BuildId) --target-platform android-arm64'
   env:
     KEYSTORE_FILE_PATH: $(androidKeystore.secureFilePath)
+    # THÊM 3 DÒNG NÀY (Đảm bảo tên biến $(...) khớp với tên trong Variable Group của bạn)
+    STORE_PASSWORD: $(storePassword)
+    KEY_PASSWORD: $(keyPassword)
+    KEY_ALIAS: $(keyAlias)
 
 # 6. Đẩy file APK lên Firebase App Distribution
 - task: FirebaseAppDistribution@5
