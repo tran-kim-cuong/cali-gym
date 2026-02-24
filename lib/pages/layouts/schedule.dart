@@ -2,6 +2,7 @@ import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
+import 'package:californiaflutter/pages/layouts/schedule_detail.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -407,92 +408,118 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     // Tăng độ bo góc lên 12 để mềm mại hơn
     final double cardRadius = 12.0;
 
-    return Container(
-      clipBehavior: Clip.antiAlias,
-      decoration: ShapeDecoration(
-        color: const Color(0xFF3E3E3E),
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFF464444)),
-          // Đồng bộ bo góc khung ngoài
-          borderRadius: BorderRadius.circular(cardRadius),
+    return GestureDetector(
+      // 1. CLICK ĐỂ CHUYỂN MÀN HÌNH CHI TIẾT
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ScheduleDetailScreen(schedule: data),
+          ),
+        );
+      },
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: ShapeDecoration(
+          color: const Color(0xFF3E3E3E),
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(width: 1, color: Color(0xFF464444)),
+            borderRadius: BorderRadius.circular(cardRadius),
+          ),
+          // Đổ bóng cứng theo phong cách thiết kế của bạn
+          shadows: const [
+            BoxShadow(
+              color: Color(0xFF545152),
+              offset: Offset(5, 5),
+              blurRadius: 0,
+            ),
+          ],
         ),
-        // Đổ bóng cứng (Shadow offset 5,5) theo snippet
-        shadows: const [
-          BoxShadow(
-            color: Color(0xFF545152),
-            offset: Offset(5, 5),
-            blurRadius: 0,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ĐIỀU CHỈNH BO GÓC HÌNH ẢNH
-          ClipRRect(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(cardRadius),
-            ),
-            child: Container(
-              height: context.resH(120),
-              width: double.infinity,
-              color: Colors.white,
-              child: Image.asset("assets/images/none.jpg", fit: BoxFit.cover),
-            ),
-          ),
-          // Nội dung
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    data.className ?? '',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: context.resClamp(13, 11, 15),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  _buildIconRow(Icons.person_outline, 'Alex Smith'),
-                  _buildIconRow(
-                    Icons.calendar_today,
-                    DateFormat(
-                      'dd/MM/yyyy',
-                    ).format(data.startDate ?? DateTime.now()),
-                  ),
-                  _buildIconRow(
-                    Icons.access_time,
-                    '${DateFormat('hh:MM a').format(data.startDate ?? DateTime.now())} - ${DateFormat('hh:MM a').format(data.endDate ?? DateTime.now())}',
-                  ),
-                  _buildIconRow(
-                    Icons.location_on_outlined,
-                    data.clubName ?? '',
-                  ),
-                ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Phần hình ảnh bo góc trên
+            ClipRRect(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(cardRadius),
+              ),
+              child: Container(
+                height: context.resH(120), // Chiều cao responsive
+                width: double.infinity,
+                color: Colors.white,
+                child: Image.asset(
+                  "assets/images/none.jpg",
+                  fit: BoxFit.cover,
+                  errorBuilder: (c, e, s) =>
+                      const Icon(Icons.image_not_supported),
+                ),
               ),
             ),
-          ),
-        ],
+            // Phần nội dung thông tin lớp học
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(context.resW(8)), // Padding responsive
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      data.className ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: context.resClamp(13, 11, 15), // Font co giãn
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    // Hiển thị thông tin từ Model thay vì text cứng
+                    _buildIconRow(
+                      context,
+                      Icons.person_outline,
+                      data.trainerName ?? 'N/A',
+                    ),
+                    _buildIconRow(
+                      context,
+                      Icons.calendar_today,
+                      DateFormat(
+                        'dd/MM/yyyy',
+                      ).format(data.startDate ?? DateTime.now()),
+                    ),
+                    _buildIconRow(
+                      context,
+                      Icons.access_time,
+                      '${DateFormat('hh:mm a').format(data.startDate ?? DateTime.now())} - ${DateFormat('hh:mm a').format(data.endDate ?? DateTime.now())}',
+                    ),
+                    _buildIconRow(
+                      context,
+                      Icons.location_on_outlined,
+                      data.clubName ?? '',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildIconRow(IconData icon, String text) {
+  Widget _buildIconRow(BuildContext context, IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, color: const Color(0xFF9A9A9A), size: 12),
-        const SizedBox(width: 4),
+        Icon(icon, color: const Color(0xFF9A9A9A), size: context.resW(12)),
+        SizedBox(width: context.resW(4)),
         Expanded(
           child: Text(
             text,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: Color(0xFF9A9A9A), fontSize: 9),
+            style: TextStyle(
+              color: const Color(0xFF9A9A9A),
+              fontSize: context.resClamp(10, 9, 12),
+            ),
           ),
         ),
       ],
