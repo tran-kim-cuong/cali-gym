@@ -3,6 +3,7 @@ import 'package:californiaflutter/models/booking_class_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
 import 'package:californiaflutter/models/member_model.dart';
+import 'package:crypto/crypto.dart';
 
 Future<String> getToken() async {
   final response = await http.post(
@@ -119,4 +120,14 @@ String createQRCheckIn(String membership, String keyCode) {
   String key = keyCode[index];
 
   return mbsTime + key;
+}
+
+String generateMd5(String input) {
+  // convert string -> bytes (UTF8)
+  var bytes = utf8.encode(input);
+
+  // mã hóa MD5
+  var digest = md5.convert(bytes);
+
+  return digest.toString();
 }

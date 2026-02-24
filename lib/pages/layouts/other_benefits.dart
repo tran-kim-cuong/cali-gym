@@ -1,7 +1,10 @@
 import 'package:californiaflutter/helpers/convert_model.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/models/member_model.dart';
+import 'package:californiaflutter/services/api_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/svg.dart';
 
 class OtherBenefitsScreen extends StatefulWidget {
@@ -15,53 +18,62 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
   // QUẢN LÝ DỮ LIỆU THẺ
   List<Map<String, dynamic>> _memberCards = [];
   Map<String, dynamic>? _selectedCard;
+  MembershipCard _msCard = MembershipCard();
 
   // 1. QUẢN LÝ DANH SÁCH SẢN PHẨM (Dễ dàng đấu nối API)
   final List<Map<String, dynamic>> _products = [
     {
       'id': 'towel_small',
+      "code": "tsm",
       'name': 'Khăn nhỏ',
       'count': 1,
       'icon': 'assets/images/vuesax/towel-svgrepo-com 1.svg',
     },
     {
       'id': 'towel_large',
+      "code": "txl",
       'name': 'Khăn to',
       'count': 1,
       'icon': 'assets/images/vuesax/towel-svgrepo-com 1.svg',
     },
     {
       'id': 'towel_set',
+      "code": "set-1txl-1tsm",
       'name': 'Set khăn (1 to + 1 nhỏ)',
       'count': 0,
       'icon': 'assets/images/vuesax/towel-svgrepo-com 1.svg',
     },
     {
       'id': 'robe',
+      "code": "coa",
       'name': 'Áo choàng',
       'count': 0,
       'icon': 'assets/images/vuesax/wear-svgrepo-com 1.svg',
     },
     {
       'id': 'shirt',
+      "code": "vts",
       'name': 'Áo tập',
       'count': 0,
       'icon': 'assets/images/vuesax/wear-svgrepo-com 1.svg',
     },
     {
       'id': 'pants',
+      "code": "vpa",
       'name': 'Quần tập',
       'count': 0,
       'icon': 'assets/images/vuesax/pant-pants-svgrepo-com 1.svg',
     },
     {
       'id': 'lock',
+      "code": "lok",
       'name': 'Khoá',
       'count': 0,
       'icon': 'assets/images/vuesax/lock-svgrepo-com 1.svg',
     },
     {
       'id': 'vip',
+      "code": "acc",
       'name': 'Thẻ ra vào khu vực VIP',
       'count': 0,
       'icon': 'assets/images/vuesax/card-svgrepo-com 1.svg',
@@ -82,6 +94,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
     _memberCards = buildMemberCards(SessionManager.member);
     if (_memberCards.isNotEmpty) {
       _selectedCard = _memberCards[0];
+      _msCard = SessionManager.member.listMembershipCard![0];
     }
   }
 
@@ -480,6 +493,39 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
         child: ElevatedButton(
           onPressed: () {
             // Xử lý xác nhận quyền lợi
+            List<Map<String, dynamic>> selectedProducts = _products
+                .where((item) => item['count'] > 0)
+                .toList();
+            String result = selectedProducts
+                .map((item) => "${item['count']}${item['code']}")
+                .join("-");
+
+            int milliseconds = DateTime.now()
+                .add(Duration(hours: 7))
+                .millisecondsSinceEpoch;
+
+            String sSecrect =
+                SessionManager.sClientId +
+                "flg2022towel" +
+                result +
+                milliseconds.toString();
+            String sMd5 = generateMd5(sSecrect);
+
+            //Link booking towel
+            StringBuffer buffer = StringBuffer();
+            buffer.write(dotenv.env["CALIFORNIA_URI"]);
+            buffer.write("/fitlgbackend/fitlg/towel/towelorders/create?");
+            buffer.write("c=${SessionManager.sClientId}");
+            buffer.write("&ms=&p=${result}");
+            buffer.write("&cn=${_msCard.membershipCardNumber}");
+            buffer.write("&nc=${_msCard.membershipType}");
+            buffer.write("&co=${_msCard.mbMemberId}");
+            buffer.write("&io=${_msCard.isOwner}");
+            buffer.write("&mb=${_msCard.membershipNumber}");
+            buffer.write("&t=$milliseconds");
+            buffer.write("&secrect=$sMd5");
+
+            print(buffer.toString());
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFFD92229),
