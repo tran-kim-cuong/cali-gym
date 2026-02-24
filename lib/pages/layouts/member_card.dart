@@ -7,6 +7,7 @@ import 'package:californiaflutter/pages/shared/common_membership_card.dart';
 // import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 // import 'package:flutter_svg/svg.dart';
 
 class MemberListScreen extends StatefulWidget {
@@ -310,11 +311,25 @@ class _MemberListScreenState extends State<MemberListScreen> {
   //   );
   // }
 
-  void _showBigQrModal(BuildContext context, String qrData) {
-    showModalBottomSheet(
+  Future<void> _showBigQrModal(BuildContext context, String qrData) async {
+    double? originalBrightness;
+
+    try {
+      // 1. Lưu lại mức độ sáng hiện tại của máy
+      originalBrightness = await ScreenBrightness().application;
+
+      // 2. Đẩy độ sáng lên tối đa (1.0) để máy quét dễ đọc
+      await ScreenBrightness().setApplicationScreenBrightness(1.0);
+    } catch (e) {
+      debugPrint("Không thể điều chỉnh độ sáng: $e");
+    }
+
+    // 3. Hiển thị Modal
+    await showModalBottomSheet(
+      // ignore: use_build_context_synchronously
       context: context,
-      isScrollControlled: true, // Cho phép modal tự co giãn theo nội dung
-      backgroundColor: const Color(0xFF151515), // Màu nền tối đồng bộ thiết kế
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF151515),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -322,14 +337,10 @@ class _MemberListScreenState extends State<MemberListScreen> {
         return Container(
           width: double.infinity,
           padding: EdgeInsets.only(top: context.resH(24)),
-          clipBehavior: Clip.antiAlias,
-          decoration: const BoxDecoration(),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Thanh gạt (Handle bar) giúp người dùng biết có thể vuốt xuống để đóng
+              // Handle bar
               Center(
                 child: Container(
                   width: 40,
@@ -343,49 +354,31 @@ class _MemberListScreenState extends State<MemberListScreen> {
               ),
 
               Container(
-                width: double.infinity, // Thay thế 375 cố định để responsive
+                width: double.infinity,
                 padding: EdgeInsets.symmetric(
                   horizontal: context.resW(20),
                   vertical: context.resH(12),
                 ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // 1. KHUNG TRẮNG CHỨA MÃ QR
+                    // Khung QR Trắng
                     Container(
-                      padding: EdgeInsets.all(
-                        context.resW(12),
-                      ), // Đệm xung quanh QR
-                      decoration: ShapeDecoration(
+                      padding: EdgeInsets.all(context.resW(12)),
+                      decoration: BoxDecoration(
                         color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                            width: 1,
-                            color: Color(0xFFE8E8E8),
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFFE8E8E8)),
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Kích thước QR 173x173 responsive
-                          QrImageView(
-                            data: qrData,
-                            version: QrVersions.auto,
-                            size: context.resW(173),
-                            padding: EdgeInsets.zero,
-                          ),
-                        ],
+                      child: QrImageView(
+                        data: qrData,
+                        version: QrVersions.auto,
+                        size: context.resW(173), // Kích thước QR responsive
                       ),
                     ),
 
-                    SizedBox(height: context.resH(16)), // Khoảng cách 16px
-                    // 2. TEXT HƯỚNG DẪN
+                    SizedBox(height: context.resH(16)),
+
+                    // Text hướng dẫn
                     SizedBox(
                       width: context.resW(335),
                       child: Text(
@@ -393,18 +386,12 @@ class _MemberListScreenState extends State<MemberListScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: context.resClamp(
-                            16,
-                            14,
-                            18,
-                          ), // Responsive font
+                          fontSize: context.resClamp(16, 14, 18),
                           fontWeight: FontWeight.w500,
                           height: 1.50,
                         ),
                       ),
                     ),
-
-                    // Thêm khoảng đệm dưới cùng cho đẹp
                     SizedBox(height: context.resH(40)),
                   ],
                 ),
@@ -414,5 +401,16 @@ class _MemberListScreenState extends State<MemberListScreen> {
         );
       },
     );
+
+    // 4. KHI MODAL ĐÓNG: Trả lại độ sáng ban đầu
+    try {
+      if (originalBrightness != null) {
+        await ScreenBrightness().setApplicationScreenBrightness(
+          originalBrightness,
+        );
+      }
+    } catch (e) {
+      debugPrint("Không thể trả lại độ sáng: $e");
+    }
   }
 }

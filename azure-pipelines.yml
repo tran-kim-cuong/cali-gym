@@ -1,0 +1,54 @@
+trigger:
+- main # Pipeline sẽ tự chạy khi bạn push code lên branch main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+- group: android-release-vars # Tên Variable Group bạn tạo trên Library
+
+steps:
+# 1. Tải file Keystore (.jks) từ Secure Files
+- task: DownloadSecureFile@1
+  name: androidKeystore
+  inputs:
+    secureFile: 'cali-gym-keystore.jks'
+
+# 2. Tải file Service Account (.json) từ Secure Files
+- task: DownloadSecureFile@1
+  name: firebaseServiceAccount
+  inputs:
+    secureFile: 'cali-gym-35f385f2c4e9.json'
+
+# 3. Cài đặt Flutter SDK
+- task: FlutterInstall@0
+  inputs:
+    channel: 'stable'
+    version: 'latest'
+
+# 4. Lấy các thư viện (pub get)
+- task: FlutterCommand@0
+  displayName: 'Flutter Pub Get'
+  inputs:
+    projectDirectory: '.'
+    arguments: 'pub get'
+
+# 5. Build APK Release
+# Ở đây ta truyền biến KEYSTORE_FILE_PATH vào môi trường để build.gradle.kts đọc được
+- task: FlutterCommand@0
+  displayName: 'Build APK'
+  inputs:
+    projectDirectory: '.'
+    arguments: 'build apk --release --build-number=$(Build.BuildId)'
+  env:
+    KEYSTORE_FILE_PATH: $(androidKeystore.secureFilePath)
+
+# 6. Đẩy file APK lên Firebase App Distribution
+- task: FirebaseAppDistribution@0
+  displayName: 'Upload to Firebase'
+  inputs:
+    appId: '$(FIREBASE_APP_ID)'
+    serviceCredentialsFile: '$(firebaseServiceAccount.secureFilePath)'
+    file: '$(Build.SourcesDirectory)/build/app/outputs/flutter-apk/app-release.apk'
+    group: 'internal-tester'
+    releaseNotes: 'Cập nhật tự động từ Azure DevOps. Build ID: $(Build.BuildId)'
