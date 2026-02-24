@@ -113,6 +113,7 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
     }
 
     // 3. Lưu vào Session để các màn hình khác (như Home) có thể dùng
+    SessionManager.sClientId = clientId;
     await SessionManager.setClientId(clientId);
   }
 

@@ -217,7 +217,9 @@ class _HomeScreenState extends State<HomeScreen>
                   _buildSectionHeader('Chương trình hot', 'Xem tất cả', () {}),
                   _buildHotProgram(),
 
-                  SizedBox(height: context.resH(100) + bottomSafeHeight), // Chừa chỗ cho FAB
+                  SizedBox(
+                    height: context.resH(100) + bottomSafeHeight,
+                  ), // Chừa chỗ cho FAB
                 ],
               ),
             ),

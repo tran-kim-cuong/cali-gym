@@ -12,6 +12,7 @@ List<Map<String, dynamic>> buildMemberCards(MemberModel member) {
           "colors": _getCardColors(card.membershipType),
           "membershipType": card.membershipNameCard ?? "",
           "membershipNumber": card.membershipCardNumber ?? "",
+          "mbMemberId": card.mbMemberId ?? "",
         };
       }).toList() ??
       [];
