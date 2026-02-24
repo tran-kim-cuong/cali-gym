@@ -41,10 +41,11 @@ dependencies:
   permission_handler: ^12.0.1
   qr_flutter: ^4.1.0  # Thêm dòng này
   http: ^1.2.0
-  flutter_dotenv: ^5.1.0
+  flutter_dotenv: ^6.0.0
   intl: ^0.20.2            # Thêm dòng này vào
   mobile_scanner: ^7.1.4
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.4
+  screen_brightness: ^2.1.7
 
 # Cấu hình icon ở cuối file pubspec.yaml hoặc tạo file riêng
 flutter_launcher_icons:
