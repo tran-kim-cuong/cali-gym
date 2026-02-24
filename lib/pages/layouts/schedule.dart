@@ -2,10 +2,13 @@ import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
+import 'package:californiaflutter/pages/layouts/history_schedule.dart';
 import 'package:californiaflutter/pages/layouts/schedule_detail.dart';
+import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ScheduleScreen extends StatefulWidget {
@@ -133,7 +136,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
       body: Stack(
         children: [
           // Lớp nền Background mờ (Opacity 0.12)
-          _buildBackground(context),
+          CommonBackgroundWidget.buildBackgroundImage(context, dotenv.get('IMAGES_BG_LOGIN_V3_LAYER')),
 
           SafeArea(
             bottom: false,
@@ -198,25 +201,25 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
 
   // MARK: - UI Helpers
 
-  Widget _buildBackground(BuildContext context) {
-    return Positioned(
-      left: -103,
-      top: 42,
-      child: Opacity(
-        opacity: 0.12,
-        child: Container(
-          width: context.resW(695),
-          height: context.resH(795),
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/background_login_v3_layer.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _buildBackground(BuildContext context) {
+  //   return Positioned(
+  //     left: -103,
+  //     top: 42,
+  //     child: Opacity(
+  //       opacity: 0.12,
+  //       child: Container(
+  //         width: context.resW(695),
+  //         height: context.resH(795),
+  //         decoration: const BoxDecoration(
+  //           image: DecorationImage(
+  //             image: AssetImage("assets/images/background_login_v3_layer.png"),
+  //             fit: BoxFit.cover,
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildHeader(BuildContext context) {
     return Container(
@@ -271,9 +274,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
               SizedBox(width: context.resW(10)),
 
               // ICON 2: Tìm kiếm
-              _buildIconButton(
-                context,
-                'assets/images/vuesax/document-text.svg',
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HistoryScheduleScreen(),
+                    ),
+                  );
+                },
+                child: _buildIconButton(
+                  context,
+                  'assets/images/vuesax/document-text.svg',
+                ),
               ),
             ],
           ),

@@ -2,6 +2,8 @@ import 'package:californiaflutter/helpers/convert_model.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/member_model.dart';
+import 'package:californiaflutter/pages/shared/common_background.dart';
+import 'package:californiaflutter/pages/shared/common_modal.dart';
 import 'package:californiaflutter/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -242,18 +244,9 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
       body: Stack(
         children: [
           // LỚP 1: BACKGROUND IMAGE THEO SNIPPET (OPACITY 12%)
-          Positioned(
-            left: -47,
-            top: -33,
-            child: Opacity(
-              opacity: 0.12,
-              child: Image.asset(
-                "assets/images/backgound_benefit_v3_layer.png",
-                width: context.resW(813),
-                height: context.resH(789),
-                fit: BoxFit.fill,
-              ),
-            ),
+          CommonBackgroundWidget.buildBackgroundImage(
+            context,
+            dotenv.get('IMAGES_BG_BENEFIT_V3_LAYER'),
           ),
 
           // LỚP 2: NỘI DUNG CHÍNH
@@ -505,10 +498,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
                 .millisecondsSinceEpoch;
 
             String sSecrect =
-                SessionManager.sClientId +
-                "flg2022towel" +
-                result +
-                milliseconds.toString();
+                "${SessionManager.sClientId}flg2022towel$result$milliseconds";
             String sMd5 = generateMd5(sSecrect);
 
             //Link booking towel
@@ -516,7 +506,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
             buffer.write(dotenv.env["CALIFORNIA_URI"]);
             buffer.write("/fitlgbackend/fitlg/towel/towelorders/create?");
             buffer.write("c=${SessionManager.sClientId}");
-            buffer.write("&ms=&p=${result}");
+            buffer.write("&ms=&p=$result");
             buffer.write("&cn=${_msCard.membershipCardNumber}");
             buffer.write("&nc=${_msCard.membershipType}");
             buffer.write("&co=${_msCard.mbMemberId}");
@@ -525,7 +515,12 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
             buffer.write("&t=$milliseconds");
             buffer.write("&secrect=$sMd5");
 
-            print(buffer.toString());
+            debugPrint(buffer.toString());
+
+            CommonModalWidget.showBigQrModal(
+              context: context,
+              qrData: buffer.toString(),
+            );
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFFD92229),

@@ -9,6 +9,7 @@ import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/layouts/other_benefits.dart';
 // import 'package:californiaflutter/pages/layouts/schedule.dart';
 import 'package:californiaflutter/pages/shared/check_in_bottom_sheet.dart';
+import 'package:californiaflutter/pages/shared/common_background.dart';
 // import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_class_card.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
@@ -16,6 +17,7 @@ import 'package:californiaflutter/pages/shared/common_point_badge.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -143,25 +145,7 @@ class _HomeScreenState extends State<HomeScreen>
       body: Stack(
         children: [
           // LỚP 1: BACKGROUND MỜ
-          Positioned(
-            left: -68,
-            top: 0,
-            child: Opacity(
-              opacity: 0.15,
-              child: Container(
-                width: context.resW(555),
-                height: context.resH(740),
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                      "assets/images/background_home_v3_layer.png",
-                    ), // Thay bằng ảnh thật của bạn
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          CommonBackgroundWidget.buildBackgroundImage(context, dotenv.get('IMAGES_BG_HOME_V3_LAYER')),
 
           // LỚP 2: NỘI DUNG CHÍNH (SCROLLABLE)
           SafeArea(

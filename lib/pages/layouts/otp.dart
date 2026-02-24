@@ -4,6 +4,7 @@ import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 // import 'package:californiaflutter/pages/layouts/home.dart';
 import 'package:californiaflutter/pages/master.dart';
+import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -191,17 +192,9 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
       body: Stack(
         children: [
           // LỚP 1: BACKGROUND CỐ ĐỊNH (Nằm trọn trong 50% phía trên)
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: halfHeight + topPadding,
-            child: Image.asset(
-              'assets/images/background_login_v3_layer.png',
-              // Sử dụng cover kết hợp alignment để "contain" chủ thể vào khung hình
-              fit: BoxFit.cover,
-              alignment: const Alignment(0.3, -0.2),
-            ),
+          CommonBackgroundWidget.buildBackgroundImage(
+            context,
+            dotenv.get('IMAGES_BG_LOGIN_V3_LAYER'),
           ),
 
           // LỚP 2: LÀM MỜ NỀN KHI NHẬP OTP

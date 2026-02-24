@@ -1,7 +1,9 @@
 import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/pages/shared/common_background.dart';
 // import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_point_badge.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class LoyaltyScreen extends StatefulWidget {
   const LoyaltyScreen({super.key});
@@ -71,18 +73,9 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
       body: Stack(
         children: [
           // LỚP 1: BACKGROUND IMAGE THEO SNIPPET
-          Positioned(
-            left: -104,
-            top: 42,
-            child: Opacity(
-              opacity: 0.1,
-              child: Image.asset(
-                "assets/images/background_login_v3_layer.png", // Cập nhật đúng path ảnh
-                width: context.resW(695),
-                height: context.resH(795),
-                fit: BoxFit.cover,
-              ),
-            ),
+          CommonBackgroundWidget.buildBackgroundImage(
+            context,
+            dotenv.get('IMAGES_BG_LOGIN_V3_LAYER'),
           ),
 
           // LỚP 2: NỘI DUNG CHÍNH
