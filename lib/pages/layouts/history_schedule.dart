@@ -15,7 +15,7 @@ class HistoryScheduleScreen extends StatefulWidget {
 
 class _HistoryScheduleScreenState extends State<HistoryScheduleScreen> {
   // Biến trạng thái cho Tab chính (Hoàn thành / Chưa hoàn thành)
-  bool _isCompletedSelected = true;
+  bool _isCompletedSelected = false;
   // Biến trạng thái cho Sub-tab (Sắp diễn ra / Đã hủy)
   bool _isUpcomingSelected = true;
 
