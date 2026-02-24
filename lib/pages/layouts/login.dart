@@ -4,6 +4,7 @@ import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
+import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 // import 'package:californiaflutter/pages/shared/number_key.dart';
 import 'package:californiaflutter/pages/layouts/otp.dart';
@@ -152,17 +153,9 @@ class _LoginScreenState extends State<LoginScreen>
       body: Stack(
         children: [
           // LỚP 1: BACKGROUND CỐ ĐỊNH (Nằm trọn trong 50% phía trên)
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: halfHeight + viewPaddingTop,
-            child: Image.asset(
-              'assets/images/background_login_v3_layer.png',
-              fit: BoxFit
-                  .cover, // Giữ hình ảnh lấp đầy khung hình (Contain effect)
-              alignment: const Alignment(0.3, -0.2),
-            ),
+          CommonBackgroundWidget.buildBackgroundImage(
+            context,
+            dotenv.get('IMAGES_BG_LOGIN_V3_LAYER'),
           ),
 
           // LỚP 2: LÀM MỜ (Chỉ mờ vùng khung ảnh)

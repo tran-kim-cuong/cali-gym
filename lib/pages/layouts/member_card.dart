@@ -2,12 +2,15 @@
 import 'package:californiaflutter/helpers/convert_model.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
+import 'package:californiaflutter/pages/shared/common_modal.dart';
 // import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 // import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:screen_brightness/screen_brightness.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+// import 'package:qr_flutter/qr_flutter.dart';
+// import 'package:screen_brightness/screen_brightness.dart';
 // import 'package:flutter_svg/svg.dart';
 
 class MemberListScreen extends StatefulWidget {
@@ -40,7 +43,10 @@ class _MemberListScreenState extends State<MemberListScreen> {
       body: Stack(
         children: [
           // LỚP 1: BACKGROUND MỜ
-          _buildBackground(context),
+          CommonBackgroundWidget.buildBackgroundImage(
+            context,
+            dotenv.get('IMAGES_BG_BENEFIT_V3_LAYER'),
+          ),
 
           // LỚP 2: NỘI DUNG CHÍNH
           SafeArea(
@@ -130,25 +136,25 @@ class _MemberListScreenState extends State<MemberListScreen> {
 
   // --- CÁC HÀM UI HELPER THEO CODE MỚI ---
 
-  Widget _buildBackground(BuildContext context) {
-    return Positioned(
-      left: -47,
-      top: -33,
-      child: Opacity(
-        opacity: 0.12,
-        child: Container(
-          width: context.resW(813),
-          height: context.resH(789),
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/backgound_benefit_v3_layer.png"),
-              fit: BoxFit.fill,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _buildBackground(BuildContext context) {
+  //   return Positioned(
+  //     left: -47,
+  //     top: -33,
+  //     child: Opacity(
+  //       opacity: 0.12,
+  //       child: Container(
+  //         width: context.resW(813),
+  //         height: context.resH(789),
+  //         decoration: const BoxDecoration(
+  //           image: DecorationImage(
+  //             image: AssetImage("assets/images/backgound_benefit_v3_layer.png"),
+  //             fit: BoxFit.fill,
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   // Widget _buildHeader(BuildContext context) {
   //   return Container(
@@ -227,7 +233,8 @@ class _MemberListScreenState extends State<MemberListScreen> {
       }),
       onQrClick: (qrData) {
         // Logic hiển thị QR lớn nếu cần
-        _showBigQrModal(context, qrData);
+        // _showBigQrModal(context, qrData);
+        CommonModalWidget.showBigQrModal(context: context, qrData: qrData);
       },
     );
   }
@@ -311,106 +318,106 @@ class _MemberListScreenState extends State<MemberListScreen> {
   //   );
   // }
 
-  Future<void> _showBigQrModal(BuildContext context, String qrData) async {
-    double? originalBrightness;
+  // Future<void> _showBigQrModal(BuildContext context, String qrData) async {
+  //   double? originalBrightness;
 
-    try {
-      // 1. Lưu lại mức độ sáng hiện tại của máy
-      originalBrightness = await ScreenBrightness().application;
+  //   try {
+  //     // 1. Lưu lại mức độ sáng hiện tại của máy
+  //     originalBrightness = await ScreenBrightness().application;
 
-      // 2. Đẩy độ sáng lên tối đa (1.0) để máy quét dễ đọc
-      await ScreenBrightness().setApplicationScreenBrightness(1.0);
-    } catch (e) {
-      debugPrint("Không thể điều chỉnh độ sáng: $e");
-    }
+  //     // 2. Đẩy độ sáng lên tối đa (1.0) để máy quét dễ đọc
+  //     await ScreenBrightness().setApplicationScreenBrightness(1.0);
+  //   } catch (e) {
+  //     debugPrint("Không thể điều chỉnh độ sáng: $e");
+  //   }
 
-    // 3. Hiển thị Modal
-    await showModalBottomSheet(
-      // ignore: use_build_context_synchronously
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: const Color(0xFF151515),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Container(
-          width: double.infinity,
-          padding: EdgeInsets.only(top: context.resH(24)),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Handle bar
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.white24,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
+  //   // 3. Hiển thị Modal
+  //   await showModalBottomSheet(
+  //     // ignore: use_build_context_synchronously
+  //     context: context,
+  //     isScrollControlled: true,
+  //     backgroundColor: const Color(0xFF151515),
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  //     ),
+  //     builder: (context) {
+  //       return Container(
+  //         width: double.infinity,
+  //         padding: EdgeInsets.only(top: context.resH(24)),
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             // Handle bar
+  //             Center(
+  //               child: Container(
+  //                 width: 40,
+  //                 height: 4,
+  //                 margin: const EdgeInsets.only(bottom: 20),
+  //                 decoration: BoxDecoration(
+  //                   color: Colors.white24,
+  //                   borderRadius: BorderRadius.circular(2),
+  //                 ),
+  //               ),
+  //             ),
 
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(
-                  horizontal: context.resW(20),
-                  vertical: context.resH(12),
-                ),
-                child: Column(
-                  children: [
-                    // Khung QR Trắng
-                    Container(
-                      padding: EdgeInsets.all(context.resW(12)),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: const Color(0xFFE8E8E8)),
-                      ),
-                      child: QrImageView(
-                        data: qrData,
-                        version: QrVersions.auto,
-                        size: context.resW(173), // Kích thước QR responsive
-                      ),
-                    ),
+  //             Container(
+  //               width: double.infinity,
+  //               padding: EdgeInsets.symmetric(
+  //                 horizontal: context.resW(20),
+  //                 vertical: context.resH(12),
+  //               ),
+  //               child: Column(
+  //                 children: [
+  //                   // Khung QR Trắng
+  //                   Container(
+  //                     padding: EdgeInsets.all(context.resW(12)),
+  //                     decoration: BoxDecoration(
+  //                       color: Colors.white,
+  //                       borderRadius: BorderRadius.circular(8),
+  //                       border: Border.all(color: const Color(0xFFE8E8E8)),
+  //                     ),
+  //                     child: QrImageView(
+  //                       data: qrData,
+  //                       version: QrVersions.auto,
+  //                       size: context.resW(173), // Kích thước QR responsive
+  //                     ),
+  //                   ),
 
-                    SizedBox(height: context.resH(16)),
+  //                   SizedBox(height: context.resH(16)),
 
-                    // Text hướng dẫn
-                    SizedBox(
-                      width: context.resW(335),
-                      child: Text(
-                        'Vui lòng đưa mã này cho lễ tân để check-in',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: context.resClamp(16, 14, 18),
-                          fontWeight: FontWeight.w500,
-                          height: 1.50,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: context.resH(40)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+  //                   // Text hướng dẫn
+  //                   SizedBox(
+  //                     width: context.resW(335),
+  //                     child: Text(
+  //                       'Vui lòng đưa mã này cho lễ tân để check-in',
+  //                       textAlign: TextAlign.center,
+  //                       style: TextStyle(
+  //                         color: Colors.white,
+  //                         fontSize: context.resClamp(16, 14, 18),
+  //                         fontWeight: FontWeight.w500,
+  //                         height: 1.50,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   SizedBox(height: context.resH(40)),
+  //                 ],
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
 
-    // 4. KHI MODAL ĐÓNG: Trả lại độ sáng ban đầu
-    try {
-      if (originalBrightness != null) {
-        await ScreenBrightness().setApplicationScreenBrightness(
-          originalBrightness,
-        );
-      }
-    } catch (e) {
-      debugPrint("Không thể trả lại độ sáng: $e");
-    }
-  }
+  //   // 4. KHI MODAL ĐÓNG: Trả lại độ sáng ban đầu
+  //   try {
+  //     if (originalBrightness != null) {
+  //       await ScreenBrightness().setApplicationScreenBrightness(
+  //         originalBrightness,
+  //       );
+  //     }
+  //   } catch (e) {
+  //     debugPrint("Không thể trả lại độ sáng: $e");
+  //   }
+  // }
 }
