@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 // import 'package:californiaflutter/pages/layouts/home.dart';
@@ -114,8 +115,8 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
     }
 
     // 3. Lưu vào Session để các màn hình khác (như Home) có thể dùng
-    SessionManager.sClientId = clientId;
-    await SessionManager.setClientId(clientId);
+    AppSession().clientId = SessionManager.sClientId = clientId; // Cập nhật RAM (Tức thì)
+    await SessionManager.setClientId(clientId); // Cập nhật Disk (Bền vững)
   }
 
   Future<void> _verifyOtp() async {

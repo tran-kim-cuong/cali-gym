@@ -1,11 +1,11 @@
 // import 'package:californiaflutter/pages/layouts/home.dart';
+import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/pages/layouts/welcome.dart';
 import 'package:californiaflutter/pages/master.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'helpers/session_manager.dart';
 
 // 1. Khai báo Global Key ở ngoài cùng
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -15,17 +15,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // 2. Khởi tạo Localization
-  await EasyLocalization.ensureInitialized();
-
-  // Load file .env
-  await dotenv.load(fileName: ".env");
-
-  // Kiểm tra trạng thái đăng nhập
-  bool loggedIn = await SessionManager.isLoggedIn();
-
-  String? phoneNumber = await SessionManager.getPhoneNumber();
-  // debugPrint(phoneNumber);
-  bool isPhoneNotEmpty = (phoneNumber != null && phoneNumber != '');
+  // GOM CHUNG CÁC TÁC VỤ CHỜ LOADING TẠI ĐÂY
+  await Future.wait([
+    EasyLocalization.ensureInitialized(), // Khởi tạo đa ngôn ngữ
+    dotenv.load(fileName: ".env"),        // Load cấu hình môi trường
+    AppSession().load(),                  // Nạp dữ liệu phiên đăng nhập vào RAM
+  ]);
 
   runApp(
     // 3. Bọc App bằng EasyLocalization
@@ -34,7 +29,7 @@ void main() async {
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
       startLocale: const Locale('vi'),
-      child: MyApp(isLoggedIn: loggedIn && isPhoneNotEmpty),
+      child: MyApp(isLoggedIn: AppSession().isLoggedIn),
     ),
   );
 }

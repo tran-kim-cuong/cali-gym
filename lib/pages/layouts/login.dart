@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
@@ -97,7 +98,9 @@ class _LoginScreenState extends State<LoginScreen>
 
         if (response?.statusCode == 200) {
           SessionManager.otp = otpCode;
-          await SessionManager.setPhoneNumber(phoneNumber);
+
+          AppSession().phoneNumber = phoneNumber; // Cập nhật RAM (Tức thì)
+          await SessionManager.setPhoneNumber(phoneNumber); // Cập nhật Disk (Bền vững)
           // SessionManager.sSdt = phoneNumber;
 
           if (mounted) {
