@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:californiaflutter/models/booking_class_model.dart';
+import 'package:californiaflutter/models/booking_class_seat_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
 import 'package:californiaflutter/models/member_model.dart';
@@ -7,7 +9,7 @@ import 'package:crypto/crypto.dart';
 
 Future<String> getToken() async {
   final response = await http.post(
-    Uri.parse('https://booking-stg.cali.vn/api/login'),
+    Uri.parse('${dotenv.get('CALIFORNIA_URI')}/api/login'),
     headers: {'Accept': 'application/json'},
     body: {'email': 'api@livwell.asia', 'password': "X'YS}4Fhdxg*q7AJ"},
   );
@@ -63,11 +65,6 @@ Future<MemberModel> getMember(
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
     MemberModel member = MemberModel.fromJson(data['data']);
-    // print(member.listMembershipCard?.length);
-    // print(member.listMembershipCard?[0].membershipType);
-    // print(member.listMembershipCard?[1].membershipType);
-    // print(member.listMembershipCard?[2].membershipType);
-    // print(member.listMembershipCard?[3].membershipType);
     return member;
   } else {
     throw Exception('Get member failed');
@@ -89,6 +86,58 @@ Future<BookingClassModel> getBookingClass(String token, String clientId) async {
     return model;
   } else {
     throw Exception('Get member failed');
+  }
+}
+
+Future<BookingClassSeatModel> bookingClassSeat(
+  String token,
+  String clinetId,
+  String phoneNumber,
+  String scheduleId,
+  String seat,
+) async {
+  final response = await http.post(
+    Uri.parse('https://booking-stg.cali.vn/api/booking/seat/book'),
+    headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+    body: {
+      'clientcode': clinetId,
+      'phone_number': phoneNumber,
+      'schedule_id': scheduleId,
+      'seat_number': seat,
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final jsonResponse = jsonDecode(response.body);
+    // print(jsonResponse);
+    BookingClassSeatModel model = BookingClassSeatModel.fromJson(jsonResponse);
+    // print("============");
+    if (model.data != null) {
+      // print(model.data?.ticketInfo?.ticketNumber);
+    } else {
+      print("lỗi trùng");
+    }
+    return model;
+  } else {
+    throw Exception('Get Club failed');
+  }
+}
+
+Future<int> bookingCancel(
+  String token,
+  String clinetId,
+  String ticketNumber,
+) async {
+  final response = await http.post(
+    Uri.parse('https://booking-stg.cali.vn/api/booking/seat/delete'),
+    headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+    body: {'clientcode': clinetId, 'ticket_number': ticketNumber},
+  );
+
+  if (response.statusCode == 200) {
+    return 1;
+  } else {
+    return 0;
   }
 }
 
