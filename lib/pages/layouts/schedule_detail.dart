@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:californiaflutter/helpers/loading_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
+import 'package:californiaflutter/pages/layouts/class_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -572,8 +573,20 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            // Navigator.pop(context);
                             // Logic xác nhận đặt chỗ với selectedSeat
+                            // Bạn có thể in log để kiểm tra số ghế đã chọn
+                            debugPrint(
+                              "Đặt chỗ thành công cho ghế số: $selectedSeat",
+                            );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ClassDetailScreen(
+                                  schedule: widget.schedule,
+                                ),
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFD92229),
