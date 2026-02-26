@@ -1,9 +1,11 @@
+import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
 import 'package:californiaflutter/helpers/convert_model.dart';
 import 'package:californiaflutter/models/booking_class_model.dart';
 import 'package:californiaflutter/models/member_model.dart';
+import 'package:californiaflutter/pages/layouts/class.dart';
 // import 'package:californiaflutter/pages/layouts/loyalty.dart';
 import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/layouts/other_benefits.dart';
@@ -15,6 +17,7 @@ import 'package:californiaflutter/pages/shared/common_class_card.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
 import 'package:californiaflutter/pages/shared/common_point_badge.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
+import 'package:californiaflutter/services/booking_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -44,39 +47,33 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     _memberCards = buildMemberCards(SessionManager.member);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      clientId = await SessionManager.getClientId();
-      _fetchMemberCards();
-      _fetchUpcomingClasses();
+      // clientId = await SessionManager.getClientId();
+      await _initData();
       _checkNotificationPermission();
     });
+  }
+
+  Future<void> _initData() async {
+    // 1. GOM 2 TÁC VỤ VÀO 1 HANDLE API DUY NHẤT
+    await handleApi(
+      context,
+      Future.wait([_fetchMemberCards(), _fetchUpcomingClasses()]),
+    );
+
+    // Sau khi cả 2 load xong, Loading sẽ tự tắt
+    debugPrint("--- Đã tải xong toàn bộ dữ liệu trang Home ---");
   }
 
   // --- GIỮ NGUYÊN LOGIC API ---
   Future<void> _fetchUpcomingClasses() async {
     try {
-      final response = await handleApi(
-        context,
-        BaseApi().client.post(
-          '/api/booking/post/getUserBookedClasses',
-          data: {"clientcode": clientId},
-        ),
+      final List<BookingData> rs = await BookingService.getUpcomingClasses(
+        AppSession().clientId,
       );
-      debugPrint(response.toString());
-      if (response?.statusCode == 200 && response?.data != null) {
-        final List<dynamic> rawData = response?.data is List
-            ? response?.data
-            : (response?.data['booking_data'] ?? []);
-        final List<BookingData> fetchedClasses = rawData
-            .map((e) => BookingData.fromJson(e))
-            .toList();
 
-        fetchedClasses.sort((a, b) {
-          if (a.startDate == null || b.startDate == null) return 0;
-          return a.startDate!.compareTo(b.startDate!);
-        });
-
+      if (mounted) {
         setState(() {
-          _upcomingClasses = fetchedClasses;
+          _upcomingClasses = rs;
         });
       }
     } catch (e) {
@@ -86,47 +83,29 @@ class _HomeScreenState extends State<HomeScreen>
 
   Future<void> _fetchMemberCards() async {
     try {
-      String? phoneNumber = await SessionManager.getPhoneNumber();
-
-      if (mounted == false) return;
-
-      final response = await handleApi(
-        context,
-        BaseApi().client.post(
-          '/api/booking/check/member',
-          data: {"clientcode": clientId, "phone_number": phoneNumber},
-        ),
+      final response = await BaseApi().client.post(
+        '/api/booking/check/member',
+        data: {
+          "clientcode": AppSession().clientId,
+          "phone_number": AppSession().phoneNumber,
+        },
       );
 
-      if (response?.statusCode == 200 && response?.data != null) {
-        final member = MemberModel.fromJson(response?.data['data']);
-        setState(() {
-          SessionManager.member = member;
-          SessionManager.sTenKh = member.firstName!;
-          SessionManager.sMembershipNumber = member.membershipNumber!;
-          _memberCards = buildMemberCards(SessionManager.member);
-        });
+      if (200 == response.statusCode && response.data != null) {
+        final member = MemberModel.fromJson(response.data['data']);
+        if (mounted) {
+          setState(() {
+            SessionManager.member = member;
+            SessionManager.sTenKh = member.firstName!;
+            SessionManager.sMembershipNumber = member.membershipNumber!;
+            _memberCards = buildMemberCards(SessionManager.member);
+          });
+        }
       }
     } catch (e) {
       showTopNotification("Không thể cập nhật thông tin thẻ", isError: true);
     }
   }
-
-  // void _onItemTapped(int index) {
-  //   if (index == 2) {
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const LoyaltyScreen()),
-  //     );
-  //   } else if (index == 1) {
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const ScheduleScreen()),
-  //     );
-  //   } else {
-  //     setState(() => _selectedIndex = index);
-  //   }
-  // }
 
   Future<void> _checkNotificationPermission() async {
     final prefs = await SharedPreferences.getInstance();
@@ -145,7 +124,10 @@ class _HomeScreenState extends State<HomeScreen>
       body: Stack(
         children: [
           // LỚP 1: BACKGROUND MỜ
-          CommonBackgroundWidget.buildBackgroundImage(context, dotenv.get('IMAGES_BG_HOME_V3_LAYER')),
+          CommonBackgroundWidget.buildBackgroundImage(
+            context,
+            dotenv.get('IMAGES_BG_HOME_V3_LAYER'),
+          ),
 
           // LỚP 2: NỘI DUNG CHÍNH (SCROLLABLE)
           SafeArea(
@@ -184,7 +166,13 @@ class _HomeScreenState extends State<HomeScreen>
                   SizedBox(height: context.resH(24)),
 
                   // 6. UPCOMING CLASSES
-                  _buildSectionHeader('Lớp học sắp tới', 'Xem tất cả', () {}),
+                  _buildSectionHeader('Lớp học sắp tới', 'Xem tất cả', () {
+                    // CẬP NHẬT TẠI ĐÂY: Cho phép nhấn vào chữ "Xem tất cả" ở trên đầu
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ClassScreen()),
+                    );
+                  }),
                   _upcomingClasses.isEmpty
                       ? _buildEmptyState('Không có lớp học nào', 'Đăng ký ngay')
                       : _buildClassList(),
@@ -569,9 +557,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildViewAllCard() {
     return GestureDetector(
-      onTap: () {
-        // Điều hướng đến màn hình danh sách lịch học đầy đủ
-      },
+      onTap: () {},
       child: Container(
         width: context.resW(150),
         // Sử dụng margin và shadow đồng bộ với CommonClassCard
