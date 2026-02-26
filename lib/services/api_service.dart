@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:californiaflutter/models/booking_class_model.dart';
 import 'package:californiaflutter/models/booking_class_seat_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
@@ -115,7 +116,7 @@ Future<BookingClassSeatModel> bookingClassSeat(
     if (model.data != null) {
       // print(model.data?.ticketInfo?.ticketNumber);
     } else {
-      print("lỗi trùng");
+      debugPrint("lỗi trùng");
     }
     return model;
   } else {

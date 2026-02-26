@@ -1,4 +1,6 @@
+import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/pages/layouts/home.dart';
+import 'package:californiaflutter/pages/layouts/login.dart';
 import 'package:californiaflutter/pages/layouts/schedule.dart';
 import 'package:californiaflutter/pages/layouts/loyalty.dart';
 import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
@@ -20,12 +22,32 @@ class _MasterScreenState extends State<MasterScreen> {
   @override
   void initState() {
     super.initState();
+
+    // 1. KIỂM TRA AUTH NGAY KHI VÀO MÀN HÌNH
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAuthStatus();
+    });
+
     _pages = [
       const HomeScreen(), // Index 0
       const ScheduleScreen(), // Index 1
       const LoyaltyScreen(), // Index 2 (Ví dụ)
       const Scaffold(body: Center(child: Text("Hồ sơ"))), // Index 3
     ];
+  }
+
+  void _checkAuthStatus() {
+    // 2. Kiểm tra nếu thiếu Phone hoặc ClientID thì đẩy ra Login
+    if (AppSession().phoneNumber.isEmpty || AppSession().clientId.isEmpty) {
+      debugPrint("--- Auth Guard: Thiếu dữ liệu, chuyển hướng về Welcome ---");
+
+      // Sử dụng pushAndRemoveUntil để xóa sạch lịch sử các màn hình trước đó
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        (route) => false, // Xóa tất cả các route cũ
+      );
+    }
   }
 
   void _onTabTapped(int index) {
