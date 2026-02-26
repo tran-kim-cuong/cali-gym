@@ -98,7 +98,7 @@ Future<BookingClassSeatModel> bookingClassSeat(
   String seat,
 ) async {
   final response = await http.post(
-    Uri.parse('https://booking-stg.cali.vn/api/booking/seat/book'),
+    Uri.parse('${dotenv.get('CALIFORNIA_URI')}/api/booking/seat/book'),
     headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
     body: {
       'clientcode': clinetId,
