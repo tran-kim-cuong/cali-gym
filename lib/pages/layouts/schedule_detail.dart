@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/helpers/loading_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/models/booking_class_seat_model.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
 import 'package:californiaflutter/pages/layouts/class_detail.dart';
+import 'package:californiaflutter/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -189,7 +192,8 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
           ),
           _buildIconText(
             Icons.person_outline,
-            'Giáo viên ${widget.schedule.trainerName ?? 'N/A'}',
+            // 'Giáo viên ${widget.schedule.trainerName ?? 'N/A'}',
+            'Giáo viên ${widget.schedule.scheduleId ?? 'N/A'}',
           ),
           Row(
             children: [
@@ -572,21 +576,39 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
                       SizedBox(width: context.resW(16)),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             // Navigator.pop(context);
                             // Logic xác nhận đặt chỗ với selectedSeat
-                            // Bạn có thể in log để kiểm tra số ghế đã chọn
-                            debugPrint(
-                              "Đặt chỗ thành công cho ghế số: $selectedSeat",
+                            String sToken = await getToken();
+                            // print(sToken);
+                            debugPrint(AppSession().clientId);
+                            var phone = AppSession().phoneNumber;
+                            debugPrint(phone);
+                            debugPrint(widget.schedule.scheduleId.toString());
+                            BookingClassSeatModel bcs = await bookingClassSeat(
+                              sToken,
+                              AppSession().clientId,
+                              AppSession().phoneNumber,
+                              widget.schedule.scheduleId.toString(),
+                              "$selectedSeat",
                             );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ClassDetailScreen(
-                                  schedule: widget.schedule,
+                            if (bcs.data != null) {
+                              debugPrint(bcs.data!.ticketInfo?.ticketNumber);
+                              // Bạn có thể in log để kiểm tra số ghế đã chọn
+                              debugPrint(
+                                "Đặt chỗ thành công cho ghế số: $selectedSeat",
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ClassDetailScreen(
+                                    schedule: widget.schedule,
+                                  ),
                                 ),
-                              ),
-                            );
+                              );
+                            } else {
+                              debugPrint("Lỗi booking lớp");
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFD92229),
