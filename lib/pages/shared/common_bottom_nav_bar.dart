@@ -68,7 +68,7 @@ class CommonBottomNavBar extends StatelessWidget {
           children: [
             // SỬ DỤNG SVGPicture THAY CHO ICON
             SvgPicture.asset(
-              svgPath,
+              isSelected ? svgPath.replaceAll('.svg', '-bold.svg') : svgPath,
               // Áp dụng màu sắc cho SVG
               colorFilter: ColorFilter.mode(currentColor, BlendMode.srcIn),
               // Kích thước Responsive

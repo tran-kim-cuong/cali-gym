@@ -1,5 +1,6 @@
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
+import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
 import 'package:californiaflutter/pages/layouts/history_schedule.dart';
@@ -136,7 +137,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
       body: Stack(
         children: [
           // Lớp nền Background mờ (Opacity 0.12)
-          CommonBackgroundWidget.buildBackgroundImage(context, dotenv.get('IMAGES_BG_LOGIN_V3_LAYER')),
+          CommonBackgroundWidget.buildBackgroundImage(
+            context,
+            dotenv.get('IMAGES_BG_LOGIN_V3_LAYER'),
+          ),
 
           SafeArea(
             bottom: false,
@@ -461,10 +465,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                 width: double.infinity,
                 color: Colors.white,
                 child: Image.asset(
-                  "assets/images/none.jpg",
+                  ImageHelper.getClassThumbnail(data.classType),
                   fit: BoxFit.cover,
                   errorBuilder: (c, e, s) =>
-                      const Icon(Icons.image_not_supported),
+                      Image.asset("assets/images/none.jpg", fit: BoxFit.cover),
                 ),
               ),
             ),
