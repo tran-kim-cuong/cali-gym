@@ -9,6 +9,7 @@ import 'package:californiaflutter/pages/layouts/class.dart';
 // import 'package:californiaflutter/pages/layouts/loyalty.dart';
 import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/layouts/other_benefits.dart';
+import 'package:californiaflutter/pages/layouts/schedule.dart';
 // import 'package:californiaflutter/pages/layouts/schedule.dart';
 import 'package:californiaflutter/pages/shared/check_in_bottom_sheet.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
@@ -280,51 +281,6 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // Widget _statItem(String value, {required bool isPoint}) {
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-  //     decoration: BoxDecoration(
-  //       color: Colors.white.withValues(alpha: 0.05),
-  //       border: Border.all(color: const Color(0xFFE8E8E8), width: 0.5),
-  //       borderRadius: BorderRadius.circular(4),
-  //     ),
-  //     child: Row(
-  //       children: [
-  //         Text(
-  //           value,
-  //           style: TextStyle(
-  //             color: Colors.white,
-  //             // Responsive cho các chỉ số point/voucher
-  //             fontSize: context.resClamp(12, 10, 14),
-  //             height: 1.5,
-  //           ),
-  //         ),
-  //         if (isPoint) ...[
-  //           const SizedBox(width: 4),
-  //           Container(
-  //             width: 16,
-  //             height: 16,
-  //             decoration: const BoxDecoration(
-  //               color: Color(0xFFD92229),
-  //               shape: BoxShape.circle,
-  //             ),
-  //             child: const Center(
-  //               child: Text(
-  //                 "C",
-  //                 style: TextStyle(
-  //                   color: Colors.white,
-  //                   fontSize: 9,
-  //                   fontWeight: FontWeight.bold,
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildSectionHeader(String title, String action, VoidCallback onTap) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: context.resW(20), vertical: 6),
@@ -364,7 +320,16 @@ class _HomeScreenState extends State<HomeScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _actionCircle('Đặt lớp học', 'assets/images/vuesax/teacher.svg'),
+          _actionCircle(
+            'Đặt lớp học',
+            'assets/images/vuesax/teacher.svg',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ScheduleScreen()),
+              );
+            },
+          ),
           _actionCircle(
             'Quyền lợi khác',
             'assets/images/vuesax/gift.svg',
@@ -404,10 +369,7 @@ class _HomeScreenState extends State<HomeScreen>
             ),
             child: SvgPicture.asset(
               iconPath,
-              colorFilter: const ColorFilter.mode(
-                brandRed,
-                BlendMode.srcIn,
-              ),
+              colorFilter: const ColorFilter.mode(brandRed, BlendMode.srcIn),
             ),
           ),
           const SizedBox(height: 8),
@@ -415,7 +377,7 @@ class _HomeScreenState extends State<HomeScreen>
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: brandRed,
+              color: Colors.white,
               // Responsive cho nhãn các nút chức năng nhanh
               fontSize: context.resClamp(12, 10, 14),
               height: 1.5,
