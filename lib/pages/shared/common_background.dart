@@ -7,7 +7,7 @@ class CommonBackgroundWidget {
   static Widget buildBackgroundImage(
     BuildContext context,
     String assetPath, {
-    double opacity = 0.12,
+    double opacity = 1.0,
   }) {
     return Positioned.fill(
       child: Align(
@@ -21,7 +21,7 @@ class CommonBackgroundWidget {
             height: MediaQuery.of(context).size.height,
 
             // BoxFit.contain để thấy trọn vẹn hình thể nhân vật không bị cắt
-            fit: BoxFit.contain,
+            fit: BoxFit.cover,
 
             errorBuilder: (context, error, stackTrace) => const SizedBox(),
           ),

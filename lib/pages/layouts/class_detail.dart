@@ -1,12 +1,27 @@
+import 'package:californiaflutter/bases/loading_wrapper.dart';
+import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../models/schedule_model.dart';
+
 // import '../shared/check_in_bottom_sheet.dart'; //
+class ClassDetailScreen extends StatefulWidget {
+  final int? scheduleId; // Chỉ nhận ID
 
-class ClassDetailScreen extends StatelessWidget {
-  final ScheduleModel schedule;
+  const ClassDetailScreen({super.key, required this.scheduleId});
 
-  const ClassDetailScreen({super.key, required this.schedule});
+  @override
+  State<ClassDetailScreen> createState() => _ClassDetailScreenState();
+}
+
+class _ClassDetailScreenState extends State<ClassDetailScreen>
+    with LoadingWrapper {
+  ScheduleModel? schedule;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +58,10 @@ class ClassDetailScreen extends StatelessWidget {
         Container(
           width: double.infinity,
           height: 367,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage(
-                'assets/images/image_class.jpg',
+                ImageHelper.getClassThumbnail(schedule?.classType),
               ), // Hoặc dùng NetworkImage
               fit: BoxFit.cover,
             ),
@@ -99,7 +114,7 @@ class ClassDetailScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            schedule.className ?? 'N/A', //
+            schedule?.className ?? 'N/A', //
             style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
@@ -112,11 +127,11 @@ class ClassDetailScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Giáo viên: ${schedule.trainerName ?? 'Chưa cập nhật'}',
+                'Giáo viên: ${schedule?.trainerName ?? 'Chưa cập nhật'}',
                 style: const TextStyle(color: Color(0xFF9A9A9A), fontSize: 14),
               ),
               Text(
-                '${schedule.slotBooked ?? 0} chiến binh',
+                '${schedule?.slotBooked ?? 0} chiến binh',
                 style: const TextStyle(color: Color(0xFF9A9A9A), fontSize: 12),
               ),
             ],
@@ -132,22 +147,24 @@ class ClassDetailScreen extends StatelessWidget {
       title: 'Thông tin chung',
       child: Column(
         children: [
-          _buildInfoRow('Mã lớp học', schedule.scheduleId.toString()),
+          _buildInfoRow('Mã lớp học', "${schedule?.scheduleId ?? 'N/A'}"),
           _buildInfoRow(
             'Số ghế đặt',
-            '${schedule.slotBooked}/${schedule.numberSeat}',
+            '${schedule?.slotBooked ?? 'N/A'}/${schedule?.numberSeat ?? 'N/A'}',
             actionLabel: 'Xem sơ đồ',
             onAction: () {},
           ),
           _buildInfoRow(
             'Thời gian học',
-            schedule.startDate != null
-                ? DateFormat('dd/MM/yyyy HH:mm').format(schedule.startDate!)
+            schedule?.startDate != null
+                ? DateFormat(
+                    'dd/MM/yyyy HH:mm',
+                  ).format(schedule?.startDate ?? DateTime.now())
                 : '--',
           ),
           _buildInfoRow(
             'Địa điểm học',
-            '${schedule.studioName} - ${schedule.clubName}',
+            '${schedule?.studioName ?? 'N/A'} - ${schedule?.clubName ?? 'N/A'}',
             actionLabel: 'Xem đường đi',
             onAction: () {},
           ),
@@ -172,7 +189,7 @@ class ClassDetailScreen extends StatelessWidget {
     return _buildSectionWrapper(
       title: 'Giới thiệu',
       child: Text(
-        schedule.note?.isNotEmpty == true ? schedule.note! : 'N/A', //
+        schedule?.note ?? 'N/A', //
         style: const TextStyle(color: Color(0xFF9A9A9A), fontSize: 12),
       ),
     );

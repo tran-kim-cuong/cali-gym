@@ -387,6 +387,9 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _actionCircle(String label, String iconPath, {VoidCallback? onTap}) {
+    // Sử dụng màu đỏ thương hiệu từ login.dart hoặc các nút đặt chỗ
+    const Color brandRed = Color(0xFFDA212D);
+
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -402,7 +405,7 @@ class _HomeScreenState extends State<HomeScreen>
             child: SvgPicture.asset(
               iconPath,
               colorFilter: const ColorFilter.mode(
-                Colors.white,
+                brandRed,
                 BlendMode.srcIn,
               ),
             ),
@@ -412,7 +415,7 @@ class _HomeScreenState extends State<HomeScreen>
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white,
+              color: brandRed,
               // Responsive cho nhãn các nút chức năng nhanh
               fontSize: context.resClamp(12, 10, 14),
               height: 1.5,

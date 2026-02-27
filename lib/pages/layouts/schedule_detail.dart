@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:californiaflutter/bases/app_session.dart';
+import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/loading_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/booking_class_seat_model.dart';
@@ -105,7 +106,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
       child: Stack(
         children: [
           Image.asset(
-            "assets/images/none.jpg", // Thay bằng image từ model nếu có
+            ImageHelper.getClassThumbnail(widget.schedule.classType), // Thay bằng image từ model nếu có
             width: double.infinity,
             height: double.infinity,
             fit: BoxFit.cover,
@@ -193,7 +194,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
           _buildIconText(
             Icons.person_outline,
             // 'Giáo viên ${widget.schedule.trainerName ?? 'N/A'}',
-            'Giáo viên ${widget.schedule.scheduleId ?? 'N/A'}',
+            'Giáo viên ${widget.schedule.trainerName ?? 'N/A'}',
           ),
           Row(
             children: [
@@ -580,6 +581,8 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
                             // Navigator.pop(context);
                             // Logic xác nhận đặt chỗ với selectedSeat
                             String sToken = await getToken();
+                            if (!context.mounted) return;
+
                             // print(sToken);
                             debugPrint(AppSession().clientId);
                             var phone = AppSession().phoneNumber;
@@ -592,17 +595,21 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
                               widget.schedule.scheduleId.toString(),
                               "$selectedSeat",
                             );
+
+                            if (!context.mounted) return;
+
                             if (bcs.data != null) {
                               debugPrint(bcs.data!.ticketInfo?.ticketNumber);
                               // Bạn có thể in log để kiểm tra số ghế đã chọn
                               debugPrint(
                                 "Đặt chỗ thành công cho ghế số: $selectedSeat",
                               );
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ClassDetailScreen(
-                                    schedule: widget.schedule,
+                                    scheduleId: widget.schedule.scheduleId,
                                   ),
                                 ),
                               );
