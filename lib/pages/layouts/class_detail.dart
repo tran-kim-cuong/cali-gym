@@ -3,6 +3,7 @@ import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
+import 'package:californiaflutter/pages/shared/common_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
@@ -399,7 +400,11 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
             // 2. NÚT QUÉT ĐỂ CHECK-IN (Dạng Solid Red)
             ElevatedButton(
               onPressed: () {
-                // Thêm logic quét mã tại đây
+                String qrCode = ''; // Gắn nội dung bỏ vô đây - DungDT
+                CommonModalWidget.showBigQrModal(
+                  context: context,
+                  qrData: qrCode,
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFD92229), // Màu đỏ thương hiệu
