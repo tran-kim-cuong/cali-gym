@@ -1,3 +1,4 @@
+import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
@@ -377,6 +378,11 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
             OutlinedButton(
               onPressed: () {
                 // Thêm logic huỷ lịch tại đây
+                print(widget.scheduleId);
+                print("clubCode");
+                print(AppSession().customerId);
+                print("chỗ ngồi");
+                print("test hủy lịch hẹn");
               },
               style: OutlinedButton.styleFrom(
                 // Màu viền xám mỏng theo hình mẫu
@@ -387,7 +393,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                 ),
               ),
               child: const Text(
-                'Huỷ lịch hẹn',
+                'Huỷ lịch hẹn 1',
                 style: TextStyle(
                   color: Colors.white, // Chữ trắng nổi bật trên nền tối
                   fontSize: 16,

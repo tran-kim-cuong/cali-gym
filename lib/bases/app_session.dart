@@ -1,4 +1,3 @@
-
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/models/member_model.dart';
 import 'package:flutter/widgets.dart';
@@ -15,6 +14,7 @@ class AppSession {
   MemberModel? member;
   bool isInitialized = false;
   bool isLoggedIn = false;
+  String customerId = "";
 
   // 3. Hàm LOAD duy nhất - Gắn giá trị 1 lần
   Future<void> load() async {
@@ -24,6 +24,7 @@ class AppSession {
     phoneNumber = await SessionManager.getPhoneNumber() ?? "";
     clientId = await SessionManager.getClientId() ?? "";
     member = SessionManager.member;
+    customerId = SessionManager.sCustomerId;
 
     bool loggedIn = await SessionManager.isLoggedIn();
     isLoggedIn = loggedIn && phoneNumber.isNotEmpty;
