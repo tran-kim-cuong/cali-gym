@@ -1,12 +1,14 @@
+import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
+import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/models/schedule_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
-import '../../models/schedule_model.dart';
 
-// import '../shared/check_in_bottom_sheet.dart'; //
 class ClassDetailScreen extends StatefulWidget {
-  final int? scheduleId; // Chỉ nhận ID
+  final int? scheduleId;
 
   const ClassDetailScreen({super.key, required this.scheduleId});
 
@@ -21,313 +23,437 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
   @override
   void initState() {
     super.initState();
+    // Tự động gọi API khi vào màn hình
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _fetchData();
+    });
+  }
+
+  Future<void> _fetchData() async {
+    try {
+      final response = await handleApi(
+        context,
+        BaseApi().client.get(
+          '/get/schedules/id',
+          queryParameters: {'scheduleIds': widget.scheduleId},
+        ),
+      );
+
+      if (response?.statusCode == 200 && response?.data != null) {
+        final List<dynamic> listData = response?.data['data'] ?? [];
+        if (listData.isNotEmpty && mounted) {
+          setState(() {
+            debugPrint('${listData.first}');
+            schedule = ScheduleModel.fromJson(listData.first);
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint("Lỗi tải chi tiết: $e");
+    }
+  }
+
+  String _formatClassTime(DateTime? start, DateTime? end) {
+    if (start == null || end == null) return 'N/A';
+
+    // 1. Định dạng ngày: dd/MM/yyyy
+    final String dateStr = DateFormat('dd/MM/yyyy').format(start);
+
+    // 2. Định dạng giờ bắt đầu và kết thúc: hh:mm a
+    final String startTime = DateFormat('hh:mm a').format(start);
+    final String endTime = DateFormat('hh:mm a').format(end);
+
+    return '$dateStr $startTime - $endTime';
   }
 
   @override
   Widget build(BuildContext context) {
+    final double systemTopPadding = MediaQuery.of(context).padding.top;
+    final double systemBottomPadding = MediaQuery.of(context).padding.bottom;
+
+    if (schedule == null) {
+      return const Scaffold(
+        backgroundColor: Color(0xFF151515),
+        body: Center(child: CircularProgressIndicator(color: Colors.red)),
+      );
+    }
+
     return Scaffold(
-      backgroundColor: const Color(
-        0xFF242424,
-      ), // Colors-Background-bg-base-primary
-      body: Column(
+      backgroundColor: const Color(0xFF151515),
+      body: Stack(
         children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeaderImage(context),
-                  _buildMainInfo(),
-                  _buildDetailedSection(),
-                  _buildNoteSection(),
-                  _buildIntroSection(),
-                ],
-              ),
-            ),
-          ),
-          _buildBottomActions(context),
-        ],
-      ),
-    );
-  }
-
-  // --- 1. Ảnh header và nút Back ---
-  Widget _buildHeaderImage(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          width: double.infinity,
-          height: 367,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(
-                ImageHelper.getClassThumbnail(schedule?.classType),
-              ), // Hoặc dùng NetworkImage
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        // Overlay mờ
-        Positioned.fill(
-          child: Container(color: Colors.black.withValues(alpha: 0.1)),
-        ),
-        // Nút Back
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 16, top: 10),
-            child: CircleAvatar(
-              backgroundColor: Colors.black.withValues(alpha: 0.3),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Colors.white,
-                  size: 20,
-                ),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
-          ),
-        ),
-        // Tiêu đề overlay
-        Positioned(
-          bottom: 20,
-          left: 20,
-          child: const Text(
-            'Chi tiết dịch vụ',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // --- 2. Thông tin chính (Tên lớp, giáo viên) ---
-  Widget _buildMainInfo() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            schedule?.className ?? 'N/A', //
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          _buildHeroImage(context),
+          Column(
             children: [
-              Text(
-                'Giáo viên: ${schedule?.trainerName ?? 'Chưa cập nhật'}',
-                style: const TextStyle(color: Color(0xFF9A9A9A), fontSize: 14),
-              ),
-              Text(
-                '${schedule?.slotBooked ?? 0} chiến binh',
-                style: const TextStyle(color: Color(0xFF9A9A9A), fontSize: 12),
+              _buildHeader(context, systemTopPadding),
+              Expanded(
+                child: RefreshIndicator(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.only(
+                      bottom: context.resH(120) + systemBottomPadding,
+                    ),
+                    child: Column(
+                      children: [
+                        // GIẢM KHOẢNG CÁCH TẠI ĐÂY ĐỂ ĐẨY CARD LÊN CAO
+                        SizedBox(height: context.resH(12)),
+
+                        _buildMainStatsCard(context),
+                        _buildContentSections(context),
+                      ],
+                    ),
+                  ),
+                  onRefresh: () => _fetchData(),
+                ),
               ),
             ],
           ),
+          _buildStickyBottomActions(context, systemBottomPadding),
         ],
       ),
     );
   }
 
-  // --- 3. Section Thông tin chung (Mã lớp, Thời gian, Địa điểm) ---
-  Widget _buildDetailedSection() {
-    return _buildSectionWrapper(
-      title: 'Thông tin chung',
-      child: Column(
+  // MARK: - UI Components
+
+  Widget _buildHeroImage(BuildContext context) {
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      height: context.resH(325), // Chiều cao ảnh theo snippet
+      child: Stack(
         children: [
-          _buildInfoRow('Mã lớp học', "${schedule?.scheduleId ?? 'N/A'}"),
-          _buildInfoRow(
-            'Số ghế đặt',
-            '${schedule?.slotBooked ?? 'N/A'}/${schedule?.numberSeat ?? 'N/A'}',
-            actionLabel: 'Xem sơ đồ',
-            onAction: () {},
+          Image.asset(
+            ImageHelper.getClassThumbnail(schedule?.classType),
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.cover,
+            errorBuilder: (c, e, s) =>
+                Image.asset("assets/images/none.jpg", fit: BoxFit.cover),
           ),
-          _buildInfoRow(
-            'Thời gian học',
-            schedule?.startDate != null
-                ? DateFormat(
-                    'dd/MM/yyyy HH:mm',
-                  ).format(schedule?.startDate ?? DateTime.now())
-                : '--',
-          ),
-          _buildInfoRow(
-            'Địa điểm học',
-            '${schedule?.studioName ?? 'N/A'} - ${schedule?.clubName ?? 'N/A'}',
-            actionLabel: 'Xem đường đi',
-            onAction: () {},
+          // Gradient phủ tối để chữ header rõ nét
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.55),
+            ),
           ),
         ],
       ),
     );
   }
 
-  // --- 4. Section Lưu ý ---
-  Widget _buildNoteSection() {
-    return _buildSectionWrapper(
-      title: 'Lưu ý',
-      child: const Text(
-        'Quyền lợi đặt chỗ trên ứng dụng sẽ đóng trước khi lớp bắt đầu 2 tiếng\nQuyền lợi đăng kí trước buổi tập sẽ được tạm ngưng 14 ngày trong trường hợp hội viên thay đổi kế hoạch tập luyện nhưng không huỷ bỏ buổi tập đã đăng ký trước (No show) 3 lần (tích luỹ ) trong vòng 30 ngày kể từ lần vi phạm gần nhất',
-        style: TextStyle(color: Color(0xFF9A9A9A), fontSize: 12, height: 1.5),
-      ),
-    );
-  }
-
-  // --- 5. Section Giới thiệu ---
-  Widget _buildIntroSection() {
-    return _buildSectionWrapper(
-      title: 'Giới thiệu',
-      child: Text(
-        schedule?.note ?? 'N/A', //
-        style: const TextStyle(color: Color(0xFF9A9A9A), fontSize: 12),
-      ),
-    );
-  }
-
-  // --- 6. Nút hành động dính dưới đáy ---
-  Widget _buildBottomActions(BuildContext context) {
+  Widget _buildHeader(BuildContext context, double topPadding) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(
-        20,
-        12,
-        20,
-        34,
-      ), // Padding bottom cho iPhone
-      decoration: const BoxDecoration(
-        color: Color(0xFF242424),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 10,
-            offset: Offset(0, -1),
-          ),
-        ],
-      ),
+      padding: EdgeInsets.only(top: topPadding + 8, left: 8, right: 20),
       child: Row(
-        spacing: 16,
         children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () {},
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Color(0xFF9A9A9A)),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-              child: const Text(
-                'Huỷ lịch hẹn',
-                style: TextStyle(
-                  color: Color(0xFFC7C7C7),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: ElevatedButton(
-              onPressed:
-                  null, //() => CheckInBottomSheet.show(context, schedule), //
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFD92229),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-              child: const Text(
-                'Quét mã Check-in',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Helper cho giao diện Section
-  Widget _buildSectionWrapper({required String title, required Widget child}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
+          IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
               color: Colors.white,
-              fontSize: 14,
+              size: 20,
+            ),
+          ),
+          Text(
+            'Chi tiết lớp',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.resClamp(18, 16, 20),
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 8),
-          child,
         ],
       ),
     );
   }
 
-  // Helper cho các dòng thông tin (Mã lớp, địa điểm...)
-  Widget _buildInfoRow(
-    String label,
-    String value, {
-    String? actionLabel,
-    VoidCallback? onAction,
-  }) {
+  Widget _buildMainStatsCard(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
+      // Thêm padding top nếu muốn dãn nhẹ với header
+      padding: EdgeInsets.fromLTRB(
+        context.resW(20),
+        context.resH(10), // Khoảng cách nhỏ với chữ "Chi tiết lớp"
+        context.resW(20),
+        0,
+      ),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Icon Placeholder (Sử dụng SizedBox như trong thiết kế của bạn)
-          Container(
-            width: 20,
-            height: 20,
-            margin: const EdgeInsets.only(right: 8),
+          // 1. TAGS (GroupX & Chờ xác nhận)
+          Row(
+            children: [
+              _tagWidget('GroupX', const Color(0xFF8B66F0)),
+              SizedBox(width: context.resW(8)),
+              _tagWidget('Chờ xác nhận', const Color(0xFF859DFE)),
+            ],
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          SizedBox(height: context.resH(16)),
+
+          // 2. TIÊU ĐỀ LỚP HỌC
+          Text(
+            schedule?.className ?? 'Gentle Yoga',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.resClamp(28, 24, 32),
+              fontWeight: FontWeight.bold,
+              height: 1.2,
+            ),
+          ),
+          SizedBox(height: context.resH(16)),
+
+          // 3. DANH SÁCH THÔNG TIN ICON
+          _buildInfoLine(
+            Icons.calendar_month_outlined,
+            _formatClassTime(schedule?.startDate, schedule?.endDate),
+          ), // Format cứng theo hình mẫu
+          _buildInfoLine(
+            Icons.person_outline,
+            'Giáo viên ${schedule?.trainerName ?? 'Alex Smith'}',
+          ),
+          _buildInfoLine(
+            Icons.location_on_outlined,
+            '${schedule?.clubName}',
+            hasAction: true,
+            actionText: 'Xem đường đi',
+          ),
+          _buildInfoLine(
+            Icons.map_outlined,
+            '${schedule?.numberSeat} chỗ ngồi',
+            hasAction: true,
+            actionText: 'Xem sơ đồ',
+          ),
+
+          SizedBox(height: context.resH(20)),
+
+          // 4. THẺ THÔNG SỐ (90 PHÚT - VỊ TRÍ 12)
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: BoxDecoration(
+              color: const Color(0xFF242424),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
               children: [
-                Text(
-                  value,
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                _buildStatItem(
+                  context,
+                  'Thời lượng học',
+                  '${schedule?.duration} phút',
                 ),
-                Text(
-                  label,
-                  style: const TextStyle(
-                    color: Color(0xFF9A9A9A),
-                    fontSize: 12,
-                  ),
+                Container(width: 1, height: 30, color: const Color(0xFF3E3E3E)),
+                _buildStatItem(
+                  context,
+                  'Vị trí ngồi',
+                  '${schedule?.slotBooked}',
                 ),
               ],
             ),
           ),
-          if (actionLabel != null)
-            TextButton(
-              onPressed: onAction,
+        ],
+      ),
+    );
+  }
+
+  Widget _tagWidget(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoLine(
+    IconData icon,
+    String text, {
+    bool hasAction = false,
+    String? actionText,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white, size: 20),
+          SizedBox(width: context.resW(10)),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+          if (hasAction)
+            GestureDetector(
+              onTap: () {},
               child: Text(
-                actionLabel,
+                actionText!,
                 style: const TextStyle(
-                  color: Color(0xFFE04A50),
+                  color: Color(0xFFE1494F), // Màu đỏ action
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildContentSections(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(context.resW(20)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _sectionTitle('Giới thiệu'),
+          SizedBox(height: context.resH(8)),
+          Text(
+            (schedule?.note != null && schedule!.note!.isNotEmpty)
+                ? schedule!.note!
+                : 'Thông tin đang được cập nhật...',
+            style: const TextStyle(
+              color: Color(0xFFC7C7C7),
+              fontSize: 12,
+              height: 1.5,
+            ),
+          ),
+          SizedBox(height: context.resH(24)),
+          _sectionTitle('Lưu ý'),
+          SizedBox(height: context.resH(8)),
+          Text(
+            dotenv.get(
+              'COMMON_NOTICED',
+              fallback: 'Thông tin đang được cập nhật...',
+            ),
+            style: TextStyle(
+              color: Color(0xFFC7C7C7),
+              fontSize: 12,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStickyBottomActions(BuildContext context, double bottomPadding) {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Container(
+        padding: EdgeInsets.fromLTRB(
+          20,
+          12,
+          20,
+          // Xử lý thông minh: Nếu có Home Indicator thì dùng padding hệ thống,
+          // nếu không thì cách đáy 24px cho đẹp
+          bottomPadding > 0 ? bottomPadding : 24,
+        ),
+        decoration: const BoxDecoration(
+          color: Color(0xFF151515), // Nền đen đồng bộ với màn hình
+          border: Border(top: BorderSide(color: Colors.white10, width: 0.5)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment:
+              CrossAxisAlignment.stretch, // Trải dài nút hết chiều ngang
+          children: [
+            // 1. NÚT HUỶ LỊCH HẸN (Dạng Outlined)
+            OutlinedButton(
+              onPressed: () {
+                // Thêm logic huỷ lịch tại đây
+              },
+              style: OutlinedButton.styleFrom(
+                // Màu viền xám mỏng theo hình mẫu
+                side: const BorderSide(color: Color(0xFF6B6B6B), width: 1),
+                minimumSize: Size(double.infinity, context.resH(48)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              child: const Text(
+                'Huỷ lịch hẹn',
+                style: TextStyle(
+                  color: Colors.white, // Chữ trắng nổi bật trên nền tối
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+
+            SizedBox(height: context.resH(12)), // Khoảng cách giữa 2 nút
+            // 2. NÚT QUÉT ĐỂ CHECK-IN (Dạng Solid Red)
+            ElevatedButton(
+              onPressed: () {
+                // Thêm logic quét mã tại đây
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFD92229), // Màu đỏ thương hiệu
+                minimumSize: Size(double.infinity, context.resH(48)),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              child: const Text(
+                'Quét để Check-in',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // MARK: - Helper Widgets
+  Widget _buildStatItem(BuildContext context, String label, String value) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: const TextStyle(color: Color(0xFFC7C7C7), fontSize: 10),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionTitle(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
       ),
     );
   }

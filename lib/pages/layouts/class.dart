@@ -1,7 +1,9 @@
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
+import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/booking_class_model.dart';
+import 'package:californiaflutter/pages/layouts/class_detail.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/services/booking_service.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -131,102 +133,108 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
     //item.status == "Chờ xác nhận";
     final Color tagColor = const Color(0xFF859DFE);
 
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(bottom: context.resH(16)),
-      clipBehavior: Clip.antiAlias,
-      decoration: ShapeDecoration(
-        color: const Color(0xFF242424),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(context.resW(4)),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ClassDetailScreen(
+              // Truyền ID sang để trang chi tiết tự gọi API
+              scheduleId: item.scheduleId,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.only(bottom: context.resH(16)),
+        clipBehavior: Clip.antiAlias,
+        decoration: ShapeDecoration(
+          color: const Color(0xFF242424),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(context.resW(4)),
+          ),
         ),
-      ),
-      child: Stack(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Ảnh lớp học - Scale theo thiết bị
-              Container(
-                width: context.resW(128),
-                height: context.resH(119),
-                decoration: const BoxDecoration(color: Colors.white),
-                child: Image.network(
-                  "https://placehold.co/199x133",
-                  fit: BoxFit.cover,
-                  errorBuilder: (c, e, s) => const Icon(Icons.image),
+        child: Stack(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Ảnh lớp học - Scale theo thiết bị
+                Container(
+                  width: context.resW(128),
+                  height: context.resH(119),
+                  decoration: const BoxDecoration(color: Colors.white),
+                  child: Image.asset(
+                    ImageHelper.getClassThumbnail(item.classType),
+                    fit: BoxFit.cover,
+                    errorBuilder: (c, e, s) => Image.asset(
+                      "assets/images/none.jpg",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
 
-              // Thông tin lớp học
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(context.resW(8)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.serviceName ?? 'N/A',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: context.resClamp(14, 12, 16),
-                          fontWeight: FontWeight.w600,
-                          height: 1.5,
+                // Thông tin lớp học
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(context.resW(8)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.serviceName ?? 'N/A',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: context.resClamp(14, 12, 16),
+                            fontWeight: FontWeight.w600,
+                            height: 1.5,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: context.resH(10)),
-                      _buildIconInfo(
-                        context,
-                        Icons.person,
-                        'Giáo viên Alan Smith',
-                      ),
-                      _buildIconInfo(
-                        context,
-                        Icons.access_time,
-                        DateFormat(
-                          'dd/MM/yyyy hh:MM a',
-                        ).format(item.startDate!),
-                      ),
-                      _buildIconInfo(
-                        context,
-                        Icons.location_on,
-                        '${item.clubName}',
-                      ),
-                    ],
+                        SizedBox(height: context.resH(10)),
+                        _buildIconInfo(
+                          context,
+                          Icons.person,
+                          'Giáo viên ${item.trainerName ?? 'N/A'}',
+                        ),
+                        _buildIconInfo(
+                          context,
+                          Icons.access_time,
+                          DateFormat(
+                            'dd/MM/yyyy hh:MM a',
+                          ).format(item.startDate!),
+                        ),
+                        _buildIconInfo(
+                          context,
+                          Icons.location_on,
+                          '${item.clubName}',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            // Tag trạng thái - Positioned ở góc phải
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.resW(8),
+                  vertical: context.resH(4),
+                ),
+                decoration: BoxDecoration(
+                  color: tagColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(context.resW(4)),
                   ),
                 ),
               ),
-            ],
-          ),
-
-          // Tag trạng thái - Positioned ở góc phải
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: context.resW(8),
-                vertical: context.resH(4),
-              ),
-              decoration: BoxDecoration(
-                color: tagColor,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(context.resW(4)),
-                ),
-              ),
-              // child: Text(
-              //   item.status ?? 'Sắp diễn ra',
-              //   textAlign: TextAlign.center,
-              //   style: TextStyle(
-              //     color: Colors.white,
-              //     fontSize: context.resClamp(10, 9, 12),
-              //     fontWeight: FontWeight.w500,
-              //     height: 1.5,
-              //   ),
-              // ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -45,6 +45,8 @@ class BookingData {
   String? code;
   DateTime? startDate;
   DateTime? endDate;
+  String? classType;
+  String? trainerName;
 
   BookingData({
     this.scheduleId,
@@ -54,6 +56,7 @@ class BookingData {
     this.code,
     this.startDate,
     this.endDate,
+    this.classType,
   });
 
   BookingData.fromJson(Map<String, dynamic> json) {
@@ -64,6 +67,7 @@ class BookingData {
     code = json['code'];
     startDate = DateTime.parse(json['start_date']);
     endDate = DateTime.parse(json['end_date']);
+    classType = json['class_type'];
   }
 
   Map<String, dynamic> toJson() {
@@ -75,6 +79,7 @@ class BookingData {
     data['code'] = code;
     data['start_date'] = startDate?.toIso8601String();
     data['end_date'] = endDate?.toIso8601String();
+    data['class_type'] = classType;
     return data;
   }
 }

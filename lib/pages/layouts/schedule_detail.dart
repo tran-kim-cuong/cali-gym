@@ -1,14 +1,16 @@
 import 'dart:async';
 
 import 'package:californiaflutter/bases/app_session.dart';
+import 'package:californiaflutter/bases/base_api.dart';
+import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/loading_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
-import 'package:californiaflutter/models/booking_class_seat_model.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
 import 'package:californiaflutter/pages/layouts/class_detail.dart';
-import 'package:californiaflutter/services/api_service.dart';
+import 'package:californiaflutter/pages/shared/common_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 
 class ScheduleDetailScreen extends StatefulWidget {
@@ -20,7 +22,8 @@ class ScheduleDetailScreen extends StatefulWidget {
   State<ScheduleDetailScreen> createState() => _ScheduleDetailScreenState();
 }
 
-class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
+class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
+    with LoadingWrapper {
   @override
   void initState() {
     super.initState();
@@ -106,7 +109,9 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
       child: Stack(
         children: [
           Image.asset(
-            ImageHelper.getClassThumbnail(widget.schedule.classType), // Thay bằng image từ model nếu có
+            ImageHelper.getClassThumbnail(
+              widget.schedule.classType,
+            ), // Thay bằng image từ model nếu có
             width: double.infinity,
             height: double.infinity,
             fit: BoxFit.cover,
@@ -578,44 +583,91 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () async {
-                            // Navigator.pop(context);
-                            // Logic xác nhận đặt chỗ với selectedSeat
-                            String sToken = await getToken();
-                            if (!context.mounted) return;
-
-                            // print(sToken);
-                            debugPrint(AppSession().clientId);
-                            var phone = AppSession().phoneNumber;
-                            debugPrint(phone);
-                            debugPrint(widget.schedule.scheduleId.toString());
-                            BookingClassSeatModel bcs = await bookingClassSeat(
-                              sToken,
-                              AppSession().clientId,
-                              AppSession().phoneNumber,
-                              widget.schedule.scheduleId.toString(),
-                              "$selectedSeat",
+                            var response = await handleApi(
+                              context,
+                              BaseApi().client.post(
+                                '/api/booking/seat/book',
+                                data: {
+                                  "clientcode": AppSession().clientId,
+                                  "phone_number": AppSession().phoneNumber,
+                                  "schedule_id": widget.schedule.scheduleId
+                                      .toString(),
+                                  "seat_number": "$selectedSeat",
+                                },
+                              ),
                             );
 
                             if (!context.mounted) return;
 
-                            if (bcs.data != null) {
-                              debugPrint(bcs.data!.ticketInfo?.ticketNumber);
-                              // Bạn có thể in log để kiểm tra số ghế đã chọn
-                              debugPrint(
-                                "Đặt chỗ thành công cho ghế số: $selectedSeat",
-                              );
+                            if (response?.statusCode == 200 &&
+                                response?.data != null) {
+                              final bool success =
+                                  response?.data['success'] ?? false;
+                              // final String errorCode =
+                              //     response?.data['error_code']?.toString() ??
+                              //     "";
+                              final String message =
+                                  response?.data['message'] ?? "";
 
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ClassDetailScreen(
-                                    scheduleId: widget.schedule.scheduleId,
+                              if (success) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ClassDetailScreen(
+                                      scheduleId: widget.schedule.scheduleId,
+                                    ),
                                   ),
-                                ),
-                              );
-                            } else {
-                              debugPrint("Lỗi booking lớp");
-                            }
+                                );
+                              } else {
+                                CommonModalWidget.showWarningModal(
+                                  context: context,
+                                  imagePath: dotenv.get(
+                                    'IMAGES_SEMANTIC_ILLUSTRATION',
+                                  ),
+                                  title: '',
+                                  description: message,
+                                  buttonText: "Đã hiểu",
+                                );
+                              }
+                            } else {}
+                            // Navigator.pop(context);
+                            // Logic xác nhận đặt chỗ với selectedSeat
+                            // String sToken = await getToken();
+                            // if (!context.mounted) return;
+
+                            // // print(sToken);
+                            // debugPrint(AppSession().clientId);
+                            // var phone = AppSession().phoneNumber;
+                            // debugPrint(phone);
+                            // debugPrint(widget.schedule.scheduleId.toString());
+                            // BookingClassSeatModel bcs = await bookingClassSeat(
+                            //   sToken,
+                            //   AppSession().clientId,
+                            //   AppSession().phoneNumber,
+                            //   widget.schedule.scheduleId.toString(),
+                            //   "$selectedSeat",
+                            // );
+
+                            // if (!context.mounted) return;
+
+                            // if (bcs.data != null) {
+                            //   debugPrint(bcs.data!.ticketInfo?.ticketNumber);
+                            //   // Bạn có thể in log để kiểm tra số ghế đã chọn
+                            //   debugPrint(
+                            //     "Đặt chỗ thành công cho ghế số: $selectedSeat",
+                            //   );
+
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => ClassDetailScreen(
+                            //         scheduleId: widget.schedule.scheduleId,
+                            //       ),
+                            //     ),
+                            //   );
+                            // } else {
+                            //   debugPrint("Lỗi booking lớp");
+                            // }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFD92229),
