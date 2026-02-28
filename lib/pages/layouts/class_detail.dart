@@ -475,6 +475,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
             // 2. NÚT QUÉT ĐỂ CHECK-IN (Dạng Solid Red)
             ElevatedButton(
               onPressed: () {
+                print("QR code checkin");
                 String qrCode = ''; // Gắn nội dung bỏ vô đây - DungDT
                 CommonModalWidget.showBigQrModal(
                   context: context,

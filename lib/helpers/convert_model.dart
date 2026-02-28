@@ -11,8 +11,10 @@ List<Map<String, dynamic>> buildMemberCards(MemberModel member) {
           "expiry": _formatDate(card.endDate),
           "colors": _getCardColors(card.membershipType),
           "membershipType": card.membershipNameCard ?? "",
-          "membershipNumber": card.membershipCardNumber ?? "",
+          "membershipNumber":
+              card.membershipCardNumber ?? "", //Sai, không nên dùng
           "mbMemberId": card.mbMemberId ?? "",
+          "mbMembershipNumber": card.membershipNumber ?? "",
         };
       }).toList() ??
       [];
