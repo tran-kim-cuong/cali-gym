@@ -96,7 +96,8 @@ class _HomeScreenState extends State<HomeScreen>
         final member = MemberModel.fromJson(response.data['data']);
         if (mounted) {
           setState(() {
-            SessionManager.member = member;
+            AppSession().member = member; // Save in RAM
+            SessionManager.member = member; // Save in Disk
             SessionManager.sTenKh = member.firstName!;
             SessionManager.sMembershipNumber = member.membershipNumber!;
             _memberCards = buildMemberCards(SessionManager.member);
