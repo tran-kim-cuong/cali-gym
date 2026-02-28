@@ -1,75 +1,134 @@
 trigger:
 - develop # Pipeline sẽ tự chạy khi bạn push code lên branch main
 
-pool:
-  vmImage: 'ubuntu-latest'
-
+# Khai báo nhóm biến dùng chung cho cả Android và iOS
 variables:
-- group: android-release-vars # Tên Variable Group bạn tạo trên Library
+  - group: android-release-vars # Tên Variable Group bạn tạo trên Library
+  - group: ios-release-vars     # TẠO MỚI: Bạn cần tạo group này trên Library để chứa biến P12_PASSWORD
 
-steps:
-# 1. Tải file Keystore (.jks) từ Secure Files
-- task: DownloadSecureFile@1
-  name: androidKeystore
-  inputs:
-    secureFile: 'cali-gym-keystore.jks'
+jobs:
+# ==========================================
+# LUỒNG 1: BUILD & DEPLOY ANDROID
+# ==========================================
+- job: Build_Android
+  displayName: 'Build and Deploy Android'
+  pool:
+    vmImage: 'ubuntu-latest'
 
-# 2. Tải file Service Account (.json) từ Secure Files
-- task: DownloadSecureFile@1
-  name: firebaseServiceAccount
-  inputs:
-    secureFile: 'cali-gym-915a7-f608b9f106a1.json'
+  steps:
+  # 1. Tải file Keystore (.jks) từ Secure Files
+  - task: DownloadSecureFile@1
+    name: androidKeystore
+    inputs:
+      secureFile: 'cali-gym-keystore.jks'
 
-- task: Cache@2
-  displayName: 'Cache Gradle'
-  inputs:
-    key: 'gradle | "$(Agent.OS)" | android/build.gradle.kts'
-    restoreKeys: |
-      gradle | "$(Agent.OS)"
-    path: $(HOME)/.gradle
+  # 2. Tải file Service Account (.json) từ Secure Files
+  - task: DownloadSecureFile@1
+    name: firebaseServiceAccount
+    inputs:
+      secureFile: 'cali-gym-915a7-f608b9f106a1.json'
 
-- task: Cache@2
-  displayName: 'Cache Flutter SDK and Pub'
-  inputs:
-    key: 'flutter | "$(Agent.OS)" | pubspec.lock'
-    restoreKeys: |
-      flutter | "$(Agent.OS)"
-    path: $(HOME)/.pub-cache
+  - task: Cache@2
+    displayName: 'Cache Gradle'
+    inputs:
+      key: 'gradle | "$(Agent.OS)" | android/build.gradle.kts'
+      restoreKeys: |
+        gradle | "$(Agent.OS)"
+      path: $(HOME)/.gradle
 
-# 3. Cài đặt Flutter SDK
-- task: FlutterInstall@0
-  inputs:
-    channel: 'stable'
-    version: 'latest'
+  - task: Cache@2
+    displayName: 'Cache Flutter SDK and Pub'
+    inputs:
+      key: 'flutter | "$(Agent.OS)" | pubspec.lock'
+      restoreKeys: |
+        flutter | "$(Agent.OS)"
+      path: $(HOME)/.pub-cache
 
-# 4. Lấy các thư viện (pub get)
-- task: FlutterCommand@0
-  displayName: 'Flutter Pub Get'
-  inputs:
-    projectDirectory: '.'
-    arguments: 'pub get'
+  # 3. Cài đặt Flutter SDK
+  - task: FlutterInstall@0
+    inputs:
+      channel: 'stable'
+      version: 'latest'
 
-# 5. Build APK Release
-# Ở đây ta truyền biến KEYSTORE_FILE_PATH vào môi trường để build.gradle.kts đọc được
-- task: FlutterCommand@0
-  displayName: 'Build APK'
-  inputs:
-    projectDirectory: '.'
-    arguments: 'build apk --release --no-pub --build-number=$(Build.BuildId) --target-platform android-arm64'
-  env:
-    KEYSTORE_FILE_PATH: $(androidKeystore.secureFilePath)
-    # THÊM 3 DÒNG NÀY (Đảm bảo tên biến $(...) khớp với tên trong Variable Group của bạn)
-    STORE_PASSWORD: $(storePassword)
-    KEY_PASSWORD: $(keyPassword)
-    KEY_ALIAS: $(keyAlias)
-    CHOKIDAR_USEPOLLING: 'true'
+  # 4. Lấy các thư viện (pub get)
+  - task: FlutterCommand@0
+    displayName: 'Flutter Pub Get'
+    inputs:
+      projectDirectory: '.'
+      arguments: 'pub get'
 
-# 6. Đẩy file APK lên Firebase App Distribution
-- task: FirebaseAppDistribution@5
-  displayName: 'Upload to Firebase'
-  inputs:
-    appId: '$(FIREBASE_APP_ID)'
-    privateKeyPath: '$(firebaseServiceAccount.secureFilePath)'
-    filePath: '$(Build.SourcesDirectory)/build/app/outputs/flutter-apk/app-release.apk'
-    testerGroups: 'internal-tester'
-    releaseNotes: 'Cập nhật tự động từ Azure DevOps. Build ID: $(Build.BuildId)'
+  # 5. Build APK Release
+  # Ở đây ta truyền biến KEYSTORE_FILE_PATH vào môi trường để build.gradle.kts đọc được
+  - task: FlutterCommand@0
+    displayName: 'Build APK'
+    inputs:
+      projectDirectory: '.'
+      arguments: 'build apk --release --no-pub --build-number=$(Build.BuildId) --target-platform android-arm64'
+    env:
+      KEYSTORE_FILE_PATH: $(androidKeystore.secureFilePath)
+      # THÊM 3 DÒNG NÀY (Đảm bảo tên biến $(...) khớp với tên trong Variable Group của bạn)
+      STORE_PASSWORD: $(storePassword)
+      KEY_PASSWORD: $(keyPassword)
+      KEY_ALIAS: $(keyAlias)
+      CHOKIDAR_USEPOLLING: 'true'
+
+  # 6. Đẩy file APK lên Firebase App Distribution
+  - task: FirebaseAppDistribution@5
+    displayName: 'Upload to Firebase'
+    inputs:
+      appId: '$(FIREBASE_APP_ID)'
+      privateKeyPath: '$(firebaseServiceAccount.secureFilePath)'
+      filePath: '$(Build.SourcesDirectory)/build/app/outputs/flutter-apk/app-release.apk'
+      testerGroups: 'internal-tester'
+      releaseNotes: 'Auto update from Azure DevOps. Build ID: $(Build.BuildId)'
+
+# ==========================================
+# LUỒNG 2: BUILD & DEPLOY IOS (Thêm mới)
+# ==========================================
+- job: Build_iOS
+  displayName: 'Build and Deploy iOS'
+  pool:
+    vmImage: 'macOS-latest' # Bắt buộc dùng macOS cho iOS
+  steps:
+  # 1. Cài đặt chứng chỉ .p12
+  - task: InstallAppleCertificate@2
+    displayName: 'Installer Apple Certificate (.p12)'
+    inputs:
+      certSecureFile: 'ios-cali.p12' # Đổi lại nếu tên file p12 của bạn khác
+      certPwd: '$(P12_PASSWORD)'             # Biến này sẽ lấy từ group ios-release-vars
+      keychain: 'temp'
+
+  # 2. Cài đặt Provisioning Profile
+  - task: InstallAppleProvisioningProfile@1
+    displayName: 'Installer Provisioning Profile'
+    inputs:
+      provisioningProfileLocation: 'secureFiles'
+      provProfileSecureFile: 'ioscali.mobileprovision' # Đổi lại nếu tên profile của bạn khác
+
+  # 3. Cài đặt Flutter SDK
+  - task: FlutterInstall@0
+    displayName: 'Installer Flutter SDK'
+    inputs:
+      mode: 'auto'
+      channel: 'stable'
+      version: 'latest'
+
+  # 4. Lấy các thư viện (pub get)
+  - script: |
+      flutter pub get
+    displayName: 'Flutter Pub Get'
+
+  # 5. Build IPA Release
+  - script: |
+      flutter build ipa --release --build-number=$(Build.BuildId) --export-options-plist=ios/exportOptions.plist
+    displayName: 'Build file .ipa for iOS'
+
+  # 6. Đẩy ứng dụng lên TestFlight
+  - task: AppStoreRelease@1
+    displayName: 'Push application TestFlight'
+    inputs:
+      serviceEndpoint: 'Apple_App_Store_Connection' # Tên kết nối Service Connection .p8 bạn sẽ tạo
+      appIdentifier: 'com.caligym'                  # Bundle ID của ứng dụng
+      appType: 'iOS'
+      ipaPath: '$(System.DefaultWorkingDirectory)/build/ios/ipa/*.ipa'
+      releaseTrack: 'TestFlight'
