@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/services/api_service.dart';
@@ -86,9 +87,10 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
   void _generateNewCode() {
     if (!mounted) return;
     setState(() {
+      //Tạo QR Code
       // print(widget.data);
       _qrData = createQRCheckIn(
-        widget.data['membershipNumber'],
+        widget.data['mbMembershipNumber'],
         SessionManager.sKeyCode,
       );
       //print(_qrData);
