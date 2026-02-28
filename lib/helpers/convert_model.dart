@@ -2,8 +2,8 @@ import 'package:californiaflutter/models/member_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-List<Map<String, dynamic>> buildMemberCards(MemberModel member) {
-  return member.listMembershipCard?.map((card) {
+List<Map<String, dynamic>> buildMemberCards(MemberModel? member) {
+  return member?.listMembershipCard?.map((card) {
         return {
           "name": member.firstName ?? "",
           "id": member.clientCode ?? "",
