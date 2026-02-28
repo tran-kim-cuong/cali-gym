@@ -4,15 +4,24 @@ import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
+import 'package:californiaflutter/pages/master.dart';
 import 'package:californiaflutter/pages/shared/common_modal.dart';
+import 'package:californiaflutter/pages/shared/common_notification.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:intl/intl.dart';
 
 class ClassDetailScreen extends StatefulWidget {
   final int? scheduleId;
+  final String? seatCode;
+  final String? clubCode;
 
-  const ClassDetailScreen({super.key, required this.scheduleId});
+  const ClassDetailScreen({
+    super.key,
+    required this.scheduleId,
+    required this.seatCode,
+    required this.clubCode,
+  });
 
   @override
   State<ClassDetailScreen> createState() => _ClassDetailScreenState();
@@ -159,7 +168,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
             ),
           ),
           Text(
-            'Chi tiết lớp',
+            'class_detail.title'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: context.resClamp(18, 16, 20),
@@ -186,16 +195,22 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
           // 1. TAGS (GroupX & Chờ xác nhận)
           Row(
             children: [
-              _tagWidget('GroupX', const Color(0xFF8B66F0)),
+              _tagWidget(
+                schedule?.classType ?? 'class_detail.default_null'.tr(),
+                const Color(0xFF8B66F0),
+              ),
               SizedBox(width: context.resW(8)),
-              _tagWidget('Chờ xác nhận', const Color(0xFF859DFE)),
+              _tagWidget(
+                'class_detail.tag_widget_status'.tr(),
+                const Color(0xFF859DFE),
+              ),
             ],
           ),
           SizedBox(height: context.resH(16)),
 
           // 2. TIÊU ĐỀ LỚP HỌC
           Text(
-            schedule?.className ?? 'Gentle Yoga',
+            schedule?.className ?? 'class_detail.default_null'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: context.resClamp(28, 24, 32),
@@ -212,19 +227,19 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
           ), // Format cứng theo hình mẫu
           _buildInfoLine(
             Icons.person_outline,
-            'Giáo viên ${schedule?.trainerName ?? 'Alex Smith'}',
+            '${'class_detail.info_sub_trainer'.tr()} ${schedule?.trainerName ?? 'class_detail.default_null'.tr()}',
           ),
           _buildInfoLine(
             Icons.location_on_outlined,
             '${schedule?.clubName}',
             hasAction: true,
-            actionText: 'Xem đường đi',
+            actionText: 'class_detail.info_googlemaps'.tr(),
           ),
           _buildInfoLine(
             Icons.map_outlined,
-            '${schedule?.numberSeat} chỗ ngồi',
+            '${schedule?.numberSeat} ${'class_detail.info_sub_seat'.tr()}',
             hasAction: true,
-            actionText: 'Xem sơ đồ',
+            actionText: 'class_detail.info_classmaps'.tr(),
           ),
 
           SizedBox(height: context.resH(20)),
@@ -240,14 +255,14 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
               children: [
                 _buildStatItem(
                   context,
-                  'Thời lượng học',
-                  '${schedule?.duration} phút',
+                  'class_detail.info_duration'.tr(),
+                  '${schedule?.duration} ${'class_detail.info_minutes'.tr()}',
                 ),
                 Container(width: 1, height: 30, color: const Color(0xFF3E3E3E)),
                 _buildStatItem(
                   context,
-                  'Vị trí ngồi',
-                  '${schedule?.slotBooked}',
+                  'class_detail.info_seat'.tr(),
+                  '${widget.seatCode}',
                 ),
               ],
             ),
@@ -320,12 +335,12 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle('Giới thiệu'),
+          _sectionTitle('class_detail.info_introduce'.tr()),
           SizedBox(height: context.resH(8)),
           Text(
             (schedule?.note != null && schedule!.note!.isNotEmpty)
                 ? schedule!.note!
-                : 'Thông tin đang được cập nhật...',
+                : 'class_detail.default_message'.tr(),
             style: const TextStyle(
               color: Color(0xFFC7C7C7),
               fontSize: 12,
@@ -333,13 +348,10 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
             ),
           ),
           SizedBox(height: context.resH(24)),
-          _sectionTitle('Lưu ý'),
+          _sectionTitle('class_detail.info_notice'.tr()),
           SizedBox(height: context.resH(8)),
           Text(
-            dotenv.get(
-              'COMMON_NOTICED',
-              fallback: 'Thông tin đang được cập nhật...',
-            ),
+            'class_detail.content_notice'.tr(),
             style: TextStyle(
               color: Color(0xFFC7C7C7),
               fontSize: 12,
@@ -377,12 +389,69 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
             // 1. NÚT HUỶ LỊCH HẸN (Dạng Outlined)
             OutlinedButton(
               onPressed: () {
-                // Thêm logic huỷ lịch tại đây
-                print(widget.scheduleId);
-                print("clubCode");
-                print(AppSession().customerId);
-                print("chỗ ngồi");
-                print("test hủy lịch hẹn");
+                CommonModalWidget.showQuestionModal(
+                  context: context,
+                  imagePath: dotenv.get('IMAGES_QUESTION_ILLUSTRATION'),
+                  title: 'class_detail.model_question_title_text'.tr(),
+                  onConfirm: () async {
+                    String ticketNumber =
+                        "${widget.scheduleId}${widget.clubCode}${AppSession().customerId}.${widget.seatCode}";
+                    var response = await handleApi(
+                      context,
+                      BaseApi().client.post(
+                        '/api/booking/seat/delete',
+                        data: {
+                          "ticket_number": ticketNumber,
+                          "clientcode": AppSession().clientId,
+                        },
+                      ),
+                    );
+
+                    if (!context.mounted) return;
+
+                    if (response == null ||
+                        response.statusCode != 200 ||
+                        response.data == null) {
+                      CommonModalWidget.showWarningModal(
+                        context: context,
+                        imagePath: dotenv.get('IMAGES_CANCEL_ILLUSTRATION'),
+                        title: '',
+                        description: 'class_detail.modal_cancel_title_text'
+                            .tr(),
+                        buttonText: 'class_detail.modal_cancel_button_text'
+                            .tr(), // 'Đã hiểu'
+                      );
+                    } else {
+                      if (response.data['success'] == false) {
+                        CommonModalWidget.showWarningModal(
+                          context: context,
+                          imagePath: dotenv.get('IMAGES_CANCEL_ILLUSTRATION'),
+                          title: '',
+                          description:
+                              '${response.data['message']} [${response.data['error_code']}]',
+                          buttonText: 'class_detail.modal_cancel_button_text'
+                              .tr(),
+                        );
+                      } else {
+                        CommonNotification.show(
+                          context,
+                          message: 'class_detail.notice_cancel_succeed'
+                              .tr(), // 'Hủy lớp học thành công'
+                        );
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            // Gọi đến Layout chứa Bottom Nav Bar, truyền index của tab Lịch tập (ví dụ là 1)
+                            builder: (context) =>
+                                const MasterScreen(initialIndex: 1),
+                          ),
+                          (route) =>
+                              false, // Xóa sạch các trang cũ để tránh lỗi chồng lấp
+                        );
+                      }
+                    }
+                  },
+                );
               },
               style: OutlinedButton.styleFrom(
                 // Màu viền xám mỏng theo hình mẫu
@@ -392,9 +461,9 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
-              child: const Text(
-                'Huỷ lịch hẹn 1',
-                style: TextStyle(
+              child: Text(
+                'class_detail.cancel_button_text'.tr(), // 'Huỷ lịch hẹn'
+                style: const TextStyle(
                   color: Colors.white, // Chữ trắng nổi bật trên nền tối
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
@@ -420,8 +489,9 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
-              child: const Text(
-                'Quét để Check-in',
+              child: Text(
+                'class_detail.scan_checkin_button_text'
+                    .tr(), // 'Quét để Check-in'
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,

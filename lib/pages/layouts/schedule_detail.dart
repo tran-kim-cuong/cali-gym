@@ -615,6 +615,8 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
                                   MaterialPageRoute(
                                     builder: (context) => ClassDetailScreen(
                                       scheduleId: widget.schedule.scheduleId,
+                                      seatCode: selectedSeat.toString(),
+                                      clubCode: widget.schedule.clubCode, // ? Need check data
                                     ),
                                   ),
                                 );
@@ -622,7 +624,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
                                 CommonModalWidget.showWarningModal(
                                   context: context,
                                   imagePath: dotenv.get(
-                                    'IMAGES_SEMANTIC_ILLUSTRATION',
+                                    'IMAGES_WARNING_ILLUSTRATION',
                                   ),
                                   title: '',
                                   description: message,

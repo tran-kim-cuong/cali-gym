@@ -259,4 +259,164 @@ class CommonModalWidget {
       },
     );
   }
+
+  /// Hàm hiển thị Modal xác nhận (Question Modal)
+  static Future<void> showQuestionModal({
+    required BuildContext context,
+    required String imagePath,
+    required String title,
+    String confirmButtonText = 'Đồng ý',
+    String cancelButtonText = 'Hủy',
+    required VoidCallback onConfirm,
+    VoidCallback? onCancel,
+  }) async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF3E3E3E), // Màu xám đậm nổi khối
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      ),
+      builder: (context) {
+        // Lấy thông số padding đáy hệ thống để xử lý Home Indicator
+        final double bottomPadding = MediaQuery.of(context).padding.bottom;
+
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.only(top: context.resH(24)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 1. Thanh kéo (Handle bar)
+              Container(
+                width: 40,
+                height: 4,
+                margin: EdgeInsets.only(bottom: context.resH(20)),
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: context.resH(12)),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 2. HÌNH ẢNH MINH HỌA RESPONSIVE
+                    SizedBox(
+                      width: context.resW(120).clamp(100.0, 140.0),
+                      height: context.resW(120).clamp(100.0, 140.0),
+                      child: SvgPicture.asset(imagePath, fit: BoxFit.contain),
+                    ),
+
+                    SizedBox(height: context.resH(24)),
+
+                    // 3. TIÊU ĐỀ CÂU HỎI RESPONSIVE
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.resW(30),
+                      ),
+                      child: Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          // Co giãn font chữ thông minh
+                          fontSize: context.resClamp(16, 14, 18),
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w500,
+                          height: 1.50,
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: context.resH(32)),
+
+                    // 4. CỤM NÚT HÀNH ĐỘNG (Cancel & Confirm)
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.resW(20),
+                      ),
+                      child: Row(
+                        children: [
+                          // Nút Hủy
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                if (onCancel != null) {
+                                  onCancel(); // Gọi callback hủy
+                                }
+                              },
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(
+                                  color: Color(0xFF6B6B6B),
+                                ),
+                                minimumSize: Size(
+                                  double.infinity,
+                                  context.resH(48),
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              child: Text(
+                                cancelButtonText,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: context.resW(12)),
+                          // Nút Xác nhận
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                onConfirm(); // Gọi callback xác nhận xử lý ở màn hình gọi
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(
+                                  0xFFD92229,
+                                ), // Màu đỏ thương hiệu
+                                minimumSize: Size(
+                                  double.infinity,
+                                  context.resH(48),
+                                ),
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              child: Text(
+                                confirmButtonText,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // KHOẢNG ĐỆM ĐÁY: Tự động né Home Indicator
+                    SizedBox(
+                      height: bottomPadding > 0 ? bottomPadding + 10 : 30,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }

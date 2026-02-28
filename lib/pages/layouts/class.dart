@@ -141,6 +141,8 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
             builder: (context) => ClassDetailScreen(
               // Truyền ID sang để trang chi tiết tự gọi API
               scheduleId: item.scheduleId,
+              seatCode: item.code,
+              clubCode: item.clubCode,
             ),
           ),
         );

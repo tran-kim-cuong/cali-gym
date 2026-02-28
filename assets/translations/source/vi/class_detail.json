@@ -1,14 +1,18 @@
 {
-  "class_detail": {
     "modal_cancel_button_text": "Đã hiểu",
     "modal_cancel_title_text": "Hủy lớp học thất bại\ndo có lỗi xảy ra",
+
     "notice_cancel_succeed": "Hủy lớp học thành công",
+
     "cancel_button_text": "Huỷ lịch hẹn",
     "scan_checkin_button_text": "Quét để Check-in",
+
     "model_question_title_text": "Bạn xác nhận muốn huỷ\nlớp học này không?",
+
     "default_message": "Thông tin đang được cập nhật...",
     "default_null": "N/A",
     "content_notice": "Quyền lợi đặt chỗ trên ứng dụng sẽ đóng trước khi lớp bắt đầu 2 tiếng\nQuyền lợi đăng kí trước buổi tập sẽ được tạm ngưng 14 ngày trong trường hợp hội viên thay đổi kế hoạch tập luyện nhưng không huỷ bỏ buổi tập đã đăng ký trước (No show) 3 lần (tích luỹ ) trong vòng 30 ngày kể từ lần vi phạm gần nhất",
+
     "info_introduce": "Giới thiệu",
     "info_notice": "Lưu ý",
     "info_seat": "Vị trí ngồi",
@@ -18,38 +22,7 @@
     "info_classmaps": "Xem sơ đồ",
     "info_sub_seat": "chỗ ngồi",
     "info_sub_trainer": "Giáo viên",
+
     "tag_widget_status": "Chờ xác nhận",
     "title": "Chi tiết lớp"
-  },
-  "common": {
-    "lang_vi": "Tiếng Việt",
-    "lang_en": "English",
-    "chang_lang": "Ngôn ngữ",
-    "and": " và ",
-    "or": " hoặc ",
-    "accept": "Xác nhận"
-  },
-  "home": {
-    "hello": "Xin chào"
-  },
-  "login": {
-    "phone_hint": "Số điện thoại",
-    "agree_prefix": "Đồng ý với ",
-    "terms": "Điều khoản & Điều kiện",
-    "and": " và ",
-    "privacy": "Chính sách bảo mật",
-    "agree_suffix": " của chúng tôi",
-    "verify_sms": "Xác thực qua SMS",
-    "verify_zalo": "Xác thực qua Zalo",
-    "phone_input_title": "Hãy nhập số điện thoại của bạn để đăng nhập"
-  },
-  "otp": {
-    "title": "Nhập mã OTP",
-    "subtitle_prefix": "Chúng tôi đã gửi mã xác minh 4 số đến số điện thoại ",
-    "resend_in": "Gửi lại mã trong ",
-    "resend_link": "Gửi lại mã",
-    "verify_success": "Xác thực thành công!",
-    "verify_error": "Mã OTP không chính xác",
-    "zalo_sent": "Mã OTP đã được gửi qua số điện thoại bạn. Vui lòng kiểm tra và nhập mã để đăng nhập"
-  }
 }
