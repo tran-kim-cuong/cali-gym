@@ -10,6 +10,7 @@ import 'package:californiaflutter/pages/layouts/class.dart';
 import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/layouts/other_benefits.dart';
 import 'package:californiaflutter/pages/layouts/schedule.dart';
+import 'package:californiaflutter/pages/master.dart';
 // import 'package:californiaflutter/pages/layouts/schedule.dart';
 import 'package:californiaflutter/pages/shared/check_in_bottom_sheet.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
@@ -100,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen>
             SessionManager.member = member; // Save in Disk
             SessionManager.sTenKh = member.firstName!;
             SessionManager.sMembershipNumber = member.membershipNumber!;
-            _memberCards = buildMemberCards(SessionManager.member);
+            _memberCards = buildMemberCards(AppSession().member);
           });
         }
       }
@@ -327,7 +328,9 @@ class _HomeScreenState extends State<HomeScreen>
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ScheduleScreen()),
+                MaterialPageRoute(
+                  builder: (context) => const MasterScreen(initialIndex: 1),
+                ),
               );
             },
           ),
