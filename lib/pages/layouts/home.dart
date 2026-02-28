@@ -6,6 +6,7 @@ import 'package:californiaflutter/helpers/convert_model.dart';
 import 'package:californiaflutter/models/booking_class_model.dart';
 import 'package:californiaflutter/models/member_model.dart';
 import 'package:californiaflutter/pages/layouts/class.dart';
+import 'package:californiaflutter/pages/layouts/class_detail.dart';
 // import 'package:californiaflutter/pages/layouts/loyalty.dart';
 import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/layouts/other_benefits.dart';
@@ -505,17 +506,39 @@ class _HomeScreenState extends State<HomeScreen>
         itemCount: _upcomingClasses.length,
         itemBuilder: (context, index) {
           if (index < displayCount) {
+            final classData = _upcomingClasses[index];
+
             // Hiển thị thẻ lớp học bình thường
-            return CommonClassCard(
-              data: _upcomingClasses[index],
-              index: index,
-              onCheckIn: () {
-                // Khi bấm nút ở Card, lệnh này sẽ được thực thi tại HomeScreen
-                CheckInBottomSheet.show(
+            return GestureDetector(
+              // SỰ KIỆN CLICK VÀO CARD
+              onTap: () {
+                Navigator.push(
                   context,
-                  _upcomingClasses[index], // Truyền dữ liệu lớp học tương ứng
+                  MaterialPageRoute(
+                    builder: (context) => ClassDetailScreen(
+                      scheduleId: classData.scheduleId, // Map từ scheduleId
+                      seatCode: classData.code, // Map từ code (mã ghế/đặt chỗ)
+                      clubCode: classData.clubCode, // Map từ clubCode
+                    ),
+                  ),
                 );
               },
+              child: CommonClassCard(
+                data: classData,
+                index: index,
+                onCheckIn: () {
+                  CheckInBottomSheet.show(
+                    context,
+                    classData,
+                    onScanned: (String qrData) {
+                      debugPrint(qrData);
+                    },
+                    onConfirm: (code) {
+                      debugPrint(code);
+                    },
+                  );
+                },
+              ),
             );
           } else {
             // Item cuối cùng luôn là thẻ "Xem tất cả"

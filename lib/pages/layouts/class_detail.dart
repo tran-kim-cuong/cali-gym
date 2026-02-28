@@ -6,6 +6,7 @@ import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
 import 'package:californiaflutter/pages/layouts/class.dart';
 import 'package:californiaflutter/pages/master.dart';
+import 'package:californiaflutter/pages/shared/check_in_bottom_sheet.dart';
 import 'package:californiaflutter/pages/shared/common_modal.dart';
 import 'package:californiaflutter/pages/shared/common_notification.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -484,11 +485,17 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
             // 2. NÚT QUÉT ĐỂ CHECK-IN (Dạng Solid Red)
             ElevatedButton(
               onPressed: () {
-                print("QR code checkin");
-                String qrCode = ''; // Gắn nội dung bỏ vô đây - DungDT
-                CommonModalWidget.showBigQrModal(
-                  context: context,
-                  qrData: qrCode,
+                final bookingData = schedule!.toBookingData();
+
+                CheckInBottomSheet.show(
+                  context,
+                  bookingData,
+                  onScanned: (String qrData) {
+                    debugPrint(qrData);
+                  },
+                  onConfirm: (code) {
+                    debugPrint(code);
+                  },
                 );
               },
               style: ElevatedButton.styleFrom(
