@@ -2,6 +2,7 @@ import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
+import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
 import 'package:californiaflutter/pages/layouts/class.dart';
@@ -396,7 +397,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
           crossAxisAlignment:
               CrossAxisAlignment.stretch, // Trải dài nút hết chiều ngang
           children: [
-            // 1. NÚT HUỶ LỊCH HẸN (Dạng Outlined)
+            // 1. NÚT HUỶ LỊCH HẸN (Dạng Outlined), hủy lớp học
             OutlinedButton(
               onPressed: () {
                 CommonModalWidget.showQuestionModal(
@@ -406,6 +407,8 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                   onConfirm: () async {
                     String ticketNumber =
                         "${widget.scheduleId}${widget.clubCode}${AppSession().customerId}.${widget.seatCode}";
+                    // print(AppSession().customerId);
+                    // print(SessionManager.sCustomerId);
                     var response = await handleApi(
                       context,
                       BaseApi().client.post(

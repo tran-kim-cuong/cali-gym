@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:californiaflutter/models/booking_class_model.dart';
 import 'package:californiaflutter/models/booking_class_seat_model.dart';
+import 'package:californiaflutter/models/member_info_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -180,4 +181,22 @@ String generateMd5(String input) {
   var digest = md5.convert(bytes);
 
   return digest.toString();
+}
+
+Future<MemberInfoModel?> getUserId(String clientCode) async {
+  final response = await http.post(
+    Uri.parse(
+      '${dotenv.get('CALIFORNIA_URI')}/api/booking/getUserIdByMemberId',
+    ),
+    headers: {'Accept': 'application/json'},
+    body: {'clientcode': clientCode},
+  );
+
+  if (response.statusCode == 200) {
+    final jsonResponse = jsonDecode(response.body);
+    MemberInfoModel mi = MemberInfoModel.fromJson(jsonResponse);
+    return mi;
+  } else {
+    return null;
+  }
 }
