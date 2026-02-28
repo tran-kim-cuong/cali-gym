@@ -9,7 +9,6 @@ import 'package:californiaflutter/pages/layouts/class.dart';
 // import 'package:californiaflutter/pages/layouts/loyalty.dart';
 import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/layouts/other_benefits.dart';
-import 'package:californiaflutter/pages/layouts/schedule.dart';
 import 'package:californiaflutter/pages/master.dart';
 // import 'package:californiaflutter/pages/layouts/schedule.dart';
 import 'package:californiaflutter/pages/shared/check_in_bottom_sheet.dart';
