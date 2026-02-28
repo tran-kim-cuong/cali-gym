@@ -6,17 +6,32 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 class CheckInBottomSheet extends StatefulWidget {
   final BookingData schedule;
   final Function(String clubCode)? onConfirm;
+  final Function(String qrCode)? onScanned;
 
-  const CheckInBottomSheet({super.key, required this.schedule, this.onConfirm});
+  const CheckInBottomSheet({
+    super.key,
+    required this.schedule,
+    this.onConfirm,
+    this.onScanned,
+  });
 
   // Hàm static để gọi hiển thị nhanh từ bất kỳ đâu
-  static void show(BuildContext context, BookingData schedule) {
+  static void show(
+    BuildContext context,
+    BookingData schedule, {
+    Function(String)? onConfirm,
+    Function(String)? onScanned,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor:
           Colors.transparent, // Để lộ bo góc của Container bên trong
-      builder: (context) => CheckInBottomSheet(schedule: schedule),
+      builder: (context) => CheckInBottomSheet(
+        schedule: schedule,
+        onConfirm: onConfirm,
+        onScanned: onScanned,
+      ), // Truyền function vào widget),
     );
   }
 
@@ -87,7 +102,16 @@ class _CheckInBottomSheetState extends State<CheckInBottomSheet> {
                   onDetect: (capture) {
                     final List<Barcode> barcodes = capture.barcodes;
                     if (barcodes.isNotEmpty) {
-                      _clubCodeController.text = barcodes.first.rawValue ?? "";
+                      final String? code = barcodes.first.rawValue;
+                      if (code != null && code.isNotEmpty) {
+                        // 1. Cập nhật UI input
+                        _clubCodeController.text = code;
+
+                        // 2. KÍCH HOẠT FUNCTION XỬ LÝ API NGAY LẬP TỨC
+                        if (widget.onScanned != null) {
+                          widget.onScanned!(code);
+                        }
+                      }
                     }
                   },
                 ),

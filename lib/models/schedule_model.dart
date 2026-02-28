@@ -1,3 +1,5 @@
+import 'package:californiaflutter/models/booking_class_model.dart';
+
 class ScheduleModel {
   final int? scheduleId;
   final String? clubCode;
@@ -95,5 +97,22 @@ class ScheduleModel {
       'note': note,
       'publish_on_livwell': publishOnLivwell == true ? "yes" : "no",
     };
+  }
+}
+
+extension ScheduleMapper on ScheduleModel {
+  BookingData toBookingData() {
+    return BookingData(
+      scheduleId: scheduleId,
+      // Trong ScheduleModel thường dùng className cho tên dịch vụ (Yoga, Group X...)
+      serviceName: className, 
+      clubCode: clubCode,
+      clubName: clubName,
+      // ScheduleModel không có trường 'code' định danh đặt chỗ, có thể để null hoặc dùng trainerCode
+      code: '', 
+      startDate: startDate,
+      endDate: endDate,
+      classType: classType,
+    )..trainerName = trainerName; // Gán thêm trainerName nếu cần
   }
 }
