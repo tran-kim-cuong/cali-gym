@@ -51,6 +51,158 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     }
   }
 
+  void _showFilterBottomSheet() {
+    /// 1. Khởi tạo bộ dữ liệu từ hình ảnh bạn cung cấp
+    final List<Map<String, dynamic>> serviceList = [
+      {'id': 'yoga', 'name': 'Yoga', 'isSelected': true},
+      {'id': 'cycling', 'name': 'Cycling', 'isSelected': true},
+      {'id': 'groupx', 'name': 'Group X', 'isSelected': true},
+    ];
+
+    final List<Map<String, dynamic>> cityList = [
+      {'id': 'hanoi', 'name': 'Hà Nội', 'isSelected': false},
+      {'id': 'hcm', 'name': 'Hồ Chí Minh', 'isSelected': true},
+      {'id': 'binhduong', 'name': 'Bình Dương', 'isSelected': false},
+      {'id': 'bienhoa', 'name': 'Biên Hoà', 'isSelected': false},
+      {'id': 'cantho', 'name': 'Cần Thơ', 'isSelected': false},
+      {'id': 'vungtau', 'name': 'Vũng Tàu', 'isSelected': false},
+      {'id': 'danang', 'name': 'Đà Nẵng', 'isSelected': false},
+      {'id': 'nhatrang', 'name': 'Nha Trang', 'isSelected': false},
+    ];
+
+    // Dữ liệu mẫu cho Câu lạc bộ
+    final List<Map<String, dynamic>> clubList = [
+      {'id': 'c1', 'name': 'Cali Quận 4', 'isSelected': false},
+      {'id': 'c2', 'name': 'Cali Landmark 81', 'isSelected': false},
+    ];
+
+    final List<Map<String, dynamic>> categories = [
+      {'id': 'service', 'label': 'Loại dịch vụ', 'count': serviceList.length},
+      {'id': 'city', 'label': 'Thành phố', 'count': cityList.length},
+      {'id': 'club', 'label': 'Câu lạc bộ', 'count': clubList.length},
+    ];
+
+    String selectedCategoryId = 'service'; // Tab mặc định
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF3E3E3E), // Màu nền đen theo snippet
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        final double bottomPadding = MediaQuery.of(context).padding.bottom;
+
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            // LOGIC QUAN TRỌNG: Xác định danh sách hiển thị bên phải dựa trên Tab đang chọn
+            List<Map<String, dynamic>> currentOptions = [];
+            if (selectedCategoryId == 'service') {
+              currentOptions = serviceList;
+            } else if (selectedCategoryId == 'city')
+              // ignore: curly_braces_in_flow_control_structures
+              currentOptions = cityList;
+            else if (selectedCategoryId == 'club')
+              // ignore: curly_braces_in_flow_control_structures
+              currentOptions = clubList;
+
+            return Container(
+              width: double.infinity,
+              height: context.resH(540),
+              padding: const EdgeInsets.only(top: 8),
+              child: Column(
+                children: [
+                  _buildFilterHeader(context),
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Sidebar bên trái: Khi nhấn sẽ gọi setModalState để load lại bên phải
+                        _buildFilterSidebar(
+                          context,
+                          categories,
+                          selectedCategoryId,
+                          (id) {
+                            setModalState(() => selectedCategoryId = id);
+                          },
+                        ),
+
+                        // Section bên phải: Hiển thị danh sách Options động
+                        _buildFilterOptions(
+                          context,
+                          currentOptions,
+                          isRadio: selectedCategoryId == 'city',
+                          // SỬA TẠI ĐÂY: Gán tên tham số onToggleIndex cho hàm callback
+                          onToggleIndex: (index) {
+                            setModalState(() {
+                              if (selectedCategoryId == 'city') {
+                                // LOGIC RADIO BUTTON: Chỉ cho chọn 1 trong danh sách
+                                for (var city in cityList) {
+                                  city['isSelected'] = false;
+                                }
+                                cityList[index]['isSelected'] = true;
+                              } else {
+                                // LOGIC CHECKBOX: Cho phép chọn nhiều
+                                currentOptions[index]['isSelected'] =
+                                    !currentOptions[index]['isSelected'];
+                              }
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  _buildFilterActions(context, bottomPadding),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildFilterHeader(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        horizontal: context.resW(20),
+        vertical: context.resH(12),
+      ),
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Color(0xFF6B6B6B), width: 0.5),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Bộ lọc',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.resClamp(16, 15, 18),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: const Color(0xFF242424),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Icon(Icons.close, color: Colors.white, size: 18),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   // Hàm helper để xử lý việc lấy Date và gọi API ngay lập tức
   void _fetchDataForIndex(int index) {
     // Lấy ngày DateTime gốc từ index
@@ -415,7 +567,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const Icon(Icons.filter_list, color: Colors.white, size: 20),
+          // SỬA TẠI ĐÂY: Thêm sự kiện click mở bộ lọc
+          GestureDetector(
+            onTap: _showFilterBottomSheet,
+            child: const Icon(Icons.filter_list, color: Colors.white, size: 20),
+          ),
         ],
       ),
     );
@@ -564,6 +720,190 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFilterOptions(
+    BuildContext context,
+    List<Map<String, dynamic>> items, { // Đã bỏ VoidCallback? onToggle thừa
+    bool isRadio = false,
+    required Function(int) onToggleIndex,
+  }) {
+    return Expanded(
+      child: ListView.builder(
+        padding: EdgeInsets.symmetric(vertical: context.resH(8)),
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          final item = items[index];
+          bool isSelected = item['isSelected'] ?? false;
+
+          return GestureDetector(
+            onTap: () => onToggleIndex(index), // Sử dụng đúng onToggleIndex
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.resW(16),
+                vertical: context.resH(12),
+              ),
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    item['name'] ?? '',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: context.resClamp(14, 13, 15),
+                      fontWeight: isSelected
+                          ? FontWeight.w500
+                          : FontWeight.w400,
+                    ),
+                  ),
+
+                  // UI Radio hoặc Checkbox
+                  Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? const Color(0xFFD92229)
+                          : Colors.transparent,
+                      shape: isRadio ? BoxShape.circle : BoxShape.rectangle,
+                      borderRadius: isRadio ? null : BorderRadius.circular(4),
+                      border: isSelected
+                          ? null
+                          : Border.all(color: const Color(0xFF6B6B6B)),
+                    ),
+                    child: isSelected
+                        ? (isRadio
+                              ? Center(
+                                  child: Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                )
+                              : const Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 16,
+                                ))
+                        : null,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildFilterActions(BuildContext context, double bottomPadding) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(
+        20,
+        12,
+        20,
+        bottomPadding > 0 ? bottomPadding : 20,
+      ),
+      decoration: const BoxDecoration(
+        color: Color(0xFF3E3E3E),
+        border: Border(top: BorderSide(color: Colors.white10, width: 0.5)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(
+                  0xFF555555,
+                ), // Màu xám cho nút Reset
+                minimumSize: Size(0, context.resH(48)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Xóa bộ lọc',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFD92229), // Màu đỏ nút Áp dụng
+                minimumSize: Size(0, context.resH(48)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Áp dụng',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterSidebar(
+    BuildContext context,
+    List<Map<String, dynamic>> cats,
+    String selectedId,
+    Function(String) onSelect,
+  ) {
+    return Container(
+      width: context.resW(150),
+      color: const Color(0xFF242424), // Sidebar xám đậm
+      child: ListView.builder(
+        itemCount: cats.length,
+        itemBuilder: (context, index) {
+          final cat = cats[index];
+          bool isSelected = selectedId == cat['id'];
+          return GestureDetector(
+            onTap: () => onSelect(cat['id']),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.resW(20),
+                vertical: context.resH(16),
+              ),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? const Color(0xFF3E3E3E)
+                    : Colors.transparent,
+                border: Border(
+                  left: BorderSide(
+                    color: isSelected
+                        ? const Color(0xFFD92229)
+                        : Colors.transparent,
+                    width: 4,
+                  ),
+                ),
+              ),
+              child: Text(
+                '${cat['label']} (${cat['count']})',
+                style: TextStyle(
+                  color: isSelected ? Colors.white : const Color(0xFF9A9A9A),
+                  fontSize: context.resClamp(14, 13, 15),
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

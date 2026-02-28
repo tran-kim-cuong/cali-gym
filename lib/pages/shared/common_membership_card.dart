@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:californiaflutter/bases/app_session.dart';
+// import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/services/api_service.dart';
