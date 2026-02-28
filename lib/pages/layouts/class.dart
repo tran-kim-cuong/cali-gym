@@ -4,6 +4,7 @@ import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/booking_class_model.dart';
 import 'package:californiaflutter/pages/layouts/class_detail.dart';
+import 'package:californiaflutter/pages/master.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/services/booking_service.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -110,7 +111,17 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
               color: Colors.white,
               size: 20,
             ),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              // SỬA TẠI ĐÂY: Luôn điều hướng về MasterScreen tab Lịch tập (Index 1)
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MasterScreen(initialIndex: 0),
+                ),
+                (route) =>
+                    false, // Xóa sạch các route cũ để đảm bảo hiện Nav Bar mới
+              );
+            },
           ),
           Text(
             'Lớp học sắp tới',

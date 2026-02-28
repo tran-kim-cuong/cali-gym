@@ -4,6 +4,7 @@ import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
+import 'package:californiaflutter/pages/layouts/class.dart';
 import 'package:californiaflutter/pages/master.dart';
 import 'package:californiaflutter/pages/shared/common_modal.dart';
 import 'package:californiaflutter/pages/shared/common_notification.dart';
@@ -160,7 +161,15 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
       child: Row(
         children: [
           IconButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              // SỬA TẠI ĐÂY: Luôn điều hướng về MasterScreen tab Lịch tập (Index 1)
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const ClassScreen()),
+                (route) =>
+                    false, // Xóa sạch các route cũ để đảm bảo hiện Nav Bar mới
+              );
+            },
             icon: const Icon(
               Icons.arrow_back_ios_new,
               color: Colors.white,

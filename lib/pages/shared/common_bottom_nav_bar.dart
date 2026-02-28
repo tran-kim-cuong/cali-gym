@@ -42,8 +42,18 @@ class CommonBottomNavBar extends StatelessWidget {
         children: [
           _navItem(context, 'assets/images/vuesax/home.svg', "Trang chủ", 0),
           _navItem(context, 'assets/images/vuesax/teacher.svg', "Lớp học", 1),
-          _navItem(context, 'assets/images/vuesax/ticket-discount.svg', "Loyalty", 2),
-          _navItem(context, 'assets/images/vuesax/profile-circle.svg', "Hồ sơ", 3),
+          _navItem(
+            context,
+            'assets/images/vuesax/ticket-discount.svg',
+            "Loyalty",
+            2,
+          ),
+          _navItem(
+            context,
+            'assets/images/vuesax/profile-circle.svg',
+            "Hồ sơ",
+            3,
+          ),
         ],
       ),
     );
@@ -64,6 +74,7 @@ class CommonBottomNavBar extends StatelessWidget {
       child: InkWell(
         onTap: () => onTap(index),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // SỬ DỤNG SVGPicture THAY CHO ICON

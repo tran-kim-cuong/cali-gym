@@ -120,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     final double bottomSafeHeight = MediaQuery.of(context).padding.bottom;
+    // final double navBarHeight = context.resH(60) + context.resH(24);
 
     return Scaffold(
       backgroundColor: const Color(0xFF242424),
@@ -133,7 +134,9 @@ class _HomeScreenState extends State<HomeScreen>
 
           // LỚP 2: NỘI DUNG CHÍNH (SCROLLABLE)
           SafeArea(
+            bottom: false,
             child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -192,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen>
                   _buildHotProgram(),
 
                   SizedBox(
-                    height: context.resH(100) + bottomSafeHeight,
+                    height: bottomSafeHeight + 20, // Keep can use navBarHeight
                   ), // Chừa chỗ cho FAB
                 ],
               ),
@@ -434,7 +437,7 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildHotProgram() {
     return Container(
       width: double.infinity,
-      height: 145,
+      height: context.resH(145),
       margin: EdgeInsets.symmetric(horizontal: context.resW(20)),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
