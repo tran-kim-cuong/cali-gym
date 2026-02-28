@@ -7,14 +7,16 @@ import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 
 class MasterScreen extends StatefulWidget {
-  const MasterScreen({super.key});
+  final int initialIndex; // Thêm tham số này
+
+  const MasterScreen({super.key, this.initialIndex = 0});
 
   @override
   State<MasterScreen> createState() => _MasterScreenState();
 }
 
 class _MasterScreenState extends State<MasterScreen> {
-  int _currentIndex = 0;
+  late int _currentIndex;
 
   // Danh sách các trang nội dung thay đổi
   late final List<Widget> _pages;
@@ -22,6 +24,8 @@ class _MasterScreenState extends State<MasterScreen> {
   @override
   void initState() {
     super.initState();
+
+    _currentIndex = widget.initialIndex;
 
     // 1. KIỂM TRA AUTH NGAY KHI VÀO MÀN HÌNH
     WidgetsBinding.instance.addPostFrameCallback((_) {
