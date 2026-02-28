@@ -1,4 +1,4 @@
-package com.example.californiaflutter
+package com.caligym
 
 import io.flutter.embedding.android.FlutterActivity
 
