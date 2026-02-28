@@ -3,10 +3,12 @@ import 'dart:ui';
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
+import 'package:californiaflutter/models/member_info_model.dart';
 // import 'package:californiaflutter/pages/layouts/home.dart';
 import 'package:californiaflutter/pages/master.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
+import 'package:californiaflutter/services/api_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -95,6 +97,7 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
 
   Future<void> getClientInfo(String phone) async {
     String clientId = dotenv.get('CLIENT_ID');
+    String customerId = "";
 
     try {
       final response = await BaseApi().crmClient.get(
@@ -110,12 +113,19 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
           clientId = dataList[0]['clientNumber'];
         }
       }
+
+      MemberInfoModel? mi = await getUserId(clientId);
+      if (mi != null) {
+        customerId = mi.data!.userId.toString();
+        AppSession().customerId = SessionManager.sCustomerId = customerId;
+      }
     } catch (e) {
       debugPrint("Lỗi lấy thông tin khách hàng từ CRM: $e");
     }
 
     // 3. Lưu vào Session để các màn hình khác (như Home) có thể dùng
-    AppSession().clientId = SessionManager.sClientId = clientId; // Cập nhật RAM (Tức thì)
+    AppSession().clientId = SessionManager.sClientId =
+        clientId; // Cập nhật RAM (Tức thì)
     await SessionManager.setClientId(clientId); // Cập nhật Disk (Bền vững)
   }
 
