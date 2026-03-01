@@ -118,10 +118,15 @@ jobs:
       flutter pub get
     displayName: 'Flutter Pub Get'
 
-  # 5. Build IPA Release
+  # 4.5. Ép Xcode chuyển sang cấu hình Manual Signing (Thủ thuật cho CI/CD)
+  - script: |
+      sed -i '' 's/ProvisioningStyle = Automatic;/ProvisioningStyle = Manual;/' ios/Runner.xcodeproj/project.pbxproj
+    displayName: 'Move mode Manual Signing'
+
+  # 5. Build IPA Release (Bước cũ của bạn)
   - script: |
       flutter build ipa --release --build-number=$(Build.BuildId) --export-options-plist=ios/exportOptions.plist
-    displayName: 'Build file .ipa for iOS'
+    displayName: 'Build file .ipa cho iOS'
 
   # 6. Đẩy ứng dụng lên TestFlight
   - task: AppStoreRelease@1
