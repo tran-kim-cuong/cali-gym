@@ -2,7 +2,6 @@ import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
-import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
 import 'package:californiaflutter/pages/layouts/class.dart';

@@ -66,7 +66,7 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double bottomSafeHeight = MediaQuery.of(context).padding.bottom;
+    // final double bottomSafeHeight = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
       backgroundColor: const Color(0xFF151515),
@@ -101,7 +101,7 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                           'Khoá tập ngắn hạn',
                           _shortCourses,
                         ),
-                        SizedBox(height: context.resH(80) + bottomSafeHeight),
+                        // SizedBox(height: context.resH(80) + bottomSafeHeight),
                       ],
                     ),
                   ),

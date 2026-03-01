@@ -63,7 +63,7 @@ class _MasterScreenState extends State<MasterScreen> {
   @override
   Widget build(BuildContext context) {
     // 1. Lấy độ cao dải tác vụ hệ thống (Gesture bar) để điều chỉnh UI
-    final double systemBottomPadding = MediaQuery.of(context).padding.bottom;
+    // final double systemBottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
       backgroundColor: const Color(0xFF151515),
@@ -73,18 +73,10 @@ class _MasterScreenState extends State<MasterScreen> {
       // 2. Sử dụng IndexedStack để giữ trạng thái (State) của các trang
       body: IndexedStack(index: _currentIndex, children: _pages),
 
-      // 3. Thanh điều hướng dùng chung cho toàn bộ app
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CommonBottomNavBar(currentIndex: _currentIndex, onTap: _onTabTapped),
-          // ĐIỀU CHỈNH BOTTOM: Thêm khoảng trống nếu máy có dải tác vụ hệ thống
-          if (systemBottomPadding > 0)
-            Container(
-              height: systemBottomPadding,
-              color: const Color(0xFF3E3E3E), // Màu nền đồng bộ với Navbar
-            ),
-        ],
+      // CHỈ CẦN GỌI TRỰC TIẾP NHƯ THẾ NÀY
+      bottomNavigationBar: CommonBottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: _onTabTapped,
       ),
     );
   }
