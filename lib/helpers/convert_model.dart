@@ -38,10 +38,10 @@ String _formatDate(DateTime? date) {
 List<Color> _getCardColors(String? type) {
   switch (type?.toLowerCase()) {
     case "iconic":
-      return [Color(0xFF574E4C), Color(0xFF231E1D)];
+      return [Color(0xFFD4AF37), Color(0xFF8B7500)];
 
     case "staff":
-      return [Color(0xFFD4AF37), Color(0xFF8B7500)];
+      return [Color(0xFF574E4C), Color(0xFF231E1D)];
 
     default:
       return [Color(0xFF757F9A), Color(0xFFD7DDE8)];
