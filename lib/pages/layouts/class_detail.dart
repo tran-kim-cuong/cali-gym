@@ -494,9 +494,17 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                   bookingData,
                   onScanned: (String qrData) {
                     debugPrint(qrData);
+                    CommonNotification.show(
+                      context,
+                      message: qrData, // 'Hủy lớp học thành công'
+                    );
                   },
                   onConfirm: (code) {
                     debugPrint(code);
+                    CommonNotification.show(
+                      context,
+                      message: code, // 'Hủy lớp học thành công'
+                    );
                   },
                 );
               },
