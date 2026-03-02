@@ -135,5 +135,5 @@ jobs:
       serviceEndpoint: 'Apple_App_Store_Connection' # Tên kết nối Service Connection .p8 bạn sẽ tạo
       appIdentifier: 'com.caligym'                  # Bundle ID của ứng dụng
       appType: 'iOS'
-      ipaPath: '$(System.DefaultWorkingDirectory)/build/ios/ipa/*.ipa'
+      ipaPath: '**/*.ipa'
       releaseTrack: 'TestFlight'
