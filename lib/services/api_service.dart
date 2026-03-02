@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:californiaflutter/models/booking_class_confirm_model.dart';
 import 'package:californiaflutter/models/booking_class_model.dart';
 import 'package:californiaflutter/models/booking_class_seat_model.dart';
 import 'package:californiaflutter/models/member_info_model.dart';
@@ -195,6 +196,33 @@ Future<MemberInfoModel?> getUserId(String clientCode) async {
   if (response.statusCode == 200) {
     final jsonResponse = jsonDecode(response.body);
     MemberInfoModel mi = MemberInfoModel.fromJson(jsonResponse);
+    return mi;
+  } else {
+    return null;
+  }
+}
+
+Future<BookingClassConfirmModel?> bookingClassConfirm(
+  String token,
+  String ticketNumber,
+  String clientCode,
+  String qrcodeData,
+) async {
+  final response = await http.post(
+    Uri.parse('${dotenv.get('CALIFORNIA_URI')}/api/booking/seat/confirm'),
+    headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+    body: {
+      'ticket_number': ticketNumber,
+      'clientcode': clientCode,
+      'qrcode_data': qrcodeData,
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final jsonResponse = jsonDecode(response.body);
+    BookingClassConfirmModel mi = BookingClassConfirmModel.fromJson(
+      jsonResponse,
+    );
     return mi;
   } else {
     return null;
