@@ -9,7 +9,7 @@
     <key>provisioningProfiles</key>
     <dict>
         <key>com.caligym</key>
-        <string>ioscali</string>
+        <string>ios-cali</string>
     </dict>
     <key>signingStyle</key>
     <string>manual</string>
