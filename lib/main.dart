@@ -57,9 +57,7 @@ class MyApp extends StatelessWidget {
       ),
 
       // Nếu isLoggedIn là true thì vào thẳng Home, ngược lại hiện Login
-      home: AppSession().isLoggedIn
-          ? const MasterScreen()
-          : const WelcomeScreen(),
+      home: isLoggedIn == true ? const MasterScreen() : const WelcomeScreen(),
     );
   }
 }

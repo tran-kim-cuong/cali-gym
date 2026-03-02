@@ -1,0 +1,392 @@
+import 'package:californiaflutter/bases/app_session.dart';
+import 'package:californiaflutter/bases/loading_wrapper.dart';
+import 'package:californiaflutter/helpers/session_manager.dart';
+import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/pages/layouts/login.dart';
+import 'package:californiaflutter/pages/shared/common_background.dart';
+import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_svg/svg.dart';
+
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
+  bool _isNotificationEnabled = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final double systemTopPadding = MediaQuery.of(context).padding.top;
+    final double systemBottomPadding = MediaQuery.of(context).padding.bottom;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF151515),
+      body: Stack(
+        children: [
+          // 1. BACKGROUND LAYER (Opacity 0.15)
+          CommonBackgroundWidget.buildBackgroundImage(
+            context,
+            dotenv.get('IMAGES_BG_HOME_V3_LAYER'),
+          ),
+
+          // 2. CONTENT LAYER
+          Column(
+            children: [
+              // Header giả định (9:41)
+              SizedBox(height: systemTopPadding + context.resH(8)),
+
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.only(
+                    bottom: systemBottomPadding, // + context.resH(100),
+                  ),
+                  child: Column(
+                    children: [
+                      // USER AVATAR & NAME
+                      _buildUserInfo(),
+                      SizedBox(height: context.resH(32)),
+
+                      // SECTION: CÁ NHÂN
+                      _buildSectionTitle('Cá nhân'),
+                      _buildMenuItem(
+                        'assets/images/profiles/user.svg',
+                        'Thông tin cá nhân',
+                      ),
+                      _buildMenuItem(
+                        'assets/images/profiles/card.svg',
+                        'Thẻ hội viên',
+                      ),
+                      _buildMenuItem(
+                        'assets/images/vuesax/teacher.svg',
+                        'Các lớp học trước',
+                      ),
+                      _buildMenuItem(
+                        'assets/images/vuesax/document-text.svg',
+                        'Đơn hàng của tôi',
+                      ),
+                      _buildMenuItem(
+                        'assets/images/vuesax/ticket-discount.svg',
+                        'Voucher của tôi',
+                      ),
+
+                      SizedBox(height: context.resH(16)),
+
+                      // SECTION: CÀI ĐẶT
+                      _buildSectionTitle('Cài đặt'),
+                      _buildSwitchItem(
+                        'assets/images/profiles/notification.svg',
+                        'Nhận thông báo',
+                      ),
+                      _buildLanguageItem(
+                        'assets/images/profiles/global.svg',
+                        'Ngôn ngữ',
+                      ),
+
+                      SizedBox(height: context.resH(16)),
+
+                      // SECTION: HỖ TRỢ
+                      _buildSectionTitle('Hỗ trợ'),
+                      _buildMenuItem(
+                        'assets/images/profiles/messages.svg',
+                        'Nhận xét',
+                      ),
+                      _buildMenuItem(
+                        'assets/images/profiles/document.svg',
+                        'Điều khoản & Điều kiện',
+                      ),
+                      _buildMenuItem(
+                        'assets/images/profiles/lock.svg',
+                        'Chính sách bảo mật',
+                      ),
+                      _buildMenuItem(
+                        'assets/images/profiles/message-question.svg',
+                        'Trung tâm trợ giúp',
+                      ),
+
+                      SizedBox(height: context.resH(24)),
+
+                      // NÚT ĐĂNG XUẤT
+                      _buildLogoutButton(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // MARK: - UI Helper Methods
+
+  Widget _buildUserInfo() {
+    return Column(
+      children: [
+        Container(
+          width: context.resW(72),
+          height: context.resW(72),
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              image: NetworkImage("https://placehold.co/72x72"),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        SizedBox(height: context.resH(12)),
+        Text(
+          SessionManager.sTenKh.isNotEmpty
+              ? SessionManager.sTenKh
+              : 'Nguyễn Trần Thảo Nguyên',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: context.resClamp(16, 14, 18),
+            fontFamily: 'Mulish', // Theo snippet user
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(
+        context.resW(20),
+        context.resH(12),
+        context.resW(20),
+        context.resH(8),
+      ),
+      child: Text(
+        title,
+        style: TextStyle(
+          color: const Color(0xFF9A9A9A),
+          fontSize: context.resClamp(14, 12, 15),
+          fontFamily: 'Inter',
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuItem(String iconPath, String label) {
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        height: context.resH(48),
+        padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
+        child: Row(
+          children: [
+            // Icon Placeholder (Sử dụng icon hệ thống nếu không có SVG)
+            SizedBox(
+              width: context.resW(20), // Kích thước responsive
+              height: context.resW(20),
+              child: SvgPicture.asset(
+                iconPath,
+                // Đổi màu SVG sang trắng để đồng bộ với thiết kế
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+                fit: BoxFit.contain,
+              ),
+            ),
+            SizedBox(width: context.resW(12)),
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: context.resClamp(14, 13, 15),
+                  fontFamily: 'Inter',
+                ),
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: Color(0xFF9A9A9A), size: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSwitchItem(String iconPath, String label) {
+    return Container(
+      height: context.resH(48),
+      padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
+      child: Row(
+        children: [
+          SizedBox(
+            width: context.resW(20), // Kích thước responsive
+            height: context.resW(20),
+            child: SvgPicture.asset(
+              iconPath,
+              // Đổi màu SVG sang trắng để đồng bộ với thiết kế
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+              fit: BoxFit.contain,
+            ),
+          ),
+          SizedBox(width: context.resW(12)),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(color: Colors.white, fontSize: 14),
+            ),
+          ),
+          // Custom Toggle theo thiết kế user
+          Switch(
+            value: _isNotificationEnabled,
+            onChanged: (val) => setState(() => _isNotificationEnabled = val),
+            activeThumbColor: Colors.white,
+            activeTrackColor: const Color(0xFFE04A50),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLanguageItem(String iconPath, String label) {
+    // 1. Lấy thông tin ngôn ngữ hiện tại để đổi cờ và text động
+    final currentCode = context.locale.languageCode;
+    final String langText = currentCode == 'vi' ? 'VN' : 'EN';
+    final String flagAsset = currentCode == 'vi'
+        ? 'assets/images/vietnam.svg'
+        : 'assets/images/kingdom.svg';
+
+    return InkWell(
+      onTap: () => LanguageBottomSheet.show(context: context),
+      child: Container(
+        height: context.resH(48),
+        padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
+        child: Row(
+          children: [
+            // 2. Icon quả địa cầu bên trái
+            SizedBox(
+              width: context.resW(20),
+              height: context.resW(20),
+              child: SvgPicture.asset(
+                iconPath,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+                fit: BoxFit.contain,
+              ),
+            ),
+            SizedBox(width: context.resW(12)),
+
+            // 3. Nhãn "Ngôn ngữ"
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: context.resClamp(14, 13, 15),
+                  fontFamily: 'Inter',
+                ),
+              ),
+            ),
+
+            // 4. Khung chọn ngôn ngữ dạng Pill (Như hình image_342069.png)
+            Container(
+              padding: const EdgeInsets.only(
+                top: 2,
+                left: 2,
+                right: 10,
+                bottom: 2,
+              ),
+              decoration: BoxDecoration(
+                color: const Color(0xFF3E3E3E), // Màu nền xám của pill
+                borderRadius: BorderRadius.circular(32),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Hình tròn chứa cờ quốc gia
+                  Container(
+                    width: 24,
+                    height: 24,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: const BoxDecoration(shape: BoxShape.circle),
+                    child: SvgPicture.asset(flagAsset, fit: BoxFit.cover),
+                  ),
+                  const SizedBox(width: 8),
+                  // Chữ hiển thị mã (VN/EN)
+                  Text(
+                    langText,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLogoutButton() {
+    return InkWell(
+      onTap: () async {
+        await _handleLogout();
+      },
+      child: Container(
+        height: context.resH(48),
+        padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
+        child: Row(
+          children: [
+            const Icon(Icons.logout, color: Color(0xFFFF707A), size: 20),
+            SizedBox(width: context.resW(12)),
+            Text(
+              'Đăng xuất',
+              style: TextStyle(
+                color: const Color(0xFFFF707A), // Màu đỏ lỗi theo snippet
+                fontSize: context.resClamp(14, 13, 15),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleLogout() async {
+    // 1. Sử dụng handleApi để hiển thị loading
+    await handleApi(
+      context,
+      Future.delayed(const Duration(milliseconds: 500), () async {
+        // 2. Clear dữ liệu dưới Disk (SharedPreferences)
+        // Đảm bảo SessionManager đã có hàm logout() hoặc clear()
+        await SessionManager.logout();
+
+        // 3. Clear dữ liệu trên RAM (AppSession)
+        AppSession().clear();
+      }),
+    );
+
+    if (!mounted) return;
+
+    // 4. Move ra màn hình Welcome/Login và xóa sạch lịch sử stack
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (route) => false, // Không cho phép nhấn Back quay lại trang cá nhân
+    );
+  }
+}
