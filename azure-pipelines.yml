@@ -4,7 +4,7 @@ trigger:
 # Khai báo nhóm biến dùng chung cho cả Android và iOS
 variables:
   - group: android-release-vars # Tên Variable Group bạn tạo trên Library
-  # - group: ios-release-vars     # TẠO MỚI: Bạn cần tạo group này trên Library để chứa biến P12_PASSWORD
+  - group: ios-release-vars     # TẠO MỚI: Bạn cần tạo group này trên Library để chứa biến P12_PASSWORD
 
 jobs:
 # ==========================================
