@@ -6,7 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-
 // 1. Khai báo Global Key ở ngoài cùng
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -18,8 +17,8 @@ void main() async {
   // GOM CHUNG CÁC TÁC VỤ CHỜ LOADING TẠI ĐÂY
   await Future.wait([
     EasyLocalization.ensureInitialized(), // Khởi tạo đa ngôn ngữ
-    dotenv.load(fileName: ".env"),        // Load cấu hình môi trường
-    AppSession().load(),                  // Nạp dữ liệu phiên đăng nhập vào RAM
+    dotenv.load(fileName: ".env"), // Load cấu hình môi trường
+    AppSession().load(), // Nạp dữ liệu phiên đăng nhập vào RAM
   ]);
 
   runApp(
@@ -58,7 +57,9 @@ class MyApp extends StatelessWidget {
       ),
 
       // Nếu isLoggedIn là true thì vào thẳng Home, ngược lại hiện Login
-      home: isLoggedIn ? const MasterScreen() : const WelcomeScreen(),
+      home: AppSession().isLoggedIn
+          ? const MasterScreen()
+          : const WelcomeScreen(),
     );
   }
 }
