@@ -117,16 +117,18 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
       MemberInfoModel? mi = await getUserId(clientId);
       if (mi != null) {
         customerId = mi.data!.userId.toString();
-        AppSession().customerId = SessionManager.sCustomerId = customerId;
+        AppSession().customerId = customerId;
+        await SessionManager.setCustomerId(customerId);
       }
     } catch (e) {
       debugPrint("Lỗi lấy thông tin khách hàng từ CRM: $e");
     }
 
     // 3. Lưu vào Session để các màn hình khác (như Home) có thể dùng
-    AppSession().clientId = SessionManager.sClientId =
-        clientId; // Cập nhật RAM (Tức thì)
+    AppSession().clientId = clientId; // Cập nhật RAM (Tức thì)
     await SessionManager.setClientId(clientId); // Cập nhật Disk (Bền vững)
+
+    AppSession().updateSession(phone: phone, cid: clientId);
   }
 
   Future<void> _verifyOtp() async {

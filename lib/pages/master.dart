@@ -1,6 +1,8 @@
 import 'package:californiaflutter/bases/app_session.dart';
+import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/pages/layouts/home.dart';
 import 'package:californiaflutter/pages/layouts/login.dart';
+import 'package:californiaflutter/pages/layouts/profile.dart';
 import 'package:californiaflutter/pages/layouts/schedule.dart';
 import 'package:californiaflutter/pages/layouts/loyalty.dart';
 import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
@@ -36,14 +38,20 @@ class _MasterScreenState extends State<MasterScreen> {
       const HomeScreen(), // Index 0
       const ScheduleScreen(), // Index 1
       const LoyaltyScreen(), // Index 2 (Ví dụ)
-      const Scaffold(body: Center(child: Text("Hồ sơ"))), // Index 3
+      const ProfileScreen(), // Index 3
     ];
   }
 
-  void _checkAuthStatus() {
+  Future<void> _checkAuthStatus() async {
+    String? clientId = await SessionManager.getClientId();
+    String? phoneNumber = await SessionManager.getPhoneNumber();
+    String? customerId = await SessionManager.getCustomerId();
+
     // 2. Kiểm tra nếu thiếu Phone hoặc ClientID thì đẩy ra Login
-    if (AppSession().phoneNumber.isEmpty || AppSession().clientId.isEmpty) {
+    if (phoneNumber!.isEmpty || clientId!.isEmpty || customerId!.isEmpty) {
       debugPrint("--- Auth Guard: Thiếu dữ liệu, chuyển hướng về Welcome ---");
+
+      if (!mounted) return;
 
       // Sử dụng pushAndRemoveUntil để xóa sạch lịch sử các màn hình trước đó
       Navigator.pushAndRemoveUntil(
@@ -51,6 +59,10 @@ class _MasterScreenState extends State<MasterScreen> {
         MaterialPageRoute(builder: (context) => const LoginScreen()),
         (route) => false, // Xóa tất cả các route cũ
       );
+    } else {
+      AppSession().phoneNumber = phoneNumber;
+      AppSession().clientId = clientId;
+      AppSession().customerId = customerId;
     }
   }
 

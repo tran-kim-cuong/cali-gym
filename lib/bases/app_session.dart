@@ -34,9 +34,35 @@ class AppSession {
   }
 
   // Hàm cập nhật nóng (Ví dụ sau khi login/otp thành công)
-  void updateSession({String? phone, String? cid, MemberModel? mem}) {
-    if (phone != null) phoneNumber = phone;
-    if (cid != null) clientId = cid;
-    if (mem != null) member = mem;
+  void updateSession({String? phone, String? cid, MemberModel? mem}) async {
+    if (phone != null) {
+      phoneNumber = phone;
+      // LƯU XUỐNG DISK TẠI ĐÂY
+      await SessionManager.setPhoneNumber(phone);
+    }
+    if (cid != null) {
+      clientId = cid;
+      // LƯU XUỐNG DISK TẠI ĐÂY
+      await SessionManager.setClientId(cid);
+    }
+    if (mem != null) {
+      member = mem;
+      // Lưu object member nếu cần
+      SessionManager.member = mem;
+    }
+
+    // Cập nhật trạng thái đăng nhập
+    isLoggedIn = phoneNumber.isNotEmpty && clientId.isNotEmpty;
+    isInitialized = true;
+  }
+
+  void clear() {
+    phoneNumber = "";
+    clientId = "";
+    member = null;
+    isInitialized = false;
+    isLoggedIn = false;
+    customerId = "";
+    debugPrint("--- AppSession RAM Cleared ---");
   }
 }

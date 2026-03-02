@@ -67,4 +67,17 @@ class SessionManager {
       sClientId,
     ); // Trả về chuỗi token hoặc null nếu chưa có
   }
+
+  static Future<void> setCustomerId(String phoneNumber) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(sCustomerId, phoneNumber);
+  }
+
+  static Future<String?> getCustomerId() async {
+    final prefs =
+        await SharedPreferences.getInstance(); // Khởi tạo SharedPreferences
+    return prefs.getString(
+      sCustomerId,
+    ); // Trả về chuỗi token hoặc null nếu chưa có
+  }
 }
