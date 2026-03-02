@@ -52,9 +52,9 @@ dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/icon_logo.png" # Đường dẫn đến file ảnh của bạn
+  image_path: "assets/images/new_logo.png" # Đường dẫn đến file ảnh của bạn
   adaptive_icon_background: "#151515" # Màu nền cho Android (nếu cần)
-  adaptive_icon_foreground: "assets/images/icon_logo.png"
+  adaptive_icon_foreground: "assets/images/new_logo.png"
 
 dev_dependencies:
   flutter_test:
