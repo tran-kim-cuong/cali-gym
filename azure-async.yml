@@ -1,0 +1,29 @@
+trigger:
+- sync-github # Hoặc nhánh bạn muốn đồng bộ
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self
+  persistCredentials: true
+
+- script: |
+    # 1. Khai báo thông tin user
+    git config --global user.email "cuong.tran.vnwork@gmail.com"
+    git config --global user.name "cuongtk"
+    
+    # 2. Thêm remote GitHub
+    git remote add github https://${GITHUB_TOKEN}@github.com/tran-kim-cuong/cali-gym.git
+    
+    # 3. Đồng bộ code sang GitHub (BỎ lệnh git checkout đi)
+    
+    # [TÙY CHỌN 1]: Nếu bạn muốn đẩy code sang nhánh 'develop' trên GitHub
+    git push github HEAD:develop
+    
+    # [TÙY CHỌN 2]: Nếu bạn muốn đẩy code nhánh develop này đè thẳng lên nhánh 'main' trên GitHub
+    # git push github HEAD:main
+    
+  displayName: 'Sync to GitHub Securely'
+  env:
+    GITHUB_TOKEN: $(GITHUB_PAT)
