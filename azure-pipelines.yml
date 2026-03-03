@@ -137,3 +137,5 @@ jobs:
       appType: 'iOS'
       ipaPath: '**/*.ipa'
       releaseTrack: 'TestFlight'
+      # THÊM DÒNG DƯỚI ĐÂY ĐỂ KHÔNG PHẢI ĐỢI
+      shouldWait: false
