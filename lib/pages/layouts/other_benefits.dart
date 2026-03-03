@@ -23,19 +23,20 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
   MembershipCard _msCard = MembershipCard();
 
   // 1. QUẢN LÝ DANH SÁCH SẢN PHẨM (Dễ dàng đấu nối API)
-  final List<Map<String, dynamic>> _products = [
+
+  final List<Map<String, dynamic>> _allProducts = [
     {
       'id': 'towel_small',
       "code": "tsm",
       'name': 'Khăn nhỏ',
-      'count': 1,
+      'count': 0,
       'icon': 'assets/images/vuesax/towel-svgrepo-com 1.svg',
     },
     {
       'id': 'towel_large',
       "code": "txl",
       'name': 'Khăn to',
-      'count': 1,
+      'count': 0,
       'icon': 'assets/images/vuesax/towel-svgrepo-com 1.svg',
     },
     {
@@ -81,6 +82,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
       'icon': 'assets/images/vuesax/card-svgrepo-com 1.svg',
     },
   ];
+  List<Map<String, dynamic>> _products = [];
 
   void _updateCount(int index, int delta) {
     setState(() {
@@ -97,7 +99,17 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
     if (_memberCards.isNotEmpty) {
       _selectedCard = _memberCards[0];
       _msCard = SessionManager.member.listMembershipCard![0];
+      getProductByCard();
     }
+  }
+
+  void getProductByCard() {
+    _products = _allProducts
+        .where(
+          (item) =>
+              _selectedCard?['benefitMember'].split(',').contains(item['code']),
+        )
+        .toList();
   }
 
   // HÀM HIỂN THỊ CHỌN THẺ (BOTTOM SHEET) THEO SNIPPET
@@ -160,6 +172,9 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
                         return InkWell(
                           onTap: () {
                             setState(() => _selectedCard = card);
+                            // print(_selectedCard);
+                            //Filtter Benefit
+                            getProductByCard();
                             Navigator.pop(context);
                           },
                           child: Container(
