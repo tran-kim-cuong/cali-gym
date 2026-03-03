@@ -1,5 +1,5 @@
 trigger:
-- develop # Pipeline sẽ tự chạy khi bạn push code lên branch main
+- build-test # Pipeline sẽ tự chạy khi bạn push code lên branch main
 
 # Khai báo nhóm biến dùng chung cho cả Android và iOS
 variables:
