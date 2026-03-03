@@ -19,7 +19,7 @@ steps:
     # 3. Đồng bộ code sang GitHub (BỎ lệnh git checkout đi)
     
     # [TÙY CHỌN 1]: Nếu bạn muốn đẩy code sang nhánh 'develop' trên GitHub
-    git push github HEAD:develop
+    git push github HEAD:refs/heads/develop
     
     # [TÙY CHỌN 2]: Nếu bạn muốn đẩy code nhánh develop này đè thẳng lên nhánh 'main' trên GitHub
     # git push github HEAD:main
