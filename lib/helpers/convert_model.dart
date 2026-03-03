@@ -15,6 +15,10 @@ List<Map<String, dynamic>> buildMemberCards(MemberModel? member) {
               card.membershipCardNumber ?? "", //Sai, không nên dùng
           "mbMemberId": card.mbMemberId ?? "",
           "mbMembershipNumber": card.membershipNumber ?? "",
+          "benefitMember": card.benefitMember
+              ?.where((e) => e.productCode != null && e.productCode!.isNotEmpty)
+              .map((e) => e.productCode!)
+              .join(','),
         };
       }).toList() ??
       [];
