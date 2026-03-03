@@ -7,6 +7,7 @@ pool:
 steps:
 - checkout: self
   persistCredentials: true
+  fetchDepth: 0 # Tải toàn bộ lịch sử
 
 - script: |
     # 1. Khai báo thông tin user
@@ -19,7 +20,7 @@ steps:
     # 3. Đồng bộ code sang GitHub (BỎ lệnh git checkout đi)
     
     # [TÙY CHỌN 1]: Nếu bạn muốn đẩy code sang nhánh 'develop' trên GitHub
-    git push github HEAD:refs/heads/develop
+    git push --force github HEAD:refs/heads/develop
     
     # [TÙY CHỌN 2]: Nếu bạn muốn đẩy code nhánh develop này đè thẳng lên nhánh 'main' trên GitHub
     # git push github HEAD:main
