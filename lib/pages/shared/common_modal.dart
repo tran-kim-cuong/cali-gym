@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qr_flutter/qr_flutter.dart'; // Cần thêm thư viện này
@@ -9,9 +10,11 @@ class CommonModalWidget {
   static Future<void> showBigQrModal({
     required BuildContext context,
     required String qrData,
-    String instructionText = 'Vui lòng đưa mã này cho lễ tân để check-in',
+    String? instructionText,
   }) async {
     double? originalBrightness;
+
+    final String text = instructionText ?? 'msg_reception_checkin'.tr();
 
     try {
       // 1. Lưu lại mức độ sáng hiện tại của máy
@@ -83,7 +86,7 @@ class CommonModalWidget {
                     SizedBox(
                       width: context.resW(335),
                       child: Text(
-                        instructionText,
+                        text,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,

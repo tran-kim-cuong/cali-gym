@@ -1,14 +1,48 @@
 {
+  "class_detail": {
+    "modal_cancel_button_text": "Đã hiểu",
+    "modal_cancel_title_text": "Hủy lớp học thất bại\ndo có lỗi xảy ra",
+    "notice_cancel_succeed": "Hủy lớp học thành công",
+    "cancel_button_text": "Huỷ lịch hẹn",
+    "scan_checkin_button_text": "Quét để Check-in",
+    "model_question_title_text": "Bạn xác nhận muốn huỷ\nlớp học này không?",
+    "default_message": "Thông tin đang được cập nhật...",
+    "default_null": "N/A",
+    "content_notice": "Quyền lợi đặt chỗ trên ứng dụng sẽ đóng trước khi lớp bắt đầu 2 tiếng\nQuyền lợi đăng kí trước buổi tập sẽ được tạm ngưng 14 ngày trong trường hợp hội viên thay đổi kế hoạch tập luyện nhưng không huỷ bỏ buổi tập đã đăng ký trước (No show) 3 lần (tích luỹ ) trong vòng 30 ngày kể từ lần vi phạm gần nhất",
+    "info_introduce": "Giới thiệu",
+    "info_notice": "Lưu ý",
+    "info_seat": "Vị trí ngồi",
+    "info_duration": "Thời lượng học",
+    "info_minutes": "phút",
+    "info_googlemaps": "Xem đường đi",
+    "info_classmaps": "Xem sơ đồ",
+    "info_sub_seat": "chỗ ngồi",
+    "info_sub_trainer": "Giáo viên",
+    "tag_widget_status": "Chờ xác nhận",
+    "title": "Chi tiết lớp"
+  },
   "common": {
     "lang_vi": "Vietnamese",
     "lang_en": "English",
     "chang_lang": "Language",
     "and": " and ",
     "or": " or ",
-    "accept": "Accept"
+    "accept": "Accept",
+    "notice_to_checkin": "Please present this code to the receptionist for check-in"
   },
   "home": {
-    "hello": "Hi"
+    "hello": "Hello",
+    "section_member_card": "Membership Card",
+    "see_all": "See all",
+    "fnc_pick_up_class": "Book a class",
+    "fnc_other_benefit": "Other benefits",
+    "fnc_practice_teacher": "Train with PT",
+    "section_next_class": "Upcoming classes",
+    "no_class": "No classes available",
+    "register_now": "Register now",
+    "section_practice_pt": "PT Course",
+    "coming_soon": "Coming soon",
+    "hot_program": "Hot programs"
   },
   "login": {
     "phone_hint": "Phone Number",
@@ -20,6 +54,18 @@
     "verify_sms": "Verify via SMS",
     "verify_zalo": "Verify via Zalo",
     "phone_input_title": "Please enter your phone number to login"
+  },
+  "member_card": {
+    "expire_date": "Expiry date: ",
+    "btn_show_qr": "Show QR code",
+    "pick_member_card": "Pin card",
+    "title_member_card": "Membership Card(s)"
+  },
+  "navbar": {
+    "btn_home": "Home",
+    "btn_class": "Class",
+    "btn_loyalty": "Loyalty",
+    "btn_profile": "Profile"
   },
   "otp": {
     "title": "Enter OTP",

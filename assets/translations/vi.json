@@ -27,10 +27,22 @@
     "chang_lang": "Ngôn ngữ",
     "and": " và ",
     "or": " hoặc ",
-    "accept": "Xác nhận"
+    "accept": "Xác nhận",
+    "notice_to_checkin": "Vui lòng đưa mã này cho lễ tân để check-in"
   },
   "home": {
-    "hello": "Xin chào"
+    "hello": "Xin chào",
+    "section_member_card": "Thẻ hội viên",
+    "see_all": "Xem tất cả",
+    "fnc_pick_up_class": "Đặt lớp học",
+    "fnc_other_benefit": "Quyền lợi khác",
+    "fnc_practice_teacher": "Tập cùng PT",
+    "section_next_class": "Lớp học sắp tới",
+    "no_class": "Không có lớp học nào",
+    "register_now": "Đăng ký ngay",
+    "section_practice_pt": "Khóa học PT",
+    "coming_soon": "Sắp ra mắt",
+    "hot_program": "Chương trình hot"
   },
   "login": {
     "phone_hint": "Số điện thoại",
@@ -42,6 +54,18 @@
     "verify_sms": "Xác thực qua SMS",
     "verify_zalo": "Xác thực qua Zalo",
     "phone_input_title": "Hãy nhập số điện thoại của bạn để đăng nhập"
+  },
+  "member_card": {
+    "expire_date": "Ngày hết hạn: ",
+    "btn_show_qr": "Hiện mã QR",
+    "pick_member_card": "Ghim thẻ",
+    "title_member_card": "Thẻ hội viên"
+  },
+  "navbar": {
+    "btn_home": "Trang chủ",
+    "btn_class": "Lớp học",
+    "btn_loyalty": "Loyalty",
+    "btn_profile": "Hồ sơ"
   },
   "otp": {
     "title": "Nhập mã OTP",

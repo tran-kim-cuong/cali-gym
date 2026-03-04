@@ -153,15 +153,19 @@ class _HomeScreenState extends State<HomeScreen>
                   SizedBox(height: context.resH(24)),
 
                   // 4. MEMBERSHIP SECTION
-                  _buildSectionHeader('Thẻ hội viên', 'Xem tất cả', () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            MemberListScreen(cards: _memberCards),
-                      ),
-                    );
-                  }),
+                  _buildSectionHeader(
+                    'home.section_member_card'.tr(),
+                    'home.see_all'.tr(),
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              MemberListScreen(cards: _memberCards),
+                        ),
+                      );
+                    },
+                  ),
                   _buildMembershipList(),
 
                   SizedBox(height: context.resH(24)),
@@ -172,27 +176,42 @@ class _HomeScreenState extends State<HomeScreen>
                   SizedBox(height: context.resH(24)),
 
                   // 6. UPCOMING CLASSES
-                  _buildSectionHeader('Lớp học sắp tới', 'Xem tất cả', () {
-                    // CẬP NHẬT TẠI ĐÂY: Cho phép nhấn vào chữ "Xem tất cả" ở trên đầu
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ClassScreen()),
-                    );
-                  }),
+                  _buildSectionHeader(
+                    'home.section_next_class'.tr(),
+                    'home.see_all'.tr(),
+                    () {
+                      // CẬP NHẬT TẠI ĐÂY: Cho phép nhấn vào chữ "Xem tất cả" ở trên đầu
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ClassScreen()),
+                      );
+                    },
+                  ),
                   _upcomingClasses.isEmpty
-                      ? _buildEmptyState('Không có lớp học nào', 'Đăng ký ngay')
+                      ? _buildEmptyState(
+                          'home.no_class'.tr(),
+                          'home.register_now'.tr(),
+                        )
                       : _buildClassList(),
 
                   SizedBox(height: context.resH(24)),
 
                   // 7. PT COURSE
-                  _buildSectionHeader('Khoá học PT', 'Xem tất cả', () {}),
-                  _buildEmptyState('Sắp ra mắt', null),
+                  _buildSectionHeader(
+                    'home.section_practice_pt'.tr(),
+                    'home.see_all'.tr(),
+                    () {},
+                  ),
+                  _buildEmptyState('home.coming_soon'.tr(), null),
 
                   SizedBox(height: context.resH(24)),
 
                   // 8. HOT PROGRAM
-                  _buildSectionHeader('Chương trình hot', 'Xem tất cả', () {}),
+                  _buildSectionHeader(
+                    'home.hot_program'.tr(),
+                    'home.see_all'.tr(),
+                    () {},
+                  ),
                   _buildHotProgram(),
 
                   SizedBox(
@@ -326,7 +345,7 @@ class _HomeScreenState extends State<HomeScreen>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _actionCircle(
-            'Đặt lớp học',
+            'home.fnc_pick_up_class'.tr(),
             'assets/images/vuesax/teacher.svg',
             onTap: () {
               Navigator.push(
@@ -338,7 +357,7 @@ class _HomeScreenState extends State<HomeScreen>
             },
           ),
           _actionCircle(
-            'Quyền lợi khác',
+            'home.fnc_other_benefit'.tr(),
             'assets/images/vuesax/gift.svg',
             onTap: () {
               Navigator.push(
@@ -350,7 +369,7 @@ class _HomeScreenState extends State<HomeScreen>
             },
           ),
           _actionCircle(
-            'Tập cùng PT',
+            'home.fnc_practice_teacher'.tr(),
             'assets/images/vuesax/dumbbell-large-minimalistic-svgrepo-com.svg',
           ),
         ],
@@ -581,7 +600,7 @@ class _HomeScreenState extends State<HomeScreen>
             ),
             SizedBox(height: context.resH(12)),
             Text(
-              'Xem tất cả',
+              'home.see_all'.tr(),
               style: TextStyle(
                 color: const Color(0xFF9A9A9A),
                 fontSize: context.resClamp(14, 12, 16),
