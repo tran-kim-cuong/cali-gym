@@ -1,3 +1,4 @@
+import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/booking_class_model.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -97,12 +98,12 @@ class CommonClassCard extends StatelessWidget {
   }
 
   Widget _buildImage(int idx) {
-    // Tạo tên file theo định dạng _01, _02, _03...
-    final String imageIndex = (idx + 1).toString().padLeft(2, '0');
-    final String assetPath = 'assets/images/image_class_$imageIndex.png';
+    // // Tạo tên file theo định dạng _01, _02, _03...
+    // final String imageIndex = (idx + 1).toString().padLeft(2, '0');
+    // final String assetPath = 'assets/images/image_class_$imageIndex.png';
 
     return Image.asset(
-      assetPath,
+      ImageHelper.getClassThumbnail(data.classType),
       height: 120, // context.resH(120)
       width: double.infinity,
       fit: BoxFit.cover,
