@@ -1,6 +1,8 @@
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/models/member_model.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/widgets.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class AppSession {
   // 1. Khởi tạo Singleton pattern
@@ -15,6 +17,10 @@ class AppSession {
   bool isInitialized = false;
   bool isLoggedIn = false;
   String customerId = "";
+
+  String latestVersion = "";
+  String updateUrl = "";
+  bool hasNewUpdate = false;
 
   // 3. Hàm LOAD duy nhất - Gắn giá trị 1 lần
   Future<void> load() async {
@@ -31,6 +37,37 @@ class AppSession {
 
     isInitialized = true;
     debugPrint("--- AppSession Loaded Successfully ---");
+  }
+
+  // 4. Hàm UPDATE_VERSION
+  Future<void> checkUpdate() async {
+    try {
+      final remoteConfig = FirebaseRemoteConfig.instance;
+
+      await remoteConfig.setConfigSettings(
+        RemoteConfigSettings(
+          fetchTimeout: const Duration(seconds: 10),
+          minimumFetchInterval: const Duration(hours: 1),
+        ),
+      );
+
+      await remoteConfig.fetchAndActivate();
+
+      latestVersion = remoteConfig.getString('latest_version');
+      debugPrint('Latest version: $latestVersion');
+      updateUrl = remoteConfig.getString('update_url');
+      debugPrint('Update URL: $updateUrl');
+
+      final packageInfo = await PackageInfo.fromPlatform();
+      String currentVersion = packageInfo.version;
+
+      // So sánh phiên bản
+      if (latestVersion.isNotEmpty && latestVersion != currentVersion) {
+        hasNewUpdate = true;
+      }
+    } catch (e) {
+      debugPrint("Error check update: $e");
+    }
   }
 
   // Hàm cập nhật nóng (Ví dụ sau khi login/otp thành công)
