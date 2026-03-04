@@ -54,60 +54,60 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
                       SizedBox(height: context.resH(32)),
 
                       // SECTION: CÁ NHÂN
-                      _buildSectionTitle('Cá nhân'),
+                      _buildSectionTitle('profile.sec_privacy'.tr()),
                       _buildMenuItem(
                         'assets/images/profiles/user.svg',
-                        'Thông tin cá nhân',
+                        'profile.sec_privacy_info'.tr(),
                       ),
                       _buildMenuItem(
                         'assets/images/profiles/card.svg',
-                        'Thẻ hội viên',
+                        'profile.sec_privacy_member_card'.tr(),
                       ),
                       _buildMenuItem(
                         'assets/images/vuesax/teacher.svg',
-                        'Các lớp học trước',
+                        'profile.sec_privacy_future_class'.tr(),
                       ),
                       _buildMenuItem(
                         'assets/images/vuesax/document-text.svg',
-                        'Đơn hàng của tôi',
+                        'profile.sec_privacy_my_bill'.tr(),
                       ),
                       _buildMenuItem(
                         'assets/images/vuesax/ticket-discount.svg',
-                        'Voucher của tôi',
+                        'profile.sec_privacy_my_voucher'.tr(),
                       ),
 
                       SizedBox(height: context.resH(16)),
 
                       // SECTION: CÀI ĐẶT
-                      _buildSectionTitle('Cài đặt'),
+                      _buildSectionTitle('profile.sec_settings'.tr()),
                       _buildSwitchItem(
                         'assets/images/profiles/notification.svg',
-                        'Nhận thông báo',
+                        'profile.sec_settings_notification'.tr(),
                       ),
                       _buildLanguageItem(
                         'assets/images/profiles/global.svg',
-                        'Ngôn ngữ',
+                        'profile.sec_settings_language'.tr(),
                       ),
 
                       SizedBox(height: context.resH(16)),
 
                       // SECTION: HỖ TRỢ
-                      _buildSectionTitle('Hỗ trợ'),
+                      _buildSectionTitle('profile.sec_support'.tr()),
                       _buildMenuItem(
                         'assets/images/profiles/messages.svg',
-                        'Nhận xét',
+                        'profile.sec_support_comment'.tr(),
                       ),
                       _buildMenuItem(
                         'assets/images/profiles/document.svg',
-                        'Điều khoản & Điều kiện',
+                        'profile.sec_support_term_condition'.tr(),
                       ),
                       _buildMenuItem(
                         'assets/images/profiles/lock.svg',
-                        'Chính sách bảo mật',
+                        'profile.sec_support_security'.tr(),
                       ),
                       _buildMenuItem(
                         'assets/images/profiles/message-question.svg',
-                        'Trung tâm trợ giúp',
+                        'profile.sec_support_center'.tr(),
                       ),
 
                       SizedBox(height: context.resH(24)),
@@ -353,7 +353,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
             const Icon(Icons.logout, color: Color(0xFFFF707A), size: 20),
             SizedBox(width: context.resW(12)),
             Text(
-              'Đăng xuất',
+              'profile.btn_logout'.tr(),
               style: TextStyle(
                 color: const Color(0xFFFF707A), // Màu đỏ lỗi theo snippet
                 fontSize: context.resClamp(14, 13, 15),

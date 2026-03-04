@@ -2,15 +2,13 @@
     "lang_vi": "Vietnamese",
     "lang_en": "English",
     "chang_lang": "Language",
-
     "and": " and ",
     "or": " or ",
-
-    "accept": "Accept",
-    "notice_to_checkin": "Please present this code to the receptionist for check-in",
-    "title_upgrade": "App Update",
+    "accept": "Confirm",
+    "notice_to_checkin": "Please show this code to the receptionist to check in",
+    "title_upgrade": "Update Application",
     "msg_new_version": "A new version {} is available. Would you like to update now?",
-    "btn_agree": "Đồng ý",
-    "btn_cancel": "Hủy",
-    "btn_understand":"Đã hiểu"
+    "btn_agree": "Agree",
+    "btn_cancel": "Cancel",
+    "btn_understand": "Understood"
 }

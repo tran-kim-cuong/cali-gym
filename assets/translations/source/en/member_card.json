@@ -1,6 +1,6 @@
 {
     "expire_date": "Expiry date: ",
     "btn_show_qr": "Show QR code",
-    "pick_member_card":"Pin card",
-    "title_member_card":"Membership Card(s)"
+    "pick_member_card": "Pin card",
+    "title_member_card": "Membership Card"
 }
