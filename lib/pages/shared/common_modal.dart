@@ -268,11 +268,12 @@ class CommonModalWidget {
     required BuildContext context,
     required String imagePath,
     required String title,
-    String confirmButtonText = 'Đồng ý',
-    String cancelButtonText = 'Hủy',
     required VoidCallback onConfirm,
     VoidCallback? onCancel,
   }) async {
+    String confirmButton = 'common.btn_agree'.tr();
+    String cancelButton = 'common.btn_cancel'.tr();
+
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -366,7 +367,7 @@ class CommonModalWidget {
                                 ),
                               ),
                               child: Text(
-                                cancelButtonText,
+                                cancelButton,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -396,7 +397,7 @@ class CommonModalWidget {
                                 ),
                               ),
                               child: Text(
-                                confirmButtonText,
+                                confirmButton,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,

@@ -12,6 +12,8 @@ class SessionManager {
   static String sCustomerId = "";
   static MemberModel member = MemberModel();
 
+  static const String keySkippedVersion = "skipped_version"; // Thêm key này
+
   static const String keyToken =
       "bearerToken"; // Key dùng để định danh token trong bộ nhớ
 
@@ -68,9 +70,9 @@ class SessionManager {
     ); // Trả về chuỗi token hoặc null nếu chưa có
   }
 
-  static Future<void> setCustomerId(String phoneNumber) async {
+  static Future<void> setCustomerId(String customerId) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(sCustomerId, phoneNumber);
+    await prefs.setString(sCustomerId, customerId);
   }
 
   static Future<String?> getCustomerId() async {
@@ -79,5 +81,15 @@ class SessionManager {
     return prefs.getString(
       sCustomerId,
     ); // Trả về chuỗi token hoặc null nếu chưa có
+  }
+
+  static Future<void> setSkippedVersion(String version) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(keySkippedVersion, version);
+  }
+
+  static Future<String?> getSkippedVersion() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(keySkippedVersion);
   }
 }

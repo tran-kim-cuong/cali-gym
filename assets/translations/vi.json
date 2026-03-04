@@ -28,7 +28,11 @@
     "and": " và ",
     "or": " hoặc ",
     "accept": "Xác nhận",
-    "notice_to_checkin": "Vui lòng đưa mã này cho lễ tân để check-in"
+    "notice_to_checkin": "Vui lòng đưa mã này cho lễ tân để check-in",
+    "title_upgrade": "Cập nhật ứng dụng",
+    "msg_new_version": "Đã có phiên bản mới {}. Bạn có muốn cập nhật ngay không?",
+    "btn_agree": "Đồng ý",
+    "btn_cancel": "Hủy"
   },
   "home": {
     "hello": "Xin chào",
