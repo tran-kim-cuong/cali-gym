@@ -1,0 +1,25 @@
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "cali-gym-915a7",
+                    "appId": "1:591343566903:android:5d732d95ba5d3ed4857fb2",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "cali-gym-915a7",
+                    "configurations": {
+                        "android": "1:591343566903:android:5d732d95ba5d3ed4857fb2",
+                        "ios": "1:591343566903:ios:9f3739d782c79386857fb2",
+                        "macos": "1:591343566903:ios:9f3739d782c79386857fb2",
+                        "web": "1:591343566903:web:c885238126fb4a93857fb2",
+                        "windows": "1:591343566903:web:db90c7389a88b655857fb2"
+                    }
+                }
+            }
+        }
+    }
+}

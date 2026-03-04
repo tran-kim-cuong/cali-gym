@@ -1,7 +1,7 @@
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/booking_class_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class CommonClassCard extends StatelessWidget {
   final BookingData data;
@@ -25,6 +25,8 @@ class CommonClassCard extends StatelessWidget {
     final String timeRange = data.startDate != null && data.endDate != null
         ? "${DateFormat('hh:mm a').format(data.startDate!)} - ${DateFormat('hh:mm a').format(data.endDate!)}"
         : '--:--';
+
+    final _ = context.locale;
 
     return Container(
       width: context.resW(160),
@@ -145,7 +147,7 @@ class CommonClassCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(4),
         ),
         child: Text(
-          'Quét để Check-in',
+          'class_detail.scan_checkin_button_text'.tr(),
           style: TextStyle(
             color: const Color(0xFFC7C7C7),
             fontSize: context.resClamp(12, 10, 14),

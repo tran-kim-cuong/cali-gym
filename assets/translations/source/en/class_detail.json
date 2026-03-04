@@ -1,0 +1,28 @@
+{
+    "modal_cancel_button_text": "Đã hiểu",
+    "modal_cancel_title_text": "Hủy lớp học thất bại\ndo có lỗi xảy ra",
+
+    "notice_cancel_succeed": "Hủy lớp học thành công",
+
+    "cancel_button_text": "Huỷ lịch hẹn",
+    "scan_checkin_button_text": "Quét để Check-in",
+
+    "model_question_title_text": "Bạn xác nhận muốn huỷ\nlớp học này không?",
+
+    "default_message": "Thông tin đang được cập nhật...",
+    "default_null": "N/A",
+    "content_notice": "Quyền lợi đặt chỗ trên ứng dụng sẽ đóng trước khi lớp bắt đầu 2 tiếng\nQuyền lợi đăng kí trước buổi tập sẽ được tạm ngưng 14 ngày trong trường hợp hội viên thay đổi kế hoạch tập luyện nhưng không huỷ bỏ buổi tập đã đăng ký trước (No show) 3 lần (tích luỹ ) trong vòng 30 ngày kể từ lần vi phạm gần nhất",
+
+    "info_introduce": "Giới thiệu",
+    "info_notice": "Lưu ý",
+    "info_seat": "Vị trí ngồi",
+    "info_duration": "Thời lượng học",
+    "info_minutes": "phút",
+    "info_googlemaps": "Xem đường đi",
+    "info_classmaps": "Xem sơ đồ",
+    "info_sub_seat": "chỗ ngồi",
+    "info_sub_trainer": "Giáo viên",
+
+    "tag_widget_status": "Chờ xác nhận",
+    "title": "Chi tiết lớp"
+}

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:flutter_svg/svg.dart';
@@ -17,6 +18,8 @@ class CommonBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _ = context.locale; // THÊM DÒNG NÀY: Ép widget lắng nghe sự thay đổi của locale
+
     // 1. Lấy thông số Padding đáy của hệ thống
     final double systemPaddingBottom = MediaQuery.of(context).padding.bottom;
 
@@ -40,18 +43,28 @@ class CommonBottomNavBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _navItem(context, 'assets/images/vuesax/home.svg', "Trang chủ", 0),
-          _navItem(context, 'assets/images/vuesax/teacher.svg', "Lớp học", 1),
+          _navItem(
+            context,
+            'assets/images/vuesax/home.svg',
+            'navbar.btn_home'.tr(),
+            0,
+          ),
+          _navItem(
+            context,
+            'assets/images/vuesax/teacher.svg',
+            "navbar.btn_class".tr(),
+            1,
+          ),
           _navItem(
             context,
             'assets/images/vuesax/ticket-discount.svg',
-            "Loyalty",
+            "navbar.btn_loyalty".tr(),
             2,
           ),
           _navItem(
             context,
             'assets/images/vuesax/profile-circle.svg',
-            "Hồ sơ",
+            "navbar.btn_profile".tr(),
             3,
           ),
         ],
