@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/services/api_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -101,6 +102,8 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
 
   @override
   Widget build(BuildContext context) {
+    final _ = context
+        .locale; // THÊM DÒNG NÀY: Ép widget lắng nghe sự thay đổi của locale
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300), // Hiệu ứng co giãn mượt mà
       width: double.infinity,
@@ -200,8 +203,8 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
               borderRadius: BorderRadius.circular(6),
               color: Colors.white.withValues(alpha: 0.1),
             ),
-            child: const Text(
-              "Hiện mã QR",
+            child: Text(
+              "member_card.btn_show_qr".tr(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 12,
@@ -285,7 +288,7 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
         ),
         const SizedBox(height: 8),
         Text(
-          'Ngày hết hạn: ${widget.data['expiry']}',
+          '${'member_card.expire_date'.tr()}${widget.data['expiry']}',
           style: const TextStyle(color: Colors.white70, fontSize: 12),
         ),
       ],

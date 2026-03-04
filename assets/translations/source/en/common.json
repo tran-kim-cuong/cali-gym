@@ -6,5 +6,6 @@
   "and": " and ",
   "or": " or ",
 
-  "accept": "Accept"
+  "accept": "Accept",
+  "notice_to_checkin": "Please present this code to the receptionist for check-in"
 }

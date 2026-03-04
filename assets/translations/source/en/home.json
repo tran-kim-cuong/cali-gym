@@ -1,3 +1,14 @@
 {
-    "hello": "Hi"
+    "hello": "Hello",
+    "section_member_card": "Membership Card",
+    "see_all": "See all",
+    "fnc_pick_up_class": "Book a class",
+    "fnc_other_benefit": "Other benefits",
+    "fnc_practice_teacher": "Train with PT",
+    "section_next_class": "Upcoming classes",
+    "no_class": "No classes available",
+    "register_now": "Register now",
+    "section_practice_pt": "PT Course",
+    "coming_soon": "Coming soon",
+    "hot_program": "Hot programs"
 }

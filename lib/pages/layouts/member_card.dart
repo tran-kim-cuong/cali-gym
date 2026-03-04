@@ -5,6 +5,7 @@ import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
 import 'package:californiaflutter/pages/shared/common_modal.dart';
+import 'package:easy_localization/easy_localization.dart';
 // import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 // import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,8 @@ class _MemberListScreenState extends State<MemberListScreen> {
     final double systemBottomPadding = MediaQuery.of(context).padding.bottom;
     // Chiều cao Navbar từ MasterScreen để tránh che khuất nội dung
     final double navBarHeight = context.resH(80);
+
+    final _ = context.locale;
 
     return Scaffold(
       backgroundColor: const Color(0xFF151515), // Color-Base-gray
@@ -78,7 +81,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
                       ),
                       // Tiêu đề văn bản
                       Text(
-                        'Thẻ hội viên',
+                        'member_card.title_member_card'.tr(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: context.resClamp(
@@ -202,7 +205,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
             ),
             SizedBox(width: context.resW(8)),
             Text(
-              'Ghim thẻ',
+              'member_card.pick_member_card'.tr(),
               style: TextStyle(
                 color: const Color(0xFFD1D5DB),
                 fontSize: context.resClamp(14, 12, 16),

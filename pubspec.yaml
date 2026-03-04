@@ -47,6 +47,8 @@ dependencies:
   flutter_launcher_icons: ^0.14.4
   screen_brightness: ^2.1.7
   crypto: ^3.0.3
+  firebase_remote_config: ^6.2.0
+  firebase_core: ^4.5.0
 
 # Cấu hình icon ở cuối file pubspec.yaml hoặc tạo file riêng
 flutter_launcher_icons:

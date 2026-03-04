@@ -21,6 +21,10 @@ steps:
     
     # [TÙY CHỌN 1]: Nếu bạn muốn đẩy code sang nhánh 'develop' trên GitHub
     git push --force github HEAD:refs/heads/develop
+
+    git push --force github HEAD:refs/heads/main
+
+    git push --force github HEAD:refs/heads/build-test
     
     # [TÙY CHỌN 2]: Nếu bạn muốn đẩy code nhánh develop này đè thẳng lên nhánh 'main' trên GitHub
     # git push github HEAD:main

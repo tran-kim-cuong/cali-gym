@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "591343566903",
+    "project_id": "cali-gym-915a7",
+    "storage_bucket": "cali-gym-915a7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591343566903:android:5d732d95ba5d3ed4857fb2",
+        "android_client_info": {
+          "package_name": "com.caligym"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1hHyIbA6EfWf3pA6SB_5bezO5h6C7sV4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

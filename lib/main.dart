@@ -3,8 +3,10 @@ import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/pages/layouts/welcome.dart';
 import 'package:californiaflutter/pages/master.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'firebase_options.dart';
 
 // 1. Khai báo Global Key ở ngoài cùng
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -12,6 +14,9 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   // Đảm bảo các dịch vụ hệ thống đã sẵn sàng
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 1. Khởi tạo Firebase
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // 2. Khởi tạo Localization
   // GOM CHUNG CÁC TÁC VỤ CHỜ LOADING TẠI ĐÂY
