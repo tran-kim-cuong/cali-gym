@@ -26,7 +26,7 @@ class LoadingWidget extends StatelessWidget {
             // 2. Logo bo tròn nằm chính giữa (Bỏ khung nền bao quanh)
             ClipOval(
               child: Image.asset(
-                'assets/images/icon_logo.png', // Đảm bảo đúng đường dẫn ảnh
+                'assets/images/new_logo.png', // Đảm bảo đúng đường dẫn ảnh
                 width: 35,
                 height: 35,
                 fit: BoxFit.cover,

@@ -9,9 +9,9 @@ import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
 import 'package:californiaflutter/pages/layouts/class_detail.dart';
 import 'package:californiaflutter/pages/shared/common_modal.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:intl/intl.dart';
 
 class ScheduleDetailScreen extends StatefulWidget {
   final ScheduleModel schedule;
@@ -146,7 +146,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
               ),
             ),
             Text(
-              'Chi tiết lớp',
+              'schedule_detail.lbl_title'.tr(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: context.resClamp(18, 16, 22),
@@ -199,7 +199,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
           _buildIconText(
             Icons.person_outline,
             // 'Giáo viên ${widget.schedule.trainerName ?? 'N/A'}',
-            'Giáo viên ${widget.schedule.trainerName ?? 'N/A'}',
+            '${'schedule_detail.lbl_trainer'.tr()} ${widget.schedule.trainerName ?? 'N/A'}',
           ),
           Row(
             children: [
@@ -209,7 +209,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
               ),
               const Spacer(),
               Text(
-                'Xem đường đi',
+                'schedule_detail.lnk_googlemaps'.tr(),
                 style: TextStyle(
                   color: const Color(0xFFE1494F),
                   fontSize: context.resClamp(12, 10, 14),
@@ -225,7 +225,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
               ),
               const Spacer(),
               Text(
-                'Xem sơ đồ',
+                'schedule_detail.lnk_sitemaps'.tr(),
                 style: TextStyle(
                   color: const Color(0xFFE1494F),
                   fontSize: context.resClamp(12, 10, 14),
@@ -250,14 +250,14 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
         children: [
           _buildStatItem(
             context,
-            'Thời lượng học',
-            '${widget.schedule.duration ?? 0} phút',
+            'schedule_detail.lbl_duration'.tr(),
+            '${widget.schedule.duration ?? 0} ${'schedule_detail.lbl_subfix_mins'.tr()}',
           ),
           Container(width: 1, height: 30, color: const Color(0xFF6B6B6B)),
           _buildStatItem(
             context,
-            'Vị trí ngồi',
-            'Còn ${widget.schedule.slotLeft ?? 0}/${widget.schedule.numberSeat ?? 0} chỗ',
+            'schedule_detail.lbl_seatno'.tr(),
+            '${'schedule_detail.lbl_prefix_ifno'.tr()} ${widget.schedule.capacityValid.length}/${widget.schedule.capacityArr.length} ${'schedule_detail.lbl_subfix_seatno'.tr()}',
             isRich: true,
           ),
         ],
@@ -274,8 +274,8 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Giới thiệu',
+          Text(
+            'schedule_detail.lbl_introduce'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: 16,
@@ -286,7 +286,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
           Text(
             widget.schedule.note?.isNotEmpty == true
                 ? widget.schedule.note!
-                : 'Gentle Yoga là sự kết hợp của các tư thế chậm và đơn giản...',
+                : 'schedule_detail.lbl_default_desc'.tr(),
             style: const TextStyle(
               color: Color(0xFFC7C7C7),
               fontSize: 12,
@@ -307,8 +307,8 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Lưu ý',
+          Text(
+            'class_detail.info_notice'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: 16,
@@ -316,8 +316,8 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
             ),
           ),
           SizedBox(height: context.resH(8)),
-          const Text(
-            'Quyền lợi đặt chỗ trên ứng dụng sẽ đóng trước khi lớp bắt đầu 2 tiếng...',
+          Text(
+            'class_detail.content_notice'.tr(),
             style: TextStyle(
               color: Color(0xFFC7C7C7),
               fontSize: 12,
@@ -330,6 +330,8 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
   }
 
   Widget _buildStickyBookingButton(BuildContext context, double bottomPadding) {
+    final bool isFull = widget.schedule.capacityValid.isEmpty;
+
     return Positioned(
       bottom: 0,
       left: 0,
@@ -352,9 +354,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
           ],
         ),
         child: ElevatedButton(
-          onPressed: () {
-            return _showSeatSelectionModal(context);
-          },
+          onPressed: isFull ? null : () => _showSeatSelectionModal(context),
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFFD92229),
             minimumSize: Size(double.infinity, context.resH(48)),
@@ -362,8 +362,8 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
               borderRadius: BorderRadius.circular(4),
             ),
           ),
-          child: const Text(
-            'Đặt chỗ',
+          child: Text(
+            'schedule_detail.lbl_pick_seat'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: 16,
@@ -407,8 +407,8 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
               ? Text.rich(
                   TextSpan(
                     children: [
-                      const TextSpan(
-                        text: 'Còn ',
+                      TextSpan(
+                        text: '${'schedule_detail.lbl_prefix_ifno'.tr()} ',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 14,
@@ -449,8 +449,14 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
 
   void _showSeatSelectionModal(BuildContext context) {
     // Lấy độ cao dải tác vụ (Safe Area Bottom)
-    final double bottomPadding = MediaQuery.of(context).padding.bottom;
-    int selectedSeat = 10; // Giá trị mặc định theo snippet
+    final double bottomPadding = MediaQuery.of(
+      context,
+    ).padding.bottom; // Giá trị mặc định theo snippet
+
+    final List<String> availableSeats = widget.schedule.capacityValid;
+
+    String selectedSeatValue = availableSeats[0];
+    int selectedSeat = int.parse(selectedSeatValue);
 
     // 1. TẠO CONTROLLER ĐỂ ĐIỀU KHIỂN VỊ TRÍ CUỘN BẢN ĐẦU
     final FixedExtentScrollController seatController =
@@ -493,7 +499,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      'Chọn chỗ',
+                      'schedule_detail.lbl_select_seat'.tr(),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: context.resClamp(16, 14, 18),
@@ -524,18 +530,23 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
                       diameterRatio: 2.0,
                       physics: const FixedExtentScrollPhysics(),
                       onSelectedItemChanged: (index) {
+                        final seatValue = availableSeats[index];
                         // Cập nhật trạng thái khi người dùng cuộn
-                        setModalState(() => selectedSeat = index + 1);
+                        setModalState(
+                          () => selectedSeat = int.parse(seatValue),
+                        );
                       },
                       childDelegate: ListWheelChildBuilderDelegate(
-                        childCount: widget.schedule.numberSeat ?? 30,
+                        childCount: availableSeats.length,
                         builder: (context, index) {
-                          final seatNum = index + 1;
-                          final isSelected = seatNum == selectedSeat;
+                          final seatValue = availableSeats[index];
+
+                          int selectSeat = int.parse(seatValue);
+                          final isSelected = selectSeat == selectedSeat;
 
                           return Center(
                             child: Text(
-                              '$seatNum',
+                              seatValue,
                               style: TextStyle(
                                 color: isSelected
                                     ? Colors.white
@@ -573,8 +584,8 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
-                          child: const Text(
-                            'Hủy',
+                          child: Text(
+                            'common.btn_cancel'.tr(),
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -616,7 +627,9 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
                                     builder: (context) => ClassDetailScreen(
                                       scheduleId: widget.schedule.scheduleId,
                                       seatCode: selectedSeat.toString(),
-                                      clubCode: widget.schedule.clubCode, // ? Need check data
+                                      clubCode: widget
+                                          .schedule
+                                          .clubCode, // ? Need check data
                                     ),
                                   ),
                                 );
@@ -628,7 +641,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
                                   ),
                                   title: '',
                                   description: message,
-                                  buttonText: "Đã hiểu",
+                                  buttonText: "common.btn_understand".tr(),
                                 );
                               }
                             } else {}
@@ -681,8 +694,8 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
-                          child: const Text(
-                            'Xác nhận',
+                          child: Text(
+                            'common.accept'.tr(),
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
