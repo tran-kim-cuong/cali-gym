@@ -117,7 +117,7 @@ class _OtpScreenState extends State<OtpScreen> with LoadingWrapper {
       MemberInfoModel? mi = await getUserId(clientId);
       if (mi != null) {
         customerId = mi.data!.userId.toString();
-        AppSession().customerId = customerId;
+        AppSession().customerId = SessionManager.sCustomerId = customerId;
         await SessionManager.setCustomerId(customerId);
       }
     } catch (e) {
