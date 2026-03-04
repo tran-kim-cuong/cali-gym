@@ -82,6 +82,14 @@ jobs:
       testerGroups: 'internal-tester'
       releaseNotes: 'Auto update from Azure DevOps. Build ID: $(Build.BuildId)'
 
+  # ---> ĐOẠN THÊM MỚI CHO ANDROID Ở ĐÂY <---
+  - task: PublishBuildArtifacts@1
+    displayName: 'Save file .apk download Offline'
+    inputs:
+      PathtoPublish: 'build/app/outputs/flutter-apk/' # Đường dẫn xuất file APK của Flutter
+      ArtifactName: 'Android_APK_Offline'
+      publishLocation: 'Container'
+
 # ==========================================
 # LUỒNG 2: BUILD & DEPLOY IOS (Thêm mới)
 # ==========================================
@@ -139,3 +147,10 @@ jobs:
       releaseTrack: 'TestFlight'
       # THÊM DÒNG DƯỚI ĐÂY ĐỂ KHÔNG PHẢI ĐỢI
       shouldWait: false
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Save file .ipa download Offline'
+    inputs:
+      PathtoPublish: 'build/ios/ipa/' # Đường dẫn xuất file IPA của Flutter
+      ArtifactName: 'iOS_IPA_Offline'
+      publishLocation: 'Container'

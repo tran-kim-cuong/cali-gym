@@ -32,7 +32,8 @@
     "title_upgrade": "Cập nhật ứng dụng",
     "msg_new_version": "Đã có phiên bản mới {}. Bạn có muốn cập nhật ngay không?",
     "btn_agree": "Đồng ý",
-    "btn_cancel": "Hủy"
+    "btn_cancel": "Hủy",
+    "btn_understand": "Đã hiểu"
   },
   "home": {
     "hello": "Xin chào",
@@ -79,5 +80,35 @@
     "verify_success": "Xác thực thành công!",
     "verify_error": "Mã OTP không chính xác",
     "zalo_sent": "Mã OTP đã được gửi qua số điện thoại bạn. Vui lòng kiểm tra và nhập mã để đăng nhập"
+  },
+  "schedule": {
+    "btn_filter": "Bộ lọc",
+    "msg_not_found_schedule": "Không tìm thấy lớp học nào",
+    "lbl_schedule": "Lớp học",
+    "btn_clear_filter": "Xóa bộ lọc",
+    "btn_search": "Áp dụng",
+    "mon": "T2",
+    "tue": "T3",
+    "wed": "T4",
+    "thu": "T5",
+    "fri": "T6",
+    "sat": "T7",
+    "sun": "CN"
+  },
+  "schedule_detail": {
+    "lbl_title": "Chi tiết lớp",
+    "lbl_trainer": "Giáo viên",
+    "lnk_googlemaps": "Xem đường đi",
+    "lnk_sitemaps": "Xem sơ đồ",
+    "lbl_duration": "Thời lượng học",
+    "lbl_subfix_mins": "phút",
+    "lbl_seatno": "Vị trí ngồi",
+    "lbl_prefix_ifno": "Còn",
+    "lbl_subfix_seatno": "chỗ",
+    "lbl_introduce": "Giới thiệu",
+    "lbl_default_desc": "Gentle Yoga là sự kết hợp của các tư thế chậm và đơn giản...",
+    "lbl_notice": "Lưu ý",
+    "lbl_pick_seat": "Đặt chỗ",
+    "lbl_select_seat": "Chọn chỗ"
   }
 }

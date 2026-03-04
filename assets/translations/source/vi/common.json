@@ -11,5 +11,6 @@
     "title_upgrade": "Cập nhật ứng dụng",
     "msg_new_version": "Đã có phiên bản mới {}. Bạn có muốn cập nhật ngay không?",
     "btn_agree": "Đồng ý",
-    "btn_cancel": "Hủy"
+    "btn_cancel": "Hủy",
+    "btn_understand":"Đã hiểu"
 }
