@@ -19,6 +19,7 @@ List<Map<String, dynamic>> buildMemberCards(MemberModel? member) {
               ?.where((e) => e.productCode != null && e.productCode!.isNotEmpty)
               .map((e) => e.productCode!)
               .join(','),
+          "mbMembershipNameCard": card.membershipNameCard ?? "",
         };
       }).toList() ??
       [];
