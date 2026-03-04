@@ -1,0 +1,20 @@
+{
+    "sec_privacy": "Cá nhân",
+    "sec_privacy_info": "Thông tin cá nhân",
+    "sec_privacy_member_card": "Thẻ hội viên",
+    "sec_privacy_future_class": "Các lớp học trước",
+    "sec_privacy_my_bill": "Đơn hàng của tôi",
+    "sec_privacy_my_voucher": "Voucher của tôi",
+
+    "sec_settings": "Cài đặt",
+    "sec_settings_notification": "Nhận thông báo",
+    "sec_settings_language": "Ngôn ngữ",
+
+    "sec_support": "Hỗ trợ",
+    "sec_support_comment": "Nhận xét",
+    "sec_support_term_condition": "Điều khoản & Điều kiện",
+    "sec_support_security": "Chính sách bảo mật",
+    "sec_support_center": "Trung tâm trợ giúp",
+
+    "btn_logout": "Đăng xuất"
+}

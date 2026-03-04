@@ -240,7 +240,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
       final response = await handleApi(
         context,
         BaseApi().client.get(
-          '/api/booking/get/schedules',
+          '/api/booking/get/schedulesByClub', // Change from requirement Mr Dung.
           queryParameters: {'from_date': fromDate, 'to_date': toDate},
         ),
       );

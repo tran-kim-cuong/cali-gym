@@ -1,14 +1,14 @@
 {
-    "btn_filter": "Bộ lọc",
-    "msg_not_found_schedule": "Không tìm thấy lớp học nào",
-    "lbl_schedule": "Lớp học",
-    "btn_clear_filter": "Xóa bộ lọc",
-    "btn_search": "Áp dụng",
-    "mon": "MO",
-    "tue": "TU",
-    "wed": "WE",
-    "thu": "TH",
-    "fri": "FR",
-    "sat": "SA",
-    "sun": "SU"
+    "btn_filter": "Filter",
+    "msg_not_found_schedule": "No classes found",
+    "lbl_schedule": "Classes",
+    "btn_clear_filter": "Clear filter",
+    "btn_search": "Apply",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat",
+    "sun": "Sun"
 }
