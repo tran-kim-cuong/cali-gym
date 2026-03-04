@@ -1,11 +1,11 @@
 {
-    "phone_hint": "Phone Number",
-    "agree_prefix": "Agree with ",
+    "phone_hint": "Phone number",
+    "agree_prefix": "Agree to ",
     "terms": "Terms & Conditions",
     "and": " and ",
     "privacy": "Privacy Policy",
-    "agree_suffix": " of ours",
+    "agree_suffix": "",
     "verify_sms": "Verify via SMS",
     "verify_zalo": "Verify via Zalo",
-    "phone_input_title": "Please enter your phone number to login"
+    "phone_input_title": "Please enter your phone number to log in"
 }
