@@ -24,6 +24,7 @@ void main() async {
     EasyLocalization.ensureInitialized(), // Khởi tạo đa ngôn ngữ
     dotenv.load(fileName: ".env"), // Load cấu hình môi trường
     AppSession().load(), // Nạp dữ liệu phiên đăng nhập vào RAM
+    AppSession().checkUpdate(),
   ]);
 
   runApp(
