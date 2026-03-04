@@ -1,0 +1,14 @@
+{
+    "btn_filter": "Bộ lọc",
+    "msg_not_found_schedule": "Không tìm thấy lớp học nào",
+    "lbl_schedule": "Lớp học",
+    "btn_clear_filter": "Xóa bộ lọc",
+    "btn_search": "Áp dụng",
+    "mon": "T2",
+    "tue": "T3",
+    "wed": "T4",
+    "thu": "T5",
+    "fri": "T6",
+    "sat": "T7",
+    "sun": "CN"
+}

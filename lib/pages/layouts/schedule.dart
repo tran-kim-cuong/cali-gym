@@ -33,19 +33,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
   String _getDayLabel(DateTime date) {
     switch (date.weekday) {
       case 1:
-        return 'T2';
+        return 'schedule.mon'.tr();
       case 2:
-        return 'T3';
+        return 'schedule.tue'.tr();
       case 3:
-        return 'T4';
+        return 'schedule.wed'.tr();
       case 4:
-        return 'T5';
+        return 'schedule.thu'.tr();
       case 5:
-        return 'T6';
+        return 'schedule.fri'.tr();
       case 6:
-        return 'T7';
+        return 'schedule.sat'.tr();
       case 7:
-        return 'CN';
+        return 'schedule.sun'.tr();
       default:
         return '';
     }
@@ -179,7 +179,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Bộ lọc',
+            'schedule.btn_filter'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: context.resClamp(16, 15, 18),
@@ -310,7 +310,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                       ? Center(
                           // Hiển thị thông báo khi không có dữ liệu
                           child: Text(
-                            'Không tìm thấy lớp học nào',
+                            'schedule.msg_not_found_schedule'.tr(),
                             style: TextStyle(
                               color: const Color(
                                 0xFF9A9A9A,
@@ -560,7 +560,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Lớp học (${_schedules.length})',
+            '${'schedule.lbl_schedule'.tr()} (${_schedules.length})',
             style: TextStyle(
               color: Colors.white,
               fontSize: context.resClamp(14, 12, 16),
@@ -828,8 +828,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: const Text(
-                'Xóa bộ lọc',
+              child: Text(
+                'schedule.btn_clear_filter'.tr(),
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -845,8 +845,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: const Text(
-                'Áp dụng',
+              child: Text(
+                'schedule.btn_search'.tr(),
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
