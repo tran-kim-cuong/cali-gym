@@ -5,6 +5,7 @@ import 'package:californiaflutter/pages/master.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'firebase_options.dart';
 
@@ -26,6 +27,16 @@ void main() async {
     AppSession().load(), // Nạp dữ liệu phiên đăng nhập vào RAM
     AppSession().checkUpdate(),
   ]);
+
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor:
+          Colors.transparent, // Làm trong suốt thanh status bar (Android)
+      statusBarIconBrightness:
+          Brightness.light, // Biểu tượng màu trắng (Android)
+      statusBarBrightness: Brightness.dark, // Biểu tượng màu trắng (iOS)
+    ),
+  );
 
   runApp(
     // 3. Bọc App bằng EasyLocalization
@@ -60,8 +71,28 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
         fontFamily: 'Inter', // Font mặc định cho toàn bộ text trong app
+
+        appBarTheme: const AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle.light,
+        ),
       ),
 
+      // 2. SỬ DỤNG BUILDER ĐỂ KHỐNG CHẾ TOÀN BỘ APP
+      builder: (context, child) {
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          // Ép kiểu hiển thị Light (chữ trắng) cho toàn bộ app
+          value: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.light, // Cho Android
+            statusBarBrightness: Brightness.dark, // Cho iOS
+            systemNavigationBarColor: Color(
+              0xFF151515,
+            ), // Đồng bộ thanh điều hướng dưới
+            systemNavigationBarIconBrightness: Brightness.light,
+          ),
+          child: child!,
+        );
+      },
       // builder: (context, child) {
       //   return MediaQuery(
       //     // SOLUTION: Ép tỷ lệ font chữ hệ thống về 1.0 (hoặc trong khoảng an toàn)

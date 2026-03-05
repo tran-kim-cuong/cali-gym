@@ -1,9 +1,9 @@
 {
-    "title": "Enter OTP code",
-    "subtitle_prefix": "We have sent a 4-digit verification code to the phone number ",
+   "title": "Enter OTP",
+    "subtitle_prefix": "We have sent a 4-digit verification code to ",
     "resend_in": "Resend code in ",
     "resend_link": "Resend code",
     "verify_success": "Verification successful!",
-    "verify_error": "Incorrect OTP code",
-    "zalo_sent": "The OTP code has been sent to your phone number. Please check and enter the code to log in"
+    "verify_error": "Invalid OTP",
+    "zalo_sent": "An OTP has been sent to your phone number. Please check and enter the code to log in"
 }
