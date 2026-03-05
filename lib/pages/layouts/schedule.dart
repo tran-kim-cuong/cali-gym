@@ -596,7 +596,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
         decoration: ShapeDecoration(
           color: const Color(0xFF3E3E3E),
           shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 1, color: Color(0xFF464444)),
+            side: const BorderSide(
+              width: 2,
+              color: Color.fromARGB(255, 238, 234, 19),
+            ),
             borderRadius: BorderRadius.circular(cardRadius),
           ),
           // Đổ bóng cứng theo phong cách thiết kế của bạn

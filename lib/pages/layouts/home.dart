@@ -423,9 +423,13 @@ class _HomeScreenState extends State<HomeScreen>
             width: context.resW(65),
             height: context.resW(65),
             padding: const EdgeInsets.all(18),
-            decoration: const BoxDecoration(
-              color: Color(0xFF3E3E3E),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 62, 62, 62),
               shape: BoxShape.circle,
+              border: Border.all(
+                color: Color.fromARGB(255, 238, 234, 19),
+                width: 2, // độ dày viền
+              ),
             ),
             child: SvgPicture.asset(
               iconPath,
