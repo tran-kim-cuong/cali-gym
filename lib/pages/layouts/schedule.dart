@@ -23,7 +23,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
   int _selectedDateIndex = 0; // T2 - Ngày 15
   // Biến hứng danh sách dữ liệu từ API
   List<ScheduleModel> _schedules = [];
-  List<Map<String, dynamic>>? _clubList = null;
 
   DateTime _getDateTimeFromIndex(int index) {
     DateTime now = DateTime.now();
@@ -151,14 +150,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                               }
 
                               if (selectedCategoryId == 'club') {
-                                List<Map<String, dynamic>> selectedClubs =
-                                    currentOptions
+                                currentOptions
                                         .where(
                                           (club) => club['isSelected'] == true,
                                         )
                                         .toList();
-                                _clubList = selectedClubs;
-                                print(_clubList);
+                                // print(_clubList);
                               }
                             });
                           },
