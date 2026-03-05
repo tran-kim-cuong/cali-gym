@@ -62,6 +62,22 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Inter', // Font mặc định cho toàn bộ text trong app
       ),
 
+      // builder: (context, child) {
+      //   return MediaQuery(
+      //     // SOLUTION: Ép tỷ lệ font chữ hệ thống về 1.0 (hoặc trong khoảng an toàn)
+      //     data: MediaQuery.of(context).copyWith(
+      //       // Nếu muốn chữ KHÔNG BAO GIỜ tự scale theo hệ thống:
+      //       textScaler: TextScaler.noScaling,
+
+      //       // HOẶC nếu muốn cho phép scale nhẹ nhưng không quá mức để tránh vỡ:
+      //       // textScaler: TextScaler.linear(
+      //       //   MediaQuery.of(context).textScaler.scale(1.0).clamp(0.85, 1.15),
+      //       // ),
+      //     ),
+      //     child: child!,
+      //   );
+      // },
+
       // Nếu isLoggedIn là true thì vào thẳng Home, ngược lại hiện Login
       home: isLoggedIn == true ? const MasterScreen() : const WelcomeScreen(),
     );
