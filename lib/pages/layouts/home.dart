@@ -243,16 +243,50 @@ class _HomeScreenState extends State<HomeScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            '',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'Inter',
+          // 1. Cánh trái: Placeholder cho Logo hoặc Tên màn hình
+          Container(
+            width: context.resW(
+              141,
+            ), // Độ rộng co giãn theo chiều ngang màn hình
+            height: context.resH(
+              24,
+            ), // Chiều cao co giãn theo chiều dọc màn hình
+            clipBehavior: Clip.antiAlias,
+            decoration: const BoxDecoration(),
+            child: Stack(
+              children: [
+                // GẮN SVG TẠI ĐÂY
+                SvgPicture.asset(
+                  'assets/images/CWG-Logo-White.svg', // Đường dẫn file SVG của bạn
+                  width: double
+                      .infinity, // Để SVG tự giãn đầy chiều ngang Container
+                  height:
+                      double.infinity, // Để SVG tự giãn đầy chiều cao Container
+                  // QUAN TRỌNG: BoxFit.contain giúp logo luôn giữ đúng tỉ lệ
+                  // và nằm gọn trong khung (141x24) mà không bị méo
+                  fit: BoxFit.contain,
+
+                  // Bạn có thể đổi màu logo sang trắng hoặc màu khác tại đây nếu cần
+                  // colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                ),
+              ],
             ),
           ),
-          _buildLanguageButton(),
+
+          // 2. Cánh phải: Cụm Icon Buttons
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            // Sử dụng spacing theo đúng code gốc của bạn
+            children: [
+              // ICON 1: Thông báo
+              _buildLanguageButton(),
+
+              // Khoảng cách giữa 2 icon (thay cho spacing: 10 nếu Flutter bản cũ)
+              SizedBox(width: context.resW(10)),
+            ],
+          ),
         ],
       ),
     );

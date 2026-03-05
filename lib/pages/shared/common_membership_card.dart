@@ -288,6 +288,11 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
         ),
         const SizedBox(height: 8),
         Text(
+          widget.data['mbMembershipNameCard'] ?? '',
+          style: const TextStyle(color: Colors.white70, fontSize: 12),
+        ),
+        const SizedBox(height: 8),
+        Text(
           '${'member_card.expire_date'.tr()}${widget.data['expiry']}',
           style: const TextStyle(color: Colors.white70, fontSize: 12),
         ),
