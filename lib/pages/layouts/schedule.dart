@@ -23,6 +23,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
   int _selectedDateIndex = 0; // T2 - Ngày 15
   // Biến hứng danh sách dữ liệu từ API
   List<ScheduleModel> _schedules = [];
+  List<Map<String, dynamic>>? _clubList = null;
 
   DateTime _getDateTimeFromIndex(int index) {
     DateTime now = DateTime.now();
@@ -60,20 +61,21 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     ];
 
     final List<Map<String, dynamic>> cityList = [
-      {'id': 'hanoi', 'name': 'Hà Nội', 'isSelected': false},
-      {'id': 'hcm', 'name': 'Hồ Chí Minh', 'isSelected': true},
-      {'id': 'binhduong', 'name': 'Bình Dương', 'isSelected': false},
-      {'id': 'bienhoa', 'name': 'Biên Hoà', 'isSelected': false},
-      {'id': 'cantho', 'name': 'Cần Thơ', 'isSelected': false},
-      {'id': 'vungtau', 'name': 'Vũng Tàu', 'isSelected': false},
-      {'id': 'danang', 'name': 'Đà Nẵng', 'isSelected': false},
+      {'id': 'hanoi', 'name': 'Ha Noi', 'isSelected': false},
+      {'id': 'hcm', 'name': 'Ho Chi Minh', 'isSelected': true},
+      {'id': 'binhduong', 'name': 'Binh Duong', 'isSelected': false},
+      {'id': 'bienhoa', 'name': 'Bien Hoa', 'isSelected': false},
+      {'id': 'cantho', 'name': 'Can Tho', 'isSelected': false},
+      {'id': 'vungtau', 'name': 'Vung Tau', 'isSelected': false},
+      {'id': 'danang', 'name': 'Da Nang', 'isSelected': false},
       {'id': 'nhatrang', 'name': 'Nha Trang', 'isSelected': false},
     ];
 
     // Dữ liệu mẫu cho Câu lạc bộ
     final List<Map<String, dynamic>> clubList = [
-      {'id': 'c1', 'name': 'Cali Quận 4', 'isSelected': false},
-      {'id': 'c2', 'name': 'Cali Landmark 81', 'isSelected': false},
+      {'id': 'AMY', 'name': 'Aeon Mall Binh Tan Club', 'isSelected': false},
+      {'id': 'AMU', 'name': 'Aeon Mall Club', 'isSelected': false},
+      {'id': 'GDC', 'name': 'Goldview', 'isSelected': false},
     ];
 
     final List<Map<String, dynamic>> categories = [
@@ -146,6 +148,17 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                                 // LOGIC CHECKBOX: Cho phép chọn nhiều
                                 currentOptions[index]['isSelected'] =
                                     !currentOptions[index]['isSelected'];
+                              }
+
+                              if (selectedCategoryId == 'club') {
+                                List<Map<String, dynamic>> selectedClubs =
+                                    currentOptions
+                                        .where(
+                                          (club) => club['isSelected'] == true,
+                                        )
+                                        .toList();
+                                _clubList = selectedClubs;
+                                print(_clubList);
                               }
                             });
                           },
@@ -840,7 +853,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
           const SizedBox(width: 12),
           Expanded(
             child: ElevatedButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                // var selectedClubs = clubList
+                //     .where((club) => club['isSelected'] == true)
+                //     .toList();
+                // print("Button pressed");
+                Navigator.pop(context);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFD92229), // Màu đỏ nút Áp dụng
                 minimumSize: Size(0, context.resH(48)),
