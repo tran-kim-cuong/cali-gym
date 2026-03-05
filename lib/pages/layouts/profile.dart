@@ -143,9 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
         ),
         SizedBox(height: context.resH(12)),
         Text(
-          SessionManager.sTenKh.isNotEmpty
-              ? SessionManager.sTenKh
-              : 'Nguyễn Trần Thảo Nguyên',
+          SessionManager.sTenKh.isNotEmpty ? SessionManager.sTenKh : '',
           style: TextStyle(
             color: Colors.white,
             fontSize: context.resClamp(16, 14, 18),

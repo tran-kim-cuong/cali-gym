@@ -94,7 +94,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFF151515),
+      backgroundColor: const Color.fromARGB(255, 21, 21, 21),
       body: Stack(
         children: [
           _buildHeroImage(context),

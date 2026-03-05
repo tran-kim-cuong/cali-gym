@@ -4,8 +4,8 @@
     "terms": "Terms & Conditions",
     "and": " and ",
     "privacy": "Privacy Policy",
-    "agree_suffix": "",
+    "agree_suffix": " of our",
     "verify_sms": "Verify via SMS",
     "verify_zalo": "Verify via Zalo",
-    "phone_input_title": "Please enter your phone number to log in"
+    "phone_input_title": "Enter your phone number to log in"
 }
