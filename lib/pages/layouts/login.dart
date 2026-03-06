@@ -138,93 +138,98 @@ class _LoginScreenState extends State<LoginScreen>
             ),
 
           // 3. Nội dung chính
-          SafeArea(
-            bottom: false,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics(),
-                  ),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      // Đảm bảo Column ít nhất bằng chiều cao màn hình để Spacer hoạt động
-                      minHeight: constraints.maxHeight,
+          GestureDetector(
+            /// Quang Huy: Thêm GestureDetector để ẩn bàn phím khi bấm ra ngoài
+            onTap: () =>
+                _focusNode.unfocus(), // Quang Huy: Bấm ra ngoài để ẩn bàn phím
+            child: SafeArea(
+              bottom: false,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
                     ),
-                    child: IntrinsicHeight(
-                      child: Column(
-                        children: [
-                          // Nút chuyển ngôn ngữ
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: EdgeInsets.all(context.resW(16)),
-                              child: _buildLanguageSelector(),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        // Đảm bảo Column ít nhất bằng chiều cao màn hình để Spacer hoạt động
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: IntrinsicHeight(
+                        child: Column(
+                          children: [
+                            // Nút chuyển ngôn ngữ
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: Padding(
+                                padding: EdgeInsets.all(context.resW(16)),
+                                child: _buildLanguageSelector(),
+                              ),
                             ),
-                          ),
 
-                          // NẾU KHÔNG CÓ BÀN PHÍM, ĐẨY TOÀN BỘ XUỐNG DƯỚI
-                          if (!isKeyboardOpen) const Spacer(),
+                            // NẾU KHÔNG CÓ BÀN PHÍM, ĐẨY TOÀN BỘ XUỐNG DƯỚI
+                            if (!isKeyboardOpen) const Spacer(),
 
-                          // Khoảng cách nhỏ khi bật bàn phím để không dính sát logo
-                          if (isKeyboardOpen)
-                            SizedBox(height: context.resH(20)),
+                            // Khoảng cách nhỏ khi bật bàn phím để không dính sát logo
+                            if (isKeyboardOpen)
+                              SizedBox(height: context.resH(20)),
 
-                          // KHU VỰC FORM NHẬP LIỆU
-                          Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.only(
-                              left: context.resW(24),
-                              right: context.resW(24),
-                              top: context.resH(30),
-                              // CHỈ CHỪA KHOẢNG TRỐNG CHO HOME INDICATOR, KHÔNG THÊM GÌ KHÁC
-                              bottom: bottomPadding > 0
-                                  ? bottomPadding
-                                  : context.resH(20),
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF151515),
-                              borderRadius: isKeyboardOpen
-                                  ? const BorderRadius.vertical(
-                                      top: Radius.circular(24),
-                                    )
-                                  : BorderRadius.zero,
-                            ),
-                            child: Column(
-                              mainAxisSize:
-                                  MainAxisSize.min, // Bo sát nội dung bên trong
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'login.phone_input_title'.tr(),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: context.resClamp(18, 16, 22),
-                                    fontWeight: FontWeight.w600,
+                            // KHU VỰC FORM NHẬP LIỆU
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.only(
+                                left: context.resW(24),
+                                right: context.resW(24),
+                                top: context.resH(30),
+                                // CHỈ CHỪA KHOẢNG TRỐNG CHO HOME INDICATOR, KHÔNG THÊM GÌ KHÁC
+                                bottom: bottomPadding > 0
+                                    ? bottomPadding
+                                    : context.resH(20),
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF151515),
+                                borderRadius: isKeyboardOpen
+                                    ? const BorderRadius.vertical(
+                                        top: Radius.circular(24),
+                                      )
+                                    : BorderRadius.zero,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize
+                                    .min, // Bo sát nội dung bên trong
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'login.phone_input_title'.tr(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: context.resClamp(18, 16, 22),
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: context.resH(20)),
-                                _buildPhoneTextField(),
-                                SizedBox(height: context.resH(16)),
-                                _buildAgreementText(),
-                                SizedBox(height: context.resH(30)),
-                                _buildActionButtons(),
-                                // ĐÃ LOẠI BỎ SIZEDBOX THỪA TẠI ĐÂY
-                                // Xử lý sát Home Indicator hoặc sát mép
-                                SizedBox(
-                                  height: bottomPadding > 0
-                                      ? bottomPadding
-                                      : context.resH(20),
-                                ),
-                              ],
+                                  SizedBox(height: context.resH(20)),
+                                  _buildPhoneTextField(),
+                                  SizedBox(height: context.resH(16)),
+                                  _buildAgreementText(),
+                                  SizedBox(height: context.resH(30)),
+                                  _buildActionButtons(),
+                                  // ĐÃ LOẠI BỎ SIZEDBOX THỪA TẠI ĐÂY
+                                  // Xử lý sát Home Indicator hoặc sát mép
+                                  SizedBox(
+                                    height: bottomPadding > 0
+                                        ? bottomPadding
+                                        : context.resH(20),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
 
