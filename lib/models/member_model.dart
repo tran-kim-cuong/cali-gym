@@ -64,6 +64,7 @@ class MembershipCard {
   final List<Benefit>? benefitMember;
   final String? membershipCardNumber;
   final String? membershipNameCard;
+  final String? mbClassificationName;
 
   MembershipCard({
     this.membershipNumber,
@@ -78,6 +79,8 @@ class MembershipCard {
     this.benefitMember,
     this.membershipCardNumber,
     this.membershipNameCard,
+
+    this.mbClassificationName
   });
 
   factory MembershipCard.fromJson(Map<String, dynamic> json) {
@@ -102,6 +105,7 @@ class MembershipCard {
           : [],
       membershipCardNumber: json['mB_membership_card_number'],
       membershipNameCard: json['mB_membership_namecard'],
+      mbClassificationName: json['mB_classificationName'],
     );
   }
 }

@@ -23,11 +23,13 @@ class CommonMembershipCard extends StatefulWidget {
     required this.isExpanded,
     required this.onToggle,
     this.onQrClick, // --- THÊM DÒNG NÀY ---
+    this.onClickToShare,
   });
 
   // --- THÊM DÒNG NÀY ---
   // Hàm này sẽ bắn chuỗi mã QR ra ngoài cho cha xử lý
   final Function(String qrData)? onQrClick;
+  final Function? onClickToShare;
 
   @override
   State<CommonMembershipCard> createState() => _CommonMembershipCardState();
@@ -39,9 +41,15 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
   int _timeLeft = _cycleTime;
   String _qrData = "";
 
+  bool isShareCard = false;
+  String defaultSupplementary = "Supplementary Card";
+
   @override
   void initState() {
     super.initState();
+
+    isShareCard = (defaultSupplementary == widget.data['mbClassificationName']);
+
     // Nếu khởi tạo mà đã mở sẵn thì chạy luôn (trường hợp hiếm)
     if (widget.isExpanded) {
       _startQrSession();
@@ -195,7 +203,15 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
       children: [
         Expanded(child: _buildInfoColumn()),
         InkWell(
-          onTap: widget.onToggle, // Gọi hàm toggle của cha
+          onTap: () {
+            if (isShareCard) {
+              // GỌI HÀM CHIA SẺ Ở MÀN HÌNH CHA
+              widget.onClickToShare?.call();
+            } else {
+              // GỌI HÀM MỞ QR
+              widget.onToggle();
+            }
+          }, // Gọi hàm toggle của cha
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
@@ -204,7 +220,9 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
               color: Colors.white.withValues(alpha: 0.1),
             ),
             child: Text(
-              "member_card.btn_show_qr".tr(),
+              !isShareCard
+                  ? "member_card.btn_show_qr".tr()
+                  : "member_card.btn_share_card_title".tr(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 12,
