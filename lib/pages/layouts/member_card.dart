@@ -5,6 +5,7 @@ import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
 import 'package:californiaflutter/pages/shared/common_modal.dart';
+import 'package:californiaflutter/pages/widgets/common_user_share_card.dart';
 import 'package:easy_localization/easy_localization.dart';
 // import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 // import 'package:easy_localization/easy_localization.dart';
@@ -226,7 +227,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
     int index,
   ) {
     final String uniqueKey = "${index}_${data['id']}";
-    debugPrint(data.toString());
+    // debugPrint(data.toString());
     return CommonMembershipCard(
       data: data,
       // Quản lý trạng thái mở mã QR từ biến _activeCardId của màn hình
@@ -238,6 +239,13 @@ class _MemberListScreenState extends State<MemberListScreen> {
         // Logic hiển thị QR lớn nếu cần
         // _showBigQrModal(context, qrData);
         CommonModalWidget.showBigQrModal(context: context, qrData: qrData);
+      },
+      onClickToShare: () {
+        CommonUserShareCardWidget.show(
+          context: context,
+          membershipNumber: data['membershipNumber'],
+          onConfirm: (selectUser) {},
+        );
       },
     );
   }

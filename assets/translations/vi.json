@@ -33,7 +33,9 @@
     "msg_new_version": "Đã có phiên bản mới {}. Bạn có muốn cập nhật ngay không?",
     "btn_agree": "Đồng ý",
     "btn_cancel": "Hủy",
-    "btn_understand": "Đã hiểu"
+    "btn_understand": "Đã hiểu",
+    "lbl_title_common_user_share_card": "Chọn người dùng thẻ",
+    "lbl_status_item_user_share_card": "Hoạt động"
   },
   "home": {
     "hello": "Xin chào",
@@ -64,7 +66,8 @@
     "expire_date": "Ngày hết hạn: ",
     "btn_show_qr": "Hiện mã QR",
     "pick_member_card": "Ghim thẻ",
-    "title_member_card": "Thẻ hội viên"
+    "title_member_card": "Thẻ hội viên",
+    "btn_share_card_title": "Chia sẻ thẻ"
   },
   "navbar": {
     "btn_home": "Trang chủ",
