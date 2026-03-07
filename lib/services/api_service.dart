@@ -27,13 +27,12 @@ Future<String> getToken() async {
 
 Future<int> snedSms(String otp, String phoneNumber) async {
   final response = await http.post(
-    Uri.parse('https://web-api.cfyc.asia/api/sms/send'),
+    Uri.parse('${dotenv.get('CALIFORNIA_URI')}/api/sms/send'),
     headers: {'Accept': 'application/json'},
     body: {
       'phone_number': phoneNumber,
       'api_key': "gprVEgtgzqbk8h2zdvdsvsbypLV3qwYdzYwTYuDL",
-      'message':
-          'Cali.vn - Ma xac thuc cua ban tren website https://cali.vn la $otp',
+      'message': 'Ma xac thuc cua ban tren app Cali Life la $otp',
       'brand_name': "Cali.vn",
       'sender': "esms",
     },
@@ -60,7 +59,7 @@ Future<MemberModel> getMember(
   String phone,
 ) async {
   final response = await http.post(
-    Uri.parse('https://booking-stg.cali.vn/api/booking/check/member'),
+    Uri.parse('${dotenv.get('CALIFORNIA_URI')}/api/booking/check/member'),
     headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
     body: {'clientcode': clientId, 'phone_number': phone},
   );
@@ -77,7 +76,7 @@ Future<MemberModel> getMember(
 Future<BookingClassModel> getBookingClass(String token, String clientId) async {
   final response = await http.post(
     Uri.parse(
-      'https://booking-stg.cali.vn/api/booking/post/getUserBookedClasses',
+      '${dotenv.get('CALIFORNIA_URI')}/api/booking/post/getUserBookedClasses',
     ),
     headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
     body: {'clientcode': clientId},
@@ -132,7 +131,7 @@ Future<int> bookingCancel(
   String ticketNumber,
 ) async {
   final response = await http.post(
-    Uri.parse('https://booking-stg.cali.vn/api/booking/seat/delete'),
+    Uri.parse('${dotenv.get('CALIFORNIA_URI')}/api/booking/seat/delete'),
     headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
     body: {'clientcode': clinetId, 'ticket_number': ticketNumber},
   );

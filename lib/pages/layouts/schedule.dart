@@ -23,8 +23,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
   int _selectedDateIndex = 0; // T2 - Ngày 15
   // Biến hứng danh sách dữ liệu từ API
   List<ScheduleModel> _schedules = [];
-  List<Map<String, dynamic>>? _cities;
-  List<Map<String, dynamic>>? _clubs;
+  List<Map<String, dynamic>> _cities = [];
+  List<Map<String, dynamic>> _clubs = [];
+  List<Map<String, dynamic>> _services = [];
   String sClubs = '';
 
   DateTime _getDateTimeFromIndex(int index) {
@@ -55,12 +56,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
   }
 
   void _showFilterBottomSheet() {
+    // print('khổi tạo bộ lọc');
+
     /// 1. Khởi tạo bộ dữ liệu từ hình ảnh bạn cung cấp
     final List<Map<String, dynamic>> serviceList = [
-      {'id': 'yoga', 'name': 'Yoga', 'isSelected': true},
-      {'id': 'cycling', 'name': 'Cycling', 'isSelected': true},
-      {'id': 'groupx', 'name': 'Group X', 'isSelected': true},
+      {'id': 'yoga', 'name': 'Yoga', 'isSelected': false},
+      {'id': 'cycling', 'name': 'Cycling', 'isSelected': false},
+      {'id': 'groupx', 'name': 'Group-X', 'isSelected': false},
     ];
+    //hiện lần thứ hai thì hiển thị những loại lớp đã hiện trước đó
+    if (_services.isNotEmpty) {
+      for (var ite in serviceList) {
+        if (_services.any((e) => e['id'] == ite['id'])) {
+          ite['isSelected'] = true;
+        }
+      }
+    }
 
     final List<Map<String, dynamic>> cityList = [
       {'id': 'hanoi', 'name': 'Ha Noi', 'isSelected': false},
@@ -72,9 +83,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
       {'id': 'danang', 'name': 'Da Nang', 'isSelected': false},
       {'id': 'nhatrang', 'name': 'Nha Trang', 'isSelected': false},
     ];
-    if (_cities != null) {
+    if (_cities.isNotEmpty) {
       for (var ite in cityList) {
-        if (_cities!.any((e) => e['id'] == ite['id'])) {
+        if (_cities.any((e) => e['id'] == ite['id'])) {
           ite['isSelected'] = true;
         }
       }
@@ -84,194 +95,224 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     //Luôn luôn phải chọn thành phố
     final List<Map<String, dynamic>> oriClub = [
       {
-        "id": "AMY",
-        "name": "Aeon Mall Binh Tan Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'AMY',
+        'name': 'Aeon Mall Binh Tan Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "BDS",
-        "name": "Binh Duong Square 2",
-        "city_name": "Binh Duong",
-        "isSelected": false,
+        'id': 'AMU',
+        'name': 'Aeon Mall Tan Phu Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "CTC",
-        "name": "California Tower Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'TTC',
+        'name': 'Ba Thang Hai Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "GDC",
-        "name": "Goldview",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'CPT',
+        'name': 'Capital Tower',
+        'city_name': 'Ha Noi',
+        'isSelected': false,
       },
       {
-        "id": "HVP",
-        "name": "Hung Vuong Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'CVC',
+        'name': 'Can Tho Club',
+        'city_name': 'Can Tho',
+        'isSelected': false,
       },
       {
-        "id": "GMC",
-        "name": "Giga Mall Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'CTC',
+        'name': 'California Tower Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "SCC",
-        "name": "Hung Vuong",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'DNG',
+        'name': 'Da Nang Club',
+        'city_name': 'Da Nang',
+        'isSelected': false,
       },
       {
-        "id": "AMU",
-        "name": "Aeon Mall Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'FDC',
+        'name': 'Flemington Diamond Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "CPT",
-        "name": "Capital Tower",
-        "city_name": "Ha Noi",
-        "isSelected": false,
+        'id': 'GMC',
+        'name': 'Giga Mall Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "DNG",
-        "name": "Da Nang Club",
-        "city_name": "Da Nang",
-        "isSelected": false,
+        'id': 'GDC',
+        'name': 'Goldview Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "FDC",
-        "name": "Flemington Diamond Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'GVC',
+        'name': 'Go Vap Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "HDC",
-        "name": "Hang Da Galleria",
-        "city_name": "Ha Noi",
-        "isSelected": false,
+        'id': 'HDC',
+        'name': 'Hang Da Galleria',
+        'city_name': 'Ha Noi',
+        'isSelected': false,
       },
       {
-        "id": "HDY",
-        "name": "Handico Tower",
-        "city_name": "Ha Noi",
-        "isSelected": false,
+        'id': 'HDY',
+        'name': 'Handico Tower',
+        'city_name': 'Ha Noi',
+        'isSelected': false,
       },
       {
-        "id": "LMC",
-        "name": "Landmark Centuryon Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'HVP',
+        'name': 'Hung Vuong Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "LTC",
-        "name": "Lim Tower Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'LMC',
+        'name': 'Landmark Centuryon Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "TTC",
-        "name": "Ba Thang Hai Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'LTC',
+        'name': 'Lim Tower Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "MPC",
-        "name": "Mipec Long Bien",
-        "city_name": "Ha Noi",
-        "isSelected": false,
+        'id': 'MAC',
+        'name': 'Mac Plaza',
+        'city_name': 'Ha Noi',
+        'isSelected': false,
       },
       {
-        "id": "PBH",
-        "name": "Pegasus Bien Hoa",
-        "city_name": "Bien Hoa",
-        "isSelected": false,
+        'id': 'MPC',
+        'name': 'Mipec Long Bien',
+        'city_name': 'Ha Noi',
+        'isSelected': false,
       },
       {
-        "id": "PCH",
-        "name": "Pico Xuan Thuy",
-        "city_name": "Ha Noi",
-        "isSelected": false,
+        'id': 'NTC',
+        'name': 'Nha Trang Club',
+        'city_name': 'Nha Trang',
+        'isSelected': false,
       },
       {
-        "id": "PCO",
-        "name": "Pico Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'PBH',
+        'name': 'Pegasus Bien Hoa',
+        'city_name': 'Bien Hoa',
+        'isSelected': false,
       },
       {
-        "id": "PPC",
-        "name": "Pearl Plaza Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'PCO',
+        'name': 'Pico Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "RCC",
-        "name": "Royal City Club",
-        "city_name": "Ha Noi",
-        "isSelected": false,
+        'id': 'PCH',
+        'name': 'Pico Xuan Thuy',
+        'city_name': 'Ha Noi',
+        'isSelected': false,
       },
       {
-        "id": "SCT",
-        "name": "Sky City Tower",
-        "city_name": "Ha Noi",
-        "isSelected": false,
+        'id': 'PPC',
+        'name': 'Pearl Plaza Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "TCM",
-        "name": "Times City Mall",
-        "city_name": "Ha Noi",
-        "isSelected": false,
+        'id': 'SCC',
+        'name': 'Saigon Centre \nCenturyon Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "TDC",
-        "name": "Thu Duc Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'SCT',
+        'name': 'Sky City Tower',
+        'city_name': 'Ha Noi',
+        'isSelected': false,
       },
       {
-        "id": "TDU",
-        "name": "Thao Dien Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'WPC',
+        'name': 'SOMERSET WEST POINT',
+        'city_name': 'Ha Noi',
+        'isSelected': false,
+      },
+      {'id': 'T&C', 'name': 'T&C', 'city_name': null, 'isSelected': false},
+      {
+        'id': 'TDU',
+        'name': 'Thao Dien Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "VMC",
-        "name": "Viet Market Club",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'TDY',
+        'name': 'Thao Dien Yoga Plus Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "VSC",
-        "name": "Vincom Star City",
-        "city_name": "Ha Noi",
-        "isSelected": false,
+        'id': 'TCM',
+        'name': 'Times City Mall',
+        'city_name': 'Ha Noi',
+        'isSelected': false,
       },
       {
-        "id": "VVO",
-        "name": "Vivo City",
-        "city_name": "Ho Chi Minh",
-        "isSelected": false,
+        'id': 'TDC',
+        'name': 'Thu Duc Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "WPC",
-        "name": "SOMERSET WEST POINT",
-        "city_name": "Ha Noi",
-        "isSelected": false,
+        'id': 'VMC',
+        'name': 'Viet Market Club',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
       },
       {
-        "id": "VTC",
-        "name": "Vung Tau Club",
-        "city_name": "Vung Tau",
-        "isSelected": false,
+        'id': 'VSC',
+        'name': 'Vincom Star City',
+        'city_name': 'Ha Noi',
+        'isSelected': false,
       },
-      {"id": "T&C", "name": "T&C", "city_name": null, "isSelected": false},
+      {
+        'id': 'VVO',
+        'name': 'Vivo City',
+        'city_name': 'Ho Chi Minh',
+        'isSelected': false,
+      },
+      {
+        'id': 'VTC',
+        'name': 'Vung Tau Club',
+        'city_name': 'Vung Tau',
+        'isSelected': false,
+      },
     ];
     List<Map<String, dynamic>> clubList = [];
+    if (_cities.isNotEmpty) {
+      clubList = oriClub.where((club) {
+        return _cities.any((city) => city['name'] == club['city_name']);
+      }).toList();
+
+      //Check cho club đã chọn
+      for (var ite in clubList) {
+        if (_clubs.any((e) => e['id'] == ite['id'])) {
+          ite['isSelected'] = true;
+        }
+      }
+    }
 
     final List<Map<String, dynamic>> categories = [
       {'id': 'service', 'label': 'Loại dịch vụ', 'count': serviceList.length},
@@ -345,7 +386,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                                     .toList();
 
                                 clubList = oriClub.where((club) {
-                                  return _cities!.any(
+                                  return _cities.any(
                                     (city) => city['name'] == club['city_name'],
                                   );
                                 }).toList();
@@ -357,14 +398,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                                 currentOptions[index]['isSelected'] =
                                     !currentOptions[index]['isSelected'];
                               }
-
+                              if (selectedCategoryId == 'service') {
+                                _services = currentOptions
+                                    .where((ite) => ite['isSelected'] == true)
+                                    .toList();
+                                // print(_services);
+                              }
                               if (selectedCategoryId == 'club') {
                                 _clubs = currentOptions
                                     .where((club) => club['isSelected'] == true)
                                     .toList();
                                 // print(currentOptions);
                                 // print(_clubs);
-                                sClubs = _clubs!.map((e) => e['id']).join(',');
+                                sClubs = _clubs.map((e) => e['id']).join(',');
                               }
                             });
                           },
@@ -456,6 +502,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
   Future<void> _fetchSchedulesByDate(String fromDate, String toDate) async {
     try {
       // Sử dụng handleApi để quản lý trạng thái loading
+      // print('${fromDate} ${toDate} ${sClubs}');
       final response = await handleApi(
         context,
         BaseApi().client.get(
@@ -473,9 +520,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
         final List<dynamic> rawData = response?.data['data'] ?? [];
 
         // 2. Chuyển đổi List JSON thành List<ScheduleModel>
-        final List<ScheduleModel> fetchedSchedules = rawData
+        List<ScheduleModel> fetchedSchedules = rawData
             .map((json) => ScheduleModel.fromJson(json))
             .toList();
+
+        final selectedServiceIds = _services.map((s) => s['name']).toList();
+        // print(selectedServiceIds);
+        fetchedSchedules = fetchedSchedules.where((schedule) {
+          return selectedServiceIds.contains(schedule.classType.toString());
+        }).toList();
+        // print(fetchedSchedules.length);
 
         // 3. Cập nhật giao diện
         setState(() {
@@ -1064,7 +1118,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
           Expanded(
             child: ElevatedButton(
               onPressed: () {
-                _fetchDataForIndex(1);
+                _fetchDataForIndex(_selectedDateIndex);
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
