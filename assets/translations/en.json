@@ -33,7 +33,9 @@
     "msg_new_version": "A new version {} is available. Would you like to update now?",
     "btn_agree": "Agree",
     "btn_cancel": "Cancel",
-    "btn_understand": "Got it"
+    "btn_understand": "Got it",
+    "lbl_title_common_user_share_card": "Select user use card",
+    "lbl_status_item_user_share_card": "Active"
   },
   "home": {
     "hello": "Hello",
@@ -64,7 +66,8 @@
     "expire_date": "Expiry date: ",
     "btn_show_qr": "Show QR code",
     "pick_member_card": "Pin card",
-    "title_member_card": "Membership card"
+    "title_member_card": "Membership card",
+    "btn_share_card_title": "Share card"
   },
   "navbar": {
     "btn_home": "Home",
@@ -130,7 +133,7 @@
   },
   "welcome": {
     "lbl_title": "MORE THAN\nJUST AN APP",
-    "lbl_sub_title": "Sống khỏe không áp lực. Vừa chill vóc dáng, vừa 'feel' quà sang",
-    "lbl_login_text": "Đăng nhập"
+    "lbl_sub_title": "Live a healthy, stress-free life. Relax, stay in shape, and enjoy luxurious gifts at the same time.",
+    "lbl_login_text": "Login"
   }
 }

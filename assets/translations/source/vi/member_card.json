@@ -2,5 +2,7 @@
     "expire_date": "Ngày hết hạn: ",
     "btn_show_qr": "Hiện mã QR",
     "pick_member_card":"Ghim thẻ",
-    "title_member_card":"Thẻ hội viên"
+    "title_member_card":"Thẻ hội viên",
+
+    "btn_share_card_title":"Chia sẻ thẻ"
 }

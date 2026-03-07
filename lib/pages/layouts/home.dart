@@ -19,6 +19,7 @@ import 'package:californiaflutter/pages/shared/common_class_card.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
 import 'package:californiaflutter/pages/shared/common_point_badge.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
+import 'package:californiaflutter/pages/widgets/common_user_share_card.dart';
 import 'package:californiaflutter/services/booking_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -542,6 +543,14 @@ class _HomeScreenState extends State<HomeScreen>
                   ? null
                   : uniqueKey),
             ),
+            onClickToShare: () {
+              // debugPrint("Home: ${cardData['membershipNumber']}");
+              CommonUserShareCardWidget.show(
+                context: context,
+                membershipNumber: cardData['membershipNumber'],
+                onConfirm: (selectUser) {},
+              );
+            },
           );
         },
       ),

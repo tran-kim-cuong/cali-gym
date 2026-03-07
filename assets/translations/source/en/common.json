@@ -10,5 +10,8 @@
     "msg_new_version": "A new version {} is available. Would you like to update now?",
     "btn_agree": "Agree",
     "btn_cancel": "Cancel",
-    "btn_understand": "Got it"
+    "btn_understand": "Got it",
+
+    "lbl_title_common_user_share_card":"Select user use card",
+    "lbl_status_item_user_share_card":"Active"
 }
