@@ -4,5 +4,6 @@
     "pick_member_card":"Ghim thẻ",
     "title_member_card":"Thẻ hội viên",
 
-    "btn_share_card_title":"Chia sẻ thẻ"
+    "btn_share_card_title":"Chia sẻ thẻ",
+    "msg_select_one_user": "Vui lòng chọn ít nhất 1 người dùng để chia sẻ"
 }

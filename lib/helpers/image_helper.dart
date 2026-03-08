@@ -19,6 +19,6 @@ class ImageHelper {
     }
 
     // Ảnh mặc định nếu không khớp loại nào
-    return 'assets/images/none.jpg';
+    return dotenv.get('CLUBS_DEFAULT');
   }
 }
