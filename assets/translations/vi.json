@@ -50,7 +50,9 @@
     "register_now": "Đăng ký ngay",
     "section_practice_pt": "Khóa học PT",
     "coming_soon": "Sắp ra mắt",
-    "hot_program": "Chương trình hot"
+    "hot_program": "Chương trình hot",
+    "features_coming_soon": "Tính năng sắp ra mắt",
+    "features_developing": "Tính năng đang phát triển"
   },
   "login": {
     "phone_hint": "Số điện thoại",

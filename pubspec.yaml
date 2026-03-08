@@ -90,6 +90,7 @@ flutter:
       - assets/images/profiles/
       - assets/images/loyalty/
       - assets/translations/ # Khai báo đường dẫn chứa file ngôn ngữ
+      - assets/images/cards/
       - .env
 
   fonts:
