@@ -17,6 +17,7 @@ import 'package:californiaflutter/pages/shared/common_background.dart';
 // import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_class_card.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
+import 'package:californiaflutter/pages/shared/common_notification.dart';
 import 'package:californiaflutter/pages/shared/common_point_badge.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:californiaflutter/pages/widgets/common_user_share_card.dart';
@@ -45,46 +46,70 @@ class _HomeScreenState extends State<HomeScreen>
   List<BookingData> _upcomingClasses = [];
   String? clientId;
 
+  bool _isProcessing = false;
+
   @override
   void initState() {
     super.initState();
     _memberCards = buildMemberCards(SessionManager.member);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       // clientId = await SessionManager.getClientId();
-      await _initData();
-      _checkNotificationPermission();
+      Future.wait([_checkNotificationPermission(), _initData()]);
     });
   }
 
   Future<void> _initData() async {
-    // 1. GOM 2 TÁC VỤ VÀO 1 HANDLE API DUY NHẤT
-    await handleApi(
-      context,
-      Future.wait([_fetchMemberCards(), _fetchUpcomingClasses()]),
-    );
+    if (_isProcessing) return; // Nếu đang load thì không chạy nữa
+    _isProcessing = true;
 
+    // 1. GOM 2 TÁC VỤ VÀO 1 HANDLE API DUY NHẤT
+    await handleApi(context, () async {
+      final clientId =
+          await SessionManager.getClientId() ?? AppSession().clientId;
+      final results = await Future.wait([
+        _fetchMemberCards(),
+        _fetchUpcomingClasses(clientId),
+      ]);
+
+      final MemberModel? member = results[0] as MemberModel?;
+      final List<BookingData> upcomingClasses = results[1] as List<BookingData>;
+
+      if (!mounted) return;
+
+      setState(() {
+        if (member != null) {
+          AppSession().member = member;
+          SessionManager.member = member;
+          SessionManager.sTenKh = member.firstName!;
+          SessionManager.sMembershipNumber = member.membershipNumber!;
+          _memberCards = buildMemberCards(AppSession().member);
+        }
+        _upcomingClasses = upcomingClasses;
+      });
+
+      await WidgetsBinding.instance.endOfFrame;
+    }());
+    _isProcessing = false;
     // Sau khi cả 2 load xong, Loading sẽ tự tắt
     debugPrint("--- Đã tải xong toàn bộ dữ liệu trang Home ---");
   }
 
   // --- GIỮ NGUYÊN LOGIC API ---
-  Future<void> _fetchUpcomingClasses() async {
+  Future<List<BookingData>> _fetchUpcomingClasses(String clientId) async {
     try {
       final List<BookingData> rs = await BookingService.getUpcomingClasses(
-        AppSession().clientId,
+        clientId,
       );
 
-      if (mounted) {
-        setState(() {
-          _upcomingClasses = rs;
-        });
-      }
+      return rs;
     } catch (e) {
       debugPrint("Lỗi lấy danh sách lớp: $e");
     }
+
+    return [];
   }
 
-  Future<void> _fetchMemberCards() async {
+  Future<MemberModel?> _fetchMemberCards() async {
     try {
       final response = await BaseApi().client.post(
         '/api/booking/check/member',
@@ -96,19 +121,22 @@ class _HomeScreenState extends State<HomeScreen>
 
       if (200 == response.statusCode && response.data != null) {
         final member = MemberModel.fromJson(response.data['data']);
-        if (mounted) {
-          setState(() {
-            AppSession().member = member; // Save in RAM
-            SessionManager.member = member; // Save in Disk
-            SessionManager.sTenKh = member.firstName!;
-            SessionManager.sMembershipNumber = member.membershipNumber!;
-            _memberCards = buildMemberCards(AppSession().member);
-          });
-        }
+        return member;
+        // if (mounted) {
+        //   setState(() {
+        //     AppSession().member = member; // Save in RAM
+        //     SessionManager.member = member; // Save in Disk
+        //     SessionManager.sTenKh = member.firstName!;
+        //     SessionManager.sMembershipNumber = member.membershipNumber!;
+        //     _memberCards = buildMemberCards(AppSession().member);
+        //   });
+        // }
       }
     } catch (e) {
       showTopNotification("Không thể cập nhật thông tin thẻ", isError: true);
     }
+
+    return null;
   }
 
   Future<void> _checkNotificationPermission() async {
@@ -137,90 +165,123 @@ class _HomeScreenState extends State<HomeScreen>
           // LỚP 2: NỘI DUNG CHÍNH (SCROLLABLE)
           SafeArea(
             bottom: false,
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 1. HEADER (9:41 & NGÔN NGỮ)
-                  _buildTopHeader(),
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification notification) {
+                if (notification.metrics.pixels < -100 &&
+                    notification is ScrollUpdateNotification) {
+                  // 2. KÍCH HOẠT: Chỉ gọi _initData khi không có loading nào đang chạy
+                  // Bạn có thể dùng một biến flag để tránh gọi liên tục nhiều lần trong 1 lần kéo
+                  _initData();
+                }
+                return false;
+              },
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 1. HEADER (9:41 & NGÔN NGỮ)
+                    _buildTopHeader(),
 
-                  // 2. USER HELLO
-                  _buildUserGreeting(),
+                    // 2. USER HELLO
+                    _buildUserGreeting(),
 
-                  // 3. STATS ROW (500 POINT, 5 VOUCHER)
-                  _buildStatsRow(),
+                    // 3. STATS ROW (500 POINT, 5 VOUCHER)
+                    _buildStatsRow(),
 
-                  SizedBox(height: context.resH(24)),
+                    SizedBox(height: context.resH(24)),
 
-                  // 4. MEMBERSHIP SECTION
-                  _buildSectionHeader(
-                    'home.section_member_card'.tr(),
-                    'home.see_all'.tr(),
-                    () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              MemberListScreen(cards: _memberCards),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildMembershipList(),
+                    // 4. MEMBERSHIP SECTION
+                    _buildSectionHeader(
+                      'home.section_member_card'.tr(),
+                      'home.see_all'.tr(),
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                MemberListScreen(cards: _memberCards),
+                          ),
+                        );
+                      },
+                    ),
+                    _buildMembershipList(),
 
-                  SizedBox(height: context.resH(24)),
+                    SizedBox(height: context.resH(24)),
 
-                  // 5. QUICK ACTIONS
-                  _buildQuickActions(),
+                    // 5. QUICK ACTIONS
+                    _buildQuickActions(),
 
-                  SizedBox(height: context.resH(24)),
+                    SizedBox(height: context.resH(24)),
 
-                  // 6. UPCOMING CLASSES
-                  _buildSectionHeader(
-                    'home.section_next_class'.tr(),
-                    'home.see_all'.tr(),
-                    () {
-                      // CẬP NHẬT TẠI ĐÂY: Cho phép nhấn vào chữ "Xem tất cả" ở trên đầu
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ClassScreen()),
-                      );
-                    },
-                  ),
-                  _upcomingClasses.isEmpty
-                      ? _buildEmptyState(
-                          'home.no_class'.tr(),
-                          'home.register_now'.tr(),
-                        )
-                      : _buildClassList(),
+                    // 6. UPCOMING CLASSES
+                    _buildSectionHeader(
+                      'home.section_next_class'.tr(),
+                      'home.see_all'.tr(),
+                      () {
+                        // CẬP NHẬT TẠI ĐÂY: Cho phép nhấn vào chữ "Xem tất cả" ở trên đầu
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ClassScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _upcomingClasses.isEmpty
+                        ? _buildEmptyState(
+                            'home.no_class'.tr(),
+                            'home.register_now'.tr(),
+                          )
+                        : _buildClassList(),
 
-                  SizedBox(height: context.resH(24)),
+                    SizedBox(height: context.resH(24)),
 
-                  // 7. PT COURSE
-                  _buildSectionHeader(
-                    'home.section_practice_pt'.tr(),
-                    'home.see_all'.tr(),
-                    () {},
-                  ),
-                  _buildEmptyState('home.coming_soon'.tr(), null),
+                    // 7. PT COURSE
+                    _buildSectionHeader(
+                      'home.section_practice_pt'.tr(),
+                      'home.see_all'.tr(),
+                      () {
+                        CommonNotification.show(
+                          context,
+                          message: "home.features_coming_soon".tr(),
+                        );
+                      },
+                    ),
+                    _buildEmptyState('home.coming_soon'.tr(), null),
 
-                  SizedBox(height: context.resH(24)),
+                    SizedBox(height: context.resH(24)),
 
-                  // 8. HOT PROGRAM
-                  _buildSectionHeader(
-                    'home.hot_program'.tr(),
-                    'home.see_all'.tr(),
-                    () {},
-                  ),
-                  _buildHotProgram(),
+                    // 8. HOT PROGRAM
+                    _buildSectionHeader(
+                      'home.hot_program'.tr(),
+                      'home.see_all'.tr(),
+                      () {
+                        CommonNotification.show(
+                          context,
+                          message: "home.features_coming_soon".tr(),
+                        );
+                      },
+                    ),
+                    _buildHotProgram(),
 
-                  SizedBox(
-                    height: bottomSafeHeight + 20, // Keep can use navBarHeight
-                  ), // Chừa chỗ cho FAB
-                ],
+                    SizedBox(
+                      height:
+                          bottomSafeHeight + 20, // Keep can use navBarHeight
+                    ), // Chừa chỗ cho FAB
+                  ],
+                ),
               ),
             ),
+            // child: RefreshIndicator(
+            //   color: Colors.transparent,
+            //   backgroundColor: Colors.transparent,
+            //   elevation: 0, // Bỏ bóng đổ của vòng xoay
+            //   child: ,
+            //   onRefresh: () async {
+            //     await _initData();
+            //   },
+            // ),
           ),
 
           // THÔNG BÁO
@@ -406,6 +467,12 @@ class _HomeScreenState extends State<HomeScreen>
           _actionCircle(
             'home.fnc_practice_teacher'.tr(),
             'assets/images/vuesax/dumbbell-large-minimalistic-svgrepo-com.svg',
+            onTap: () {
+              CommonNotification.show(
+                context,
+                message: "home.features_coming_soon".tr(),
+              );
+            },
           ),
         ],
       ),
@@ -464,6 +531,18 @@ class _HomeScreenState extends State<HomeScreen>
       ),
       child: Column(
         children: [
+          SvgPicture.asset(
+            "assets/images/coming-soon.svg", // Thay đổi đường dẫn đến file SVG của bạn
+            width: context
+                .resW(48)
+                .clamp(40.0, 60.0), // Kích thước responsive có giới hạn
+            height: context.resW(48).clamp(40.0, 60.0),
+            colorFilter: const ColorFilter.mode(
+              Color(0xFF9A9A9A),
+              BlendMode.srcIn,
+            ),
+          ),
+          SizedBox(height: context.resH(16)), // Khoảng cách giữa hình và chữ
           Text(
             message,
             style: TextStyle(

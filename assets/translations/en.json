@@ -50,7 +50,9 @@
     "register_now": "Register now",
     "section_practice_pt": "PT programs",
     "coming_soon": "Coming soon",
-    "hot_program": "Hot programs"
+    "hot_program": "Hot programs",
+    "features_coming_soon": "Upcoming features",
+    "features_developing": "Feature under development"
   },
   "login": {
     "phone_hint": "Phone number",
