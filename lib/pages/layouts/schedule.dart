@@ -524,12 +524,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
             .map((json) => ScheduleModel.fromJson(json))
             .toList();
 
-        final selectedServiceIds = _services.map((s) => s['name']).toList();
-        // print(selectedServiceIds);
-        fetchedSchedules = fetchedSchedules.where((schedule) {
-          return selectedServiceIds.contains(schedule.classType.toString());
-        }).toList();
-        // print(fetchedSchedules.length);
+        // final selectedServiceIds = _services.map((s) => s['name']).toList();
+        // // print(selectedServiceIds);
+        // fetchedSchedules = fetchedSchedules.where((schedule) {
+        //   return selectedServiceIds.contains(schedule.classType.toString());
+        // }).toList();
+        // // print(fetchedSchedules.length);
 
         // 3. Cập nhật giao diện
         setState(() {
