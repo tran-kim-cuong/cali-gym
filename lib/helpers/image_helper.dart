@@ -21,4 +21,18 @@ class ImageHelper {
     // Ảnh mặc định nếu không khớp loại nào
     return dotenv.get('CLUBS_DEFAULT');
   }
+
+  static String getCardImageByMembershipType(String? membershipType) {
+    final type = membershipType?.toLowerCase().replaceAll(' ', '_') ?? '';
+
+    if (type.contains('supplement')) {
+      return 'assets/images/cards/supplement.png';
+    } else if (type.contains('icon')) {
+      return 'assets/images/cards/gold.png';
+    } else if (type.contains('diamond-x')) {
+      return 'assets/images/cards/diamond-x.png';
+    }
+
+    return 'assets/images/cards/staff.png';
+  }
 }

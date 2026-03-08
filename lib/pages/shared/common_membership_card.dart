@@ -1,5 +1,6 @@
 import 'dart:async';
 // import 'package:californiaflutter/bases/app_session.dart';
+import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/services/api_service.dart';
@@ -121,13 +122,21 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
           const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(
-          begin: const Alignment(0.95, 0.86),
-          end: const Alignment(0.04, -0.04),
-          colors:
-              widget.data['colors'] ??
-              [const Color(0xFF574E4C), const Color(0xFF231E1D)],
+        image: DecorationImage(
+          image: AssetImage(
+            ImageHelper.getCardImageByMembershipType(
+              widget.data['membershipType'],
+            ),
+          ),
+          fit: BoxFit.cover,
         ),
+        // gradient: LinearGradient(
+        //   begin: const Alignment(0.95, 0.86),
+        //   end: const Alignment(0.04, -0.04),
+        //   colors:
+        //       widget.data['colors'] ??
+        //       [const Color(0xFF574E4C), const Color(0xFF231E1D)],
+        // ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.15),
@@ -139,18 +148,18 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
       child: Stack(
         children: [
           // Watermark icon
-          Positioned(
-            right: -30,
-            bottom: -30,
-            child: Opacity(
-              opacity: 0.1,
-              child: const Icon(
-                Icons.fitness_center,
-                size: 200,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          // Positioned(
+          //   right: -30,
+          //   bottom: -30,
+          //   child: Opacity(
+          //     opacity: 0.05,
+          //     child: const Icon(
+          //       Icons.fitness_center,
+          //       size: 200,
+          //       color: Colors.white,
+          //     ),
+          //   ),
+          // ),
 
           Padding(
             padding: const EdgeInsets.all(20),
