@@ -15,5 +15,7 @@
     "btn_understand":"Đã hiểu",
 
     "lbl_title_common_user_share_card":"Chọn người dùng thẻ",
-    "lbl_status_item_user_share_card":"Hoạt động"
+    "lbl_status_item_user_share_card":"Hoạt động",
+
+    "msg_error_500": "Lỗi xảy ra vui lòng thử lại"
 }

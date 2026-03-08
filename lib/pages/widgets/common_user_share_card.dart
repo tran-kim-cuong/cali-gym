@@ -1,27 +1,27 @@
+import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/user_card_model.dart';
+import 'package:californiaflutter/pages/shared/common_notification.dart';
+import 'package:californiaflutter/services/common_user_share_card_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/svg.dart';
 
-class CommonUserShareCardWidget extends StatelessWidget {
-  final List<CardUserModel> users = [];
-  final Function(CardUserModel) onConfirm;
-  final String membershipNumber;
+class CommonUserShareCardWidget extends StatefulWidget {
+  final String membershipNumber; // Nhận từ member_card.dart
+  final Function(CardUserModel)? onConfirm;
 
-  CommonUserShareCardWidget({
+  const CommonUserShareCardWidget({
     super.key,
     required this.membershipNumber,
-    // required this.users,
     required this.onConfirm,
   });
 
-  // Hàm static để gọi Bottom Sheet nhanh gọn từ các màn hình khác
   static void show({
     required BuildContext context,
     required String membershipNumber,
-    // required List<CardUserModel> users,
-    required Function(CardUserModel) onConfirm,
+    Function(CardUserModel)? onConfirm,
   }) {
     showModalBottomSheet(
       context: context,
@@ -32,6 +32,41 @@ class CommonUserShareCardWidget extends StatelessWidget {
         onConfirm: onConfirm,
       ),
     );
+  }
+
+  @override
+  State<StatefulWidget> createState() => _CommonUserShareCardWidgetState();
+}
+
+class _CommonUserShareCardWidgetState extends State<CommonUserShareCardWidget>
+    with LoadingWrapper {
+  List<CardUserModel> users = [];
+  CardUserModel? _selectedUser;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadUsersSharedCard();
+    });
+  }
+
+  Future<void> loadUsersSharedCard() async {
+    await handleApi(context, () async {
+      final result = await CommonUserShareCardService.loadUsersSharedCard(
+        widget.membershipNumber,
+        dotenv.get('CRM_BASIC_AUTHORIZATION'),
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        users = result;
+      });
+
+      await WidgetsBinding.instance.endOfFrame;
+    }());
   }
 
   @override
@@ -123,10 +158,16 @@ class CommonUserShareCardWidget extends StatelessWidget {
   }
 
   Widget _buildUserItem(BuildContext context, CardUserModel user) {
+    final bool isSelected = _selectedUser?.clientId == user.clientId;
+
     return InkWell(
-      onTap: () {
-        // Logic chọn người dùng tại đây
-      },
+      onTap: user.isActive
+          ? null
+          : () {
+              setState(() {
+                _selectedUser = user;
+              });
+            },
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.symmetric(
@@ -168,7 +209,9 @@ class CommonUserShareCardWidget extends StatelessWidget {
             ),
 
             // 2. Nhãn trạng thái bên phải (Chỉ hiện khi isActive = true)
-            if (user.isActive) //
+            if (isSelected)
+              _buildSelectedTick(context)
+            else if (user.isActive) //
               _buildStatusBadge(context),
           ],
         ),
@@ -228,9 +271,48 @@ class CommonUserShareCardWidget extends StatelessWidget {
               text: 'common.accept'.tr(),
               color: const Color(0xFFD92229),
               textColor: Colors.white,
-              onPressed: () {
-                // onConfirm(selectedUser);
-                Navigator.pop(context);
+              onPressed: () async {
+                if (_selectedUser == null) {
+                  CommonNotification.show(
+                    context,
+                    message: "member_card.msg_select_one_user".tr(),
+                    isError: true,
+                  );
+                  return;
+                } else {
+                  await handleApi(context, () async {
+                    final result =
+                        await CommonUserShareCardService.confirmUserShareCard(
+                          widget.membershipNumber,
+                          dotenv.get('CRM_BASIC_AUTHORIZATION'),
+                          _selectedUser?.clientId ?? '',
+                          languageCode: context.locale.languageCode,
+                        );
+
+                    final (message, code) = result;
+
+                    if (code == 200) {
+                      setState(() {});
+
+                      await WidgetsBinding.instance.endOfFrame;
+
+                      if (!context.mounted) return;
+
+                      CommonNotification.show(
+                        context,
+                        message: message ?? 'N/A',
+                      );
+                      Navigator.pop(context);
+                    } else if (code == 500) {
+                      if (!context.mounted) return;
+                      CommonNotification.show(
+                        context,
+                        message: "common.msg_error_500".tr(),
+                        isError: true
+                      );
+                    } else {}
+                  }());
+                }
               },
             ),
           ),
@@ -263,6 +345,19 @@ class CommonUserShareCardWidget extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSelectedTick(BuildContext context) {
+    return SizedBox(
+      width: context.resW(24),
+      height: context.resW(24),
+      child: SvgPicture.asset(
+        "assets/images/vuesax/select-item.svg", // Đường dẫn file SVG tích đỏ của bạn
+        // Nếu file SVG gốc chưa có màu đỏ, bạn có thể ép màu tại đây
+        colorFilter: const ColorFilter.mode(Color(0xFFD92229), BlendMode.srcIn),
+        fit: BoxFit.contain,
       ),
     );
   }

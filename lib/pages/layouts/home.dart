@@ -548,7 +548,6 @@ class _HomeScreenState extends State<HomeScreen>
               CommonUserShareCardWidget.show(
                 context: context,
                 membershipNumber: cardData['membershipNumber'],
-                onConfirm: (selectUser) {},
               );
             },
           );

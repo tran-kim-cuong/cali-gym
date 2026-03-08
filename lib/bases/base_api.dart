@@ -44,7 +44,7 @@ class BaseApi {
         headers: {
           'accept': 'text/plain',
           // Token Basic Auth từ curl của bạn
-          'authorization': basicAuth,
+          // 'authorization': basicAuth,
         },
       ),
     );
@@ -54,6 +54,20 @@ class BaseApi {
 
     // Thêm Interceptor cho SMS API (KHÔNG gắn Token)
     _dioSms.interceptors.add(_createInterceptor(useToken: false));
+
+    _dioCrm.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          // KIỂM TRA: Nếu request chưa có header Authorization thì mới dùng default
+          // Việc này giúp bạn có thể truyền 'key' khác từ bên ngoài vào khi gọi API
+          if (!options.headers.containsKey('Authorization') &&
+              !options.headers.containsKey('authorization')) {
+            options.headers['Authorization'] = basicAuth;
+          }
+          return handler.next(options);
+        },
+      ),
+    );
   }
 
   Future<String?> _performReLogin() async {
