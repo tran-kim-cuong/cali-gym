@@ -18,7 +18,8 @@ class CommonBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _ = context.locale; // THÊM DÒNG NÀY: Ép widget lắng nghe sự thay đổi của locale
+    final _ = context
+        .locale; // THÊM DÒNG NÀY: Ép widget lắng nghe sự thay đổi của locale
 
     // 1. Lấy thông số Padding đáy của hệ thống
     final double systemPaddingBottom = MediaQuery.of(context).padding.bottom;
@@ -60,12 +61,14 @@ class CommonBottomNavBar extends StatelessWidget {
             'assets/images/vuesax/ticket-discount.svg',
             "navbar.btn_loyalty".tr(),
             2,
+            isEnabled: false,
           ),
           _navItem(
             context,
             'assets/images/vuesax/profile-circle.svg',
             "navbar.btn_profile".tr(),
             3,
+            isEnabled: false,
           ),
         ],
       ),
@@ -76,8 +79,9 @@ class CommonBottomNavBar extends StatelessWidget {
     BuildContext context,
     String svgPath,
     String label,
-    int index,
-  ) {
+    int index, {
+    bool isEnabled = true,
+  }) {
     bool isSelected = currentIndex == index;
 
     // Xác định màu sắc dựa trên trạng thái chọn
@@ -85,7 +89,7 @@ class CommonBottomNavBar extends StatelessWidget {
 
     return Expanded(
       child: InkWell(
-        onTap: () => onTap(index),
+        onTap: isEnabled ? () => onTap(index) : null,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,

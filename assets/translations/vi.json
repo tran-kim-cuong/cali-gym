@@ -35,7 +35,8 @@
     "btn_cancel": "Hủy",
     "btn_understand": "Đã hiểu",
     "lbl_title_common_user_share_card": "Chọn người dùng thẻ",
-    "lbl_status_item_user_share_card": "Hoạt động"
+    "lbl_status_item_user_share_card": "Hoạt động",
+    "msg_error_500": "Lỗi xảy ra vui lòng thử lại"
   },
   "home": {
     "hello": "Xin chào",
@@ -67,7 +68,8 @@
     "btn_show_qr": "Hiện mã QR",
     "pick_member_card": "Ghim thẻ",
     "title_member_card": "Thẻ hội viên",
-    "btn_share_card_title": "Chia sẻ thẻ"
+    "btn_share_card_title": "Chia sẻ thẻ",
+    "msg_select_one_user": "Vui lòng chọn ít nhất 1 người dùng để chia sẻ"
   },
   "navbar": {
     "btn_home": "Trang chủ",

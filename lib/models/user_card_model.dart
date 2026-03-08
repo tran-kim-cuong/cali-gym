@@ -23,4 +23,9 @@ class CardUserModel {
     // Trả về định dạng: "clientId - maskedPhone"
     return "$clientId - $maskedPhone";
   }
+
+  @override
+  String toString() {
+    return 'CardUserModel(fullName: $fullName, clientId: $clientId, isActive: $isActive)';
+  }
 }

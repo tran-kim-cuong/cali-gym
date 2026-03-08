@@ -4,5 +4,6 @@
     "pick_member_card": "Pin card",
     "title_member_card": "Membership card",
 
-    "btn_share_card_title":"Share card"
+    "btn_share_card_title": "Share card",
+    "msg_select_one_user": "Please select at least one user to share"
 }
