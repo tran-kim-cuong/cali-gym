@@ -42,7 +42,7 @@ class _MasterScreenState extends State<MasterScreen> {
     _pages = [
       const HomeScreen(), // Index 0
       const ScheduleScreen(), // Index 1
-      const LoyaltyScreen(), // Index 2 (Ví dụ)
+      // const LoyaltyScreen(), // Index 2 (Ví dụ)
       const ProfileScreen(), // Index 3
     ];
   }
