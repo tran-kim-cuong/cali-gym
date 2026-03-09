@@ -54,63 +54,63 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
                       SizedBox(height: context.resH(32)),
 
                       // SECTION: CÁ NHÂN
-                      _buildSectionTitle('profile.sec_privacy'.tr()),
-                      _buildMenuItem(
-                        'assets/images/profiles/user.svg',
-                        'profile.sec_privacy_info'.tr(),
-                      ),
-                      _buildMenuItem(
-                        'assets/images/profiles/card.svg',
-                        'profile.sec_privacy_member_card'.tr(),
-                      ),
-                      _buildMenuItem(
-                        'assets/images/vuesax/teacher.svg',
-                        'profile.sec_privacy_future_class'.tr(),
-                      ),
-                      _buildMenuItem(
-                        'assets/images/vuesax/document-text.svg',
-                        'profile.sec_privacy_my_bill'.tr(),
-                      ),
-                      _buildMenuItem(
-                        'assets/images/vuesax/ticket-discount.svg',
-                        'profile.sec_privacy_my_voucher'.tr(),
-                      ),
+                      // _buildSectionTitle('profile.sec_privacy'.tr()),
+                      // _buildMenuItem(
+                      //   'assets/images/profiles/user.svg',
+                      //   'profile.sec_privacy_info'.tr(),
+                      // ),
+                      // _buildMenuItem(
+                      //   'assets/images/profiles/card.svg',
+                      //   'profile.sec_privacy_member_card'.tr(),
+                      // ),
+                      // _buildMenuItem(
+                      //   'assets/images/vuesax/teacher.svg',
+                      //   'profile.sec_privacy_future_class'.tr(),
+                      // ),
+                      // _buildMenuItem(
+                      //   'assets/images/vuesax/document-text.svg',
+                      //   'profile.sec_privacy_my_bill'.tr(),
+                      // ),
+                      // _buildMenuItem(
+                      //   'assets/images/vuesax/ticket-discount.svg',
+                      //   'profile.sec_privacy_my_voucher'.tr(),
+                      // ),
 
-                      SizedBox(height: context.resH(16)),
+                      // SizedBox(height: context.resH(16)),
 
-                      // SECTION: CÀI ĐẶT
-                      _buildSectionTitle('profile.sec_settings'.tr()),
-                      _buildSwitchItem(
-                        'assets/images/profiles/notification.svg',
-                        'profile.sec_settings_notification'.tr(),
-                      ),
-                      _buildLanguageItem(
-                        'assets/images/profiles/global.svg',
-                        'profile.sec_settings_language'.tr(),
-                      ),
+                      // // SECTION: CÀI ĐẶT
+                      // _buildSectionTitle('profile.sec_settings'.tr()),
+                      // _buildSwitchItem(
+                      //   'assets/images/profiles/notification.svg',
+                      //   'profile.sec_settings_notification'.tr(),
+                      // ),
+                      // _buildLanguageItem(
+                      //   'assets/images/profiles/global.svg',
+                      //   'profile.sec_settings_language'.tr(),
+                      // ),
 
-                      SizedBox(height: context.resH(16)),
+                      // SizedBox(height: context.resH(16)),
 
-                      // SECTION: HỖ TRỢ
-                      _buildSectionTitle('profile.sec_support'.tr()),
-                      _buildMenuItem(
-                        'assets/images/profiles/messages.svg',
-                        'profile.sec_support_comment'.tr(),
-                      ),
-                      _buildMenuItem(
-                        'assets/images/profiles/document.svg',
-                        'profile.sec_support_term_condition'.tr(),
-                      ),
-                      _buildMenuItem(
-                        'assets/images/profiles/lock.svg',
-                        'profile.sec_support_security'.tr(),
-                      ),
-                      _buildMenuItem(
-                        'assets/images/profiles/message-question.svg',
-                        'profile.sec_support_center'.tr(),
-                      ),
+                      // // SECTION: HỖ TRỢ
+                      // _buildSectionTitle('profile.sec_support'.tr()),
+                      // _buildMenuItem(
+                      //   'assets/images/profiles/messages.svg',
+                      //   'profile.sec_support_comment'.tr(),
+                      // ),
+                      // _buildMenuItem(
+                      //   'assets/images/profiles/document.svg',
+                      //   'profile.sec_support_term_condition'.tr(),
+                      // ),
+                      // _buildMenuItem(
+                      //   'assets/images/profiles/lock.svg',
+                      //   'profile.sec_support_security'.tr(),
+                      // ),
+                      // _buildMenuItem(
+                      //   'assets/images/profiles/message-question.svg',
+                      //   'profile.sec_support_center'.tr(),
+                      // ),
 
-                      SizedBox(height: context.resH(24)),
+                      // SizedBox(height: context.resH(24)),
 
                       // NÚT ĐĂNG XUẤT
                       _buildLogoutButton(),
