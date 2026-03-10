@@ -242,30 +242,60 @@ class _HomeScreenState extends State<HomeScreen>
                     SizedBox(height: context.resH(24)),
 
                     // 7. PT COURSE
-                    _buildSectionHeader(
-                      'home.section_practice_pt'.tr(),
-                      'home.see_all'.tr(),
-                      () {
-                        CommonNotification.show(
-                          context,
-                          message: "home.features_coming_soon".tr(),
-                        );
-                      },
+                    // _buildSectionHeader(
+                    //   'home.section_practice_pt'.tr(),
+                    //   'home.see_all'.tr(),
+                    //   () {
+                    //     CommonNotification.show(
+                    //       context,
+                    //       message: "home.features_coming_soon".tr(),
+                    //     );
+                    //   },
+                    // ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.resW(20),
+                        vertical: 6,
+                      ),
+                      child: Text(
+                        'home.section_practice_pt'.tr(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: context.resClamp(16, 14, 20),
+                          fontWeight: FontWeight.w600,
+                          height: 1.5,
+                        ),
+                      ),
                     ),
                     _buildComingSoonState('home.coming_soon'.tr(), null),
 
                     SizedBox(height: context.resH(24)),
 
                     // 8. HOT PROGRAM
-                    _buildSectionHeader(
-                      'home.hot_program'.tr(),
-                      'home.see_all'.tr(),
-                      () {
-                        CommonNotification.show(
-                          context,
-                          message: "home.features_coming_soon".tr(),
-                        );
-                      },
+                    // _buildSectionHeader(
+                    //   'home.hot_program'.tr(),
+                    //   'home.see_all'.tr(),
+                    //   () {
+                    //     CommonNotification.show(
+                    //       context,
+                    //       message: "home.features_coming_soon".tr(),
+                    //     );
+                    //   },
+                    // ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.resW(20),
+                        vertical: 6,
+                      ),
+                      child: Text(
+                        'home.hot_program'.tr(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: context.resClamp(16, 14, 20),
+                          fontWeight: FontWeight.w600,
+                          height: 1.5,
+                        ),
+                      ),
                     ),
                     _buildHotProgram(),
 
@@ -442,7 +472,7 @@ class _HomeScreenState extends State<HomeScreen>
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _actionCircle(
             'home.fnc_pick_up_class'.tr(),
@@ -468,16 +498,16 @@ class _HomeScreenState extends State<HomeScreen>
               );
             },
           ),
-          _actionCircle(
-            'home.fnc_practice_teacher'.tr(),
-            'assets/images/vuesax/v5/dumbbell-large-minimalistic-svgrepo-com.png',
-            onTap: () {
-              CommonNotification.show(
-                context,
-                message: "home.features_coming_soon".tr(),
-              );
-            },
-          ),
+          // _actionCircle(
+          //   'home.fnc_practice_teacher'.tr(),
+          //   'assets/images/vuesax/v5/dumbbell-large-minimalistic-svgrepo-com.png',
+          //   onTap: () {
+          //     CommonNotification.show(
+          //       context,
+          //       message: "home.features_coming_soon".tr(),
+          //     );
+          //   },
+          // ),
         ],
       ),
     );

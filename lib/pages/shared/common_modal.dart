@@ -14,7 +14,7 @@ class CommonModalWidget {
   }) async {
     double? originalBrightness;
 
-    final String text = instructionText ?? 'msg_reception_checkin'.tr();
+    // final String text = instructionText ?? 'msg_reception_checkin'.tr();
 
     try {
       // 1. Lưu lại mức độ sáng hiện tại của máy
@@ -83,20 +83,20 @@ class CommonModalWidget {
                     SizedBox(height: context.resH(16)),
 
                     // TEXT HƯỚNG DẪN RESPONSIVE
-                    SizedBox(
-                      width: context.resW(335),
-                      child: Text(
-                        text,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          // Sử dụng resClamp để chữ không bị vỡ trên máy nhỏ
-                          fontSize: context.resClamp(16, 14, 18),
-                          fontWeight: FontWeight.w500,
-                          height: 1.50,
-                        ),
-                      ),
-                    ),
+                    // SizedBox(
+                    //   width: context.resW(335),
+                    //   child: Text(
+                    //     text,
+                    //     textAlign: TextAlign.center,
+                    //     style: TextStyle(
+                    //       color: Colors.white,
+                    //       // Sử dụng resClamp để chữ không bị vỡ trên máy nhỏ
+                    //       fontSize: context.resClamp(16, 14, 18),
+                    //       fontWeight: FontWeight.w500,
+                    //       height: 1.50,
+                    //     ),
+                    //   ),
+                    // ),
                     // Khoảng đệm dưới cùng né thanh tác vụ (Home Indicator)
                     SizedBox(
                       height:
