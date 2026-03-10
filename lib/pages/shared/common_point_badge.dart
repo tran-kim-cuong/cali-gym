@@ -1,5 +1,6 @@
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 
 class CommonPointBadge extends StatelessWidget {
@@ -32,9 +33,9 @@ class CommonPointBadge extends StatelessWidget {
           : EdgeInsets.zero,
       decoration: hasBorder
           ? ShapeDecoration(
-              color: Colors.white.withValues(alpha: 0.20),
+              color: Colors.transparent,
               shape: RoundedRectangleBorder(
-                side: const BorderSide(width: 1, color: Color(0xFFE8E8E8)),
+                side: const BorderSide(width: 1, color: Color(0xFFEF4822)),
                 borderRadius: BorderRadius.circular(4),
               ),
             )
@@ -82,7 +83,7 @@ class CommonPointBadge extends StatelessWidget {
               gradient: const LinearGradient(
                 begin: Alignment(0.62, 0.02),
                 end: Alignment(0.20, 0.89),
-                colors: [Color(0xFFFFFA86), Color(0xFFBB7E13)],
+                colors: [Colors.transparent, Colors.transparent],
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(35),

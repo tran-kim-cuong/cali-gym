@@ -4,7 +4,7 @@ import 'package:californiaflutter/pages/layouts/home.dart';
 import 'package:californiaflutter/pages/layouts/login.dart';
 import 'package:californiaflutter/pages/layouts/profile.dart';
 import 'package:californiaflutter/pages/layouts/schedule.dart';
-import 'package:californiaflutter/pages/layouts/loyalty.dart';
+// import 'package:californiaflutter/pages/layouts/loyalty.dart';
 import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_modal.dart';
 import 'package:easy_localization/easy_localization.dart';
