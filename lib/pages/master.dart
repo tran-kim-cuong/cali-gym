@@ -53,7 +53,12 @@ class _MasterScreenState extends State<MasterScreen> {
     String? customerId = await SessionManager.getCustomerId();
 
     // 2. Kiểm tra nếu thiếu Phone hoặc ClientID thì đẩy ra Login
-    if (phoneNumber!.isEmpty || clientId!.isEmpty || customerId!.isEmpty) {
+    if (phoneNumber == null ||
+        phoneNumber.isEmpty ||
+        clientId == null ||
+        clientId.isEmpty ||
+        customerId == null ||
+        customerId.isEmpty) {
       debugPrint("--- Auth Guard: Thiếu dữ liệu, chuyển hướng về Welcome ---");
 
       if (!mounted) return;
@@ -68,6 +73,8 @@ class _MasterScreenState extends State<MasterScreen> {
       AppSession().phoneNumber = phoneNumber;
       AppSession().clientId = clientId;
       AppSession().customerId = customerId;
+      SessionManager.sClientId = clientId;
+      SessionManager.sCustomerId = customerId;
     }
   }
 

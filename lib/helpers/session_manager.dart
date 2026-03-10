@@ -10,6 +10,10 @@ class SessionManager {
   static String sMembershipNumber = "";
   static String sKeyCode = "JKLM012NOBCDQRS3456TUEFGPAHIVWXYZ7890";
   static String sCustomerId = "";
+
+  // Constant keys for SharedPreferences
+  static const String _keyClientId = "client_id";
+  static const String _keyCustomerId = "customer_id";
   static MemberModel member = MemberModel();
 
   static const String keySkippedVersion = "skipped_version"; // Thêm key này
@@ -59,28 +63,22 @@ class SessionManager {
 
   static Future<void> setClientId(String clientId) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(sClientId, clientId);
+    await prefs.setString(_keyClientId, clientId);
   }
 
   static Future<String?> getClientId() async {
-    final prefs =
-        await SharedPreferences.getInstance(); // Khởi tạo SharedPreferences
-    return prefs.getString(
-      sClientId,
-    ); // Trả về chuỗi token hoặc null nếu chưa có
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_keyClientId);
   }
 
   static Future<void> setCustomerId(String customerId) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(sCustomerId, customerId);
+    await prefs.setString(_keyCustomerId, customerId);
   }
 
   static Future<String?> getCustomerId() async {
-    final prefs =
-        await SharedPreferences.getInstance(); // Khởi tạo SharedPreferences
-    return prefs.getString(
-      sCustomerId,
-    ); // Trả về chuỗi token hoặc null nếu chưa có
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_keyCustomerId);
   }
 
   static Future<void> setSkippedVersion(String version) async {
