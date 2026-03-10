@@ -37,7 +37,7 @@ class CommonClassCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           side: const BorderSide(
             width: 2,
-            color: Color.fromARGB(255, 238, 234, 19),
+            color: Color(0xFFEF4822),
           ),
           borderRadius: BorderRadius.circular(8),
         ),

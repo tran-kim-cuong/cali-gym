@@ -85,8 +85,10 @@ flutter:
 
   assets:
       - assets/images/
+      - assets/images/v5/
       - assets/images/clubs/
       - assets/images/vuesax/
+      - assets/images/vuesax/v5/
       - assets/images/profiles/
       - assets/images/loyalty/
       - assets/translations/ # Khai báo đường dẫn chứa file ngôn ngữ
