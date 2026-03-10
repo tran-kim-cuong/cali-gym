@@ -4,11 +4,11 @@ import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/pages/layouts/login.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
-import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
+// import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_svg/svg.dart';
+// import 'package:flutter_svg/svg.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -18,7 +18,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
-  bool _isNotificationEnabled = true;
+  // bool _isNotificationEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -155,188 +155,188 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.fromLTRB(
-        context.resW(20),
-        context.resH(12),
-        context.resW(20),
-        context.resH(8),
-      ),
-      child: Text(
-        title,
-        style: TextStyle(
-          color: const Color(0xFF9A9A9A),
-          fontSize: context.resClamp(14, 12, 15),
-          fontFamily: 'Inter',
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
+  // Widget _buildSectionTitle(String title) {
+  //   return Container(
+  //     width: double.infinity,
+  //     padding: EdgeInsets.fromLTRB(
+  //       context.resW(20),
+  //       context.resH(12),
+  //       context.resW(20),
+  //       context.resH(8),
+  //     ),
+  //     child: Text(
+  //       title,
+  //       style: TextStyle(
+  //         color: const Color(0xFF9A9A9A),
+  //         fontSize: context.resClamp(14, 12, 15),
+  //         fontFamily: 'Inter',
+  //         fontWeight: FontWeight.w600,
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _buildMenuItem(String iconPath, String label) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        height: context.resH(48),
-        padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
-        child: Row(
-          children: [
-            // Icon Placeholder (Sử dụng icon hệ thống nếu không có SVG)
-            SizedBox(
-              width: context.resW(20), // Kích thước responsive
-              height: context.resW(20),
-              child: SvgPicture.asset(
-                iconPath,
-                // Đổi màu SVG sang trắng để đồng bộ với thiết kế
-                colorFilter: const ColorFilter.mode(
-                  Colors.white,
-                  BlendMode.srcIn,
-                ),
-                fit: BoxFit.contain,
-              ),
-            ),
-            SizedBox(width: context.resW(12)),
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: context.resClamp(14, 13, 15),
-                  fontFamily: 'Inter',
-                ),
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: Color(0xFF9A9A9A), size: 16),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildMenuItem(String iconPath, String label) {
+  //   return InkWell(
+  //     onTap: () {},
+  //     child: Container(
+  //       height: context.resH(48),
+  //       padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
+  //       child: Row(
+  //         children: [
+  //           // Icon Placeholder (Sử dụng icon hệ thống nếu không có SVG)
+  //           SizedBox(
+  //             width: context.resW(20), // Kích thước responsive
+  //             height: context.resW(20),
+  //             child: SvgPicture.asset(
+  //               iconPath,
+  //               // Đổi màu SVG sang trắng để đồng bộ với thiết kế
+  //               colorFilter: const ColorFilter.mode(
+  //                 Colors.white,
+  //                 BlendMode.srcIn,
+  //               ),
+  //               fit: BoxFit.contain,
+  //             ),
+  //           ),
+  //           SizedBox(width: context.resW(12)),
+  //           Expanded(
+  //             child: Text(
+  //               label,
+  //               style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontSize: context.resClamp(14, 13, 15),
+  //                 fontFamily: 'Inter',
+  //               ),
+  //             ),
+  //           ),
+  //           const Icon(Icons.chevron_right, color: Color(0xFF9A9A9A), size: 16),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _buildSwitchItem(String iconPath, String label) {
-    return Container(
-      height: context.resH(48),
-      padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
-      child: Row(
-        children: [
-          SizedBox(
-            width: context.resW(20), // Kích thước responsive
-            height: context.resW(20),
-            child: SvgPicture.asset(
-              iconPath,
-              // Đổi màu SVG sang trắng để đồng bộ với thiết kế
-              colorFilter: const ColorFilter.mode(
-                Colors.white,
-                BlendMode.srcIn,
-              ),
-              fit: BoxFit.contain,
-            ),
-          ),
-          SizedBox(width: context.resW(12)),
-          Expanded(
-            child: Text(
-              label,
-              style: const TextStyle(color: Colors.white, fontSize: 14),
-            ),
-          ),
-          // Custom Toggle theo thiết kế user
-          Switch(
-            value: _isNotificationEnabled,
-            onChanged: (val) => setState(() => _isNotificationEnabled = val),
-            activeThumbColor: Colors.white,
-            activeTrackColor: const Color(0xFFE04A50),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildSwitchItem(String iconPath, String label) {
+  //   return Container(
+  //     height: context.resH(48),
+  //     padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
+  //     child: Row(
+  //       children: [
+  //         SizedBox(
+  //           width: context.resW(20), // Kích thước responsive
+  //           height: context.resW(20),
+  //           child: SvgPicture.asset(
+  //             iconPath,
+  //             // Đổi màu SVG sang trắng để đồng bộ với thiết kế
+  //             colorFilter: const ColorFilter.mode(
+  //               Colors.white,
+  //               BlendMode.srcIn,
+  //             ),
+  //             fit: BoxFit.contain,
+  //           ),
+  //         ),
+  //         SizedBox(width: context.resW(12)),
+  //         Expanded(
+  //           child: Text(
+  //             label,
+  //             style: const TextStyle(color: Colors.white, fontSize: 14),
+  //           ),
+  //         ),
+  //         // Custom Toggle theo thiết kế user
+  //         Switch(
+  //           value: _isNotificationEnabled,
+  //           onChanged: (val) => setState(() => _isNotificationEnabled = val),
+  //           activeThumbColor: Colors.white,
+  //           activeTrackColor: const Color(0xFFE04A50),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildLanguageItem(String iconPath, String label) {
-    // 1. Lấy thông tin ngôn ngữ hiện tại để đổi cờ và text động
-    final currentCode = context.locale.languageCode;
-    final String langText = currentCode == 'vi' ? 'VN' : 'EN';
-    final String flagAsset = currentCode == 'vi'
-        ? 'assets/images/vietnam.svg'
-        : 'assets/images/kingdom.svg';
+  // Widget _buildLanguageItem(String iconPath, String label) {
+  //   // 1. Lấy thông tin ngôn ngữ hiện tại để đổi cờ và text động
+  //   final currentCode = context.locale.languageCode;
+  //   final String langText = currentCode == 'vi' ? 'VN' : 'EN';
+  //   final String flagAsset = currentCode == 'vi'
+  //       ? 'assets/images/vietnam.svg'
+  //       : 'assets/images/kingdom.svg';
 
-    return InkWell(
-      onTap: () => LanguageBottomSheet.show(context: context),
-      child: Container(
-        height: context.resH(48),
-        padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
-        child: Row(
-          children: [
-            // 2. Icon quả địa cầu bên trái
-            SizedBox(
-              width: context.resW(20),
-              height: context.resW(20),
-              child: SvgPicture.asset(
-                iconPath,
-                colorFilter: const ColorFilter.mode(
-                  Colors.white,
-                  BlendMode.srcIn,
-                ),
-                fit: BoxFit.contain,
-              ),
-            ),
-            SizedBox(width: context.resW(12)),
+  //   return InkWell(
+  //     onTap: () => LanguageBottomSheet.show(context: context),
+  //     child: Container(
+  //       height: context.resH(48),
+  //       padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
+  //       child: Row(
+  //         children: [
+  //           // 2. Icon quả địa cầu bên trái
+  //           SizedBox(
+  //             width: context.resW(20),
+  //             height: context.resW(20),
+  //             child: SvgPicture.asset(
+  //               iconPath,
+  //               colorFilter: const ColorFilter.mode(
+  //                 Colors.white,
+  //                 BlendMode.srcIn,
+  //               ),
+  //               fit: BoxFit.contain,
+  //             ),
+  //           ),
+  //           SizedBox(width: context.resW(12)),
 
-            // 3. Nhãn "Ngôn ngữ"
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: context.resClamp(14, 13, 15),
-                  fontFamily: 'Inter',
-                ),
-              ),
-            ),
+  //           // 3. Nhãn "Ngôn ngữ"
+  //           Expanded(
+  //             child: Text(
+  //               label,
+  //               style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontSize: context.resClamp(14, 13, 15),
+  //                 fontFamily: 'Inter',
+  //               ),
+  //             ),
+  //           ),
 
-            // 4. Khung chọn ngôn ngữ dạng Pill (Như hình image_342069.png)
-            Container(
-              padding: const EdgeInsets.only(
-                top: 2,
-                left: 2,
-                right: 10,
-                bottom: 2,
-              ),
-              decoration: BoxDecoration(
-                color: const Color(0xFF3E3E3E), // Màu nền xám của pill
-                borderRadius: BorderRadius.circular(32),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Hình tròn chứa cờ quốc gia
-                  Container(
-                    width: 24,
-                    height: 24,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: const BoxDecoration(shape: BoxShape.circle),
-                    child: SvgPicture.asset(flagAsset, fit: BoxFit.cover),
-                  ),
-                  const SizedBox(width: 8),
-                  // Chữ hiển thị mã (VN/EN)
-                  Text(
-                    langText,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  //           // 4. Khung chọn ngôn ngữ dạng Pill (Như hình image_342069.png)
+  //           Container(
+  //             padding: const EdgeInsets.only(
+  //               top: 2,
+  //               left: 2,
+  //               right: 10,
+  //               bottom: 2,
+  //             ),
+  //             decoration: BoxDecoration(
+  //               color: const Color(0xFF3E3E3E), // Màu nền xám của pill
+  //               borderRadius: BorderRadius.circular(32),
+  //             ),
+  //             child: Row(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 // Hình tròn chứa cờ quốc gia
+  //                 Container(
+  //                   width: 24,
+  //                   height: 24,
+  //                   clipBehavior: Clip.antiAlias,
+  //                   decoration: const BoxDecoration(shape: BoxShape.circle),
+  //                   child: SvgPicture.asset(flagAsset, fit: BoxFit.cover),
+  //                 ),
+  //                 const SizedBox(width: 8),
+  //                 // Chữ hiển thị mã (VN/EN)
+  //                 Text(
+  //                   langText,
+  //                   style: const TextStyle(
+  //                     color: Colors.white,
+  //                     fontSize: 14,
+  //                     fontWeight: FontWeight.w500,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildLogoutButton() {
     return InkWell(

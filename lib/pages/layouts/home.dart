@@ -228,13 +228,17 @@ class _HomeScreenState extends State<HomeScreen>
                         );
                       },
                     ),
+
+                    // _buildEmptyState(
+                    //   'home.no_class'.tr(),
+                    //   'home.register_now'.tr(),
+                    // ),
                     _upcomingClasses.isEmpty
                         ? _buildEmptyState(
                             'home.no_class'.tr(),
                             'home.register_now'.tr(),
                           )
                         : _buildClassList(),
-
                     SizedBox(height: context.resH(24)),
 
                     // 7. PT COURSE
@@ -248,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen>
                         );
                       },
                     ),
-                    _buildEmptyState('home.coming_soon'.tr(), null),
+                    _buildComingSoonState('home.coming_soon'.tr(), null),
 
                     SizedBox(height: context.resH(24)),
 
@@ -389,11 +393,11 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           CommonPointBadge(
             value: '500',
-            svgPath: 'assets/images/vuesax/ranking.svg',
+            svgPath: 'assets/images/vuesax/v5/ranking.svg',
           ),
           CommonPointBadge(
             value: '5 voucher',
-            svgPath: 'assets/images/vuesax/ticket-discount.svg',
+            svgPath: 'assets/images/vuesax/v5/ticket-discount.svg',
             useGradient: false,
           ),
         ],
@@ -442,7 +446,7 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           _actionCircle(
             'home.fnc_pick_up_class'.tr(),
-            'assets/images/vuesax/teacher.svg',
+            'assets/images/vuesax/v5/teacher.png',
             onTap: () {
               Navigator.push(
                 context,
@@ -454,7 +458,7 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           _actionCircle(
             'home.fnc_other_benefit'.tr(),
-            'assets/images/vuesax/gift.svg',
+            'assets/images/vuesax/v5/gift.png',
             onTap: () {
               Navigator.push(
                 context,
@@ -466,7 +470,7 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           _actionCircle(
             'home.fnc_practice_teacher'.tr(),
-            'assets/images/vuesax/dumbbell-large-minimalistic-svgrepo-com.svg',
+            'assets/images/vuesax/v5/dumbbell-large-minimalistic-svgrepo-com.png',
             onTap: () {
               CommonNotification.show(
                 context,
@@ -481,7 +485,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _actionCircle(String label, String iconPath, {VoidCallback? onTap}) {
     // Sử dụng màu đỏ thương hiệu từ login.dart hoặc các nút đặt chỗ
-    const Color brandRed = Color(0xFFDA212D);
+    // const Color brandRed = Color(0xFFDA212D);
 
     return GestureDetector(
       onTap: onTap,
@@ -490,18 +494,20 @@ class _HomeScreenState extends State<HomeScreen>
           Container(
             width: context.resW(65),
             height: context.resW(65),
-            padding: const EdgeInsets.all(18),
+            padding: EdgeInsets.all(context.resW(10)),
+            alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 62, 62, 62),
+              color: Colors.transparent,
               shape: BoxShape.circle,
               border: Border.all(
-                color: Color.fromARGB(255, 238, 234, 19),
+                color: Color(0xFFEF4822),
                 width: 2, // độ dày viền
               ),
             ),
-            child: SvgPicture.asset(
+            child: Image.asset(
               iconPath,
-              colorFilter: const ColorFilter.mode(brandRed, BlendMode.srcIn),
+              fit: BoxFit.contain,
+              // colorFilter: const ColorFilter.mode(brandRed, BlendMode.srcIn),
             ),
           ),
           const SizedBox(height: 8),
@@ -521,53 +527,172 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildEmptyState(String message, String? btnText) {
+    // Mã màu đỏ mới (đã giảm độ rực xuống)
+    const Color mutedRed = Color(0xFF8E0404);
+    const Color mutedBorderRed = Color(0xFF8B0404);
+
     return Container(
       width: double.infinity,
+      height: context.resH(134),
       margin: EdgeInsets.symmetric(horizontal: context.resW(20)),
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      decoration: BoxDecoration(
-        color: const Color(0xFF3E3E3E),
-        borderRadius: BorderRadius.circular(4),
+      clipBehavior: Clip.antiAlias,
+      decoration: ShapeDecoration(
+        // 1. GRADIENT: Sử dụng màu đỏ trầm hơn để giảm độ gắt
+        gradient: const LinearGradient(
+          begin: Alignment(0.07, 0.58),
+          end: Alignment(1.04, 0.56),
+          colors: [mutedRed, Color(0xFF000000)],
+        ),
+        shape: RoundedRectangleBorder(
+          // Cập nhật viền đồng bộ với màu nền mới
+          side: const BorderSide(width: 1, color: mutedBorderRed),
+          borderRadius: BorderRadius.circular(4),
+        ),
       ),
-      child: Column(
+      child: Stack(
         children: [
-          SvgPicture.asset(
-            "assets/images/coming-soon.svg", // Thay đổi đường dẫn đến file SVG của bạn
-            width: context
-                .resW(48)
-                .clamp(40.0, 60.0), // Kích thước responsive có giới hạn
-            height: context.resW(48).clamp(40.0, 60.0),
-            colorFilter: const ColorFilter.mode(
-              Color(0xFF9A9A9A),
-              BlendMode.srcIn,
-            ),
-          ),
-          SizedBox(height: context.resH(16)), // Khoảng cách giữa hình và chữ
-          Text(
-            message,
-            style: TextStyle(
-              color: const Color(0xFF9A9A9A),
-              fontSize: context.resClamp(12, 10, 14), // Responsive
-            ),
-          ),
-          if (btnText != null) ...[
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFD92229),
+          // 2. HÌNH NỀN: Giữ nguyên logic hiển thị
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.4,
+              child: Image.asset(
+                "assets/images/v5/home_empty.png",
+                fit: BoxFit.cover,
               ),
-              child: Text(
-                btnText,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: context.resClamp(12, 10, 14), // Responsive
-                  fontWeight: FontWeight.w600,
+            ),
+          ),
+
+          // 3. NỘI DUNG CĂN DƯỚI
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: context.resH(12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text("⭐", style: TextStyle(fontSize: 12)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Text(
+                        message,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: context.resClamp(12, 11, 14),
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          height: 1.50,
+                        ),
+                      ),
+                    ),
+                    const Text("⭐", style: TextStyle(fontSize: 12)),
+                  ],
+                ),
+                if (btnText != null) ...[
+                  SizedBox(height: context.resH(8)),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const MasterScreen(initialIndex: 1),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.resW(24),
+                        vertical: context.resH(8),
+                      ),
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFFD92229),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      child: Text(
+                        btnText,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: context.resClamp(14, 12, 16),
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                          height: 1.50,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildComingSoonState(String message, String? btnText) {
+    return Container(
+      width: double.infinity,
+      height: context.resH(127), // Chiều cao responsive
+      margin: EdgeInsets.symmetric(horizontal: context.resW(20)),
+      decoration: ShapeDecoration(
+        // 1. GRADIENT: Chuyển từ màu tím đậm sang xám sáng
+        gradient: LinearGradient(
+          begin: const Alignment(0.00, 0.58),
+          end: const Alignment(0.98, 0.56),
+          colors: [const Color(0xFF2A051B), const Color(0xFFEBEBEB)],
+        ),
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(
+            width: 1,
+            color: Color(0xFFFE75B4),
+          ), // Viền hồng
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      child: ClipRRect(
+        // Đảm bảo hình ảnh không tràn ra ngoài bo góc
+        borderRadius: BorderRadius.circular(8),
+        child: Stack(
+          children: [
+            // 2. HÌNH ẢNH "COMING SOON" (BÊN TRÁI)
+            Positioned(
+              left: context.resW(11),
+              top: context.resH(17),
+              child: SizedBox(
+                width: context.resW(94),
+                height: context.resW(94),
+                child: Image.asset(
+                  "assets/images/v5/coming_soon_sign.png", // Thay bằng path ảnh của bạn
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+
+            // 3. HÌNH ẢNH MINH HỌA YOGA (BÊN PHẢI)
+            Positioned(
+              right: context.resW(-20), // Đẩy nhẹ ra biên để tạo hiệu ứng tràn
+              top: context.resH(-10),
+              child: Transform(
+                // Giữ nguyên logic rotate và scale nếu cần thiết
+                transform: Matrix4.diagonal3Values(1.0, 1.0, 1.0),
+                child: SizedBox(
+                  width: context.resW(171),
+                  height: context.resW(171),
+                  child: Image.asset(
+                    "assets/images/v5/yoga_illustration.png", // Thay bằng path ảnh của bạn
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),
           ],
-        ],
+        ),
       ),
     );
   }
