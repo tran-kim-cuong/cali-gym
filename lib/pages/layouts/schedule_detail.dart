@@ -208,13 +208,13 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
                 widget.schedule.clubName ?? 'N/A',
               ),
               const Spacer(),
-              Text(
-                'schedule_detail.lnk_googlemaps'.tr(),
-                style: TextStyle(
-                  color: const Color(0xFFE1494F),
-                  fontSize: context.resClamp(12, 10, 14),
-                ),
-              ),
+              // Text(
+              //   'schedule_detail.lnk_googlemaps'.tr(),
+              //   style: TextStyle(
+              //     color: const Color(0xFFE1494F),
+              //     fontSize: context.resClamp(12, 10, 14),
+              //   ),
+              // ),
             ],
           ),
           Row(
@@ -224,13 +224,13 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
                 widget.schedule.seatMapImage ?? 'N/A',
               ),
               const Spacer(),
-              Text(
-                'schedule_detail.lnk_sitemaps'.tr(),
-                style: TextStyle(
-                  color: const Color(0xFFE1494F),
-                  fontSize: context.resClamp(12, 10, 14),
-                ),
-              ),
+              // Text(
+              //   'schedule_detail.lnk_sitemaps'.tr(),
+              //   style: TextStyle(
+              //     color: const Color(0xFFE1494F),
+              //     fontSize: context.resClamp(12, 10, 14),
+              //   ),
+              // ),
             ],
           ),
         ],
