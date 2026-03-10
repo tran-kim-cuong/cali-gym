@@ -17,7 +17,6 @@ import 'package:californiaflutter/pages/shared/common_background.dart';
 // import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_class_card.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
-import 'package:californiaflutter/pages/shared/common_notification.dart';
 import 'package:californiaflutter/pages/shared/common_point_badge.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:californiaflutter/pages/widgets/common_user_share_card.dart';

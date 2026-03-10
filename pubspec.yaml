@@ -94,6 +94,7 @@ flutter:
       - assets/translations/ # Khai báo đường dẫn chứa file ngôn ngữ
       - assets/images/cards/
       - .env
+      - assets/images/watermark/
 
   fonts:
       - family: Inter
