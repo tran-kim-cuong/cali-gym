@@ -153,7 +153,7 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
     final Color tagColor = (index % 2 == 0)
         ? const Color(0xFFFFB359)
         : const Color(0xFF59BFFF);
-    final String tagText = (index % 2 == 0) ? 'Sắp diễn ra' : 'Đang diễn ra';
+    final String tagText = (index % 2 == 0) ? '' : '';
 
     return InkWell(
       onTap: () {
@@ -205,14 +205,19 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
                     children: [
                       // 3. GẮN WATERMARK CANH PHẢI DƯỚI
                       Positioned(
-                        bottom: context.resH(-3),
-                        right: context.resW(5),
+                        bottom: 0,
+                        right: 0,
                         child: Opacity(
                           opacity: 0.8, // Độ mờ của hình watermark chìm
-                          child: Image.asset(
-                            selectedWatermark,
-                            //width: context.resW(110),
-                            fit: BoxFit.cover,
+                          child: Container(
+                            width: context.resW(87), // Chiều rộng responsive
+                            height: context.resH(77), // Chiều cao responsive
+                            alignment: Alignment.bottomRight,
+                            child: Image.asset(
+                              selectedWatermark,
+                              fit: BoxFit
+                                  .contain, // Đảm bảo ảnh nằm gọn trong khung 87x77
+                            ),
                           ),
                         ),
                       ),

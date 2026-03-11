@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
@@ -147,6 +149,20 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
             errorBuilder: (c, e, s) =>
                 Image.asset("assets/images/none.jpg", fit: BoxFit.cover),
           ),
+
+          Positioned.fill(
+            child: BackdropFilter(
+              // Điều chỉnh sigmaX và sigmaY để tăng/giảm độ mờ (số càng cao càng mờ)
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: Container(
+                // Phủ một lớp màu tối nhẹ để đảm bảo chữ phía trên luôn rõ nét
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.2),
+                ),
+              ),
+            ),
+          ),
+
           // Gradient phủ tối để chữ header rõ nét
           Container(
             decoration: BoxDecoration(
@@ -224,7 +240,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
           Text(
             schedule?.className ?? 'class_detail.default_null'.tr(),
             style: TextStyle(
-              color: Colors.white,
+              color: Color(0xFFFFA514),
               fontSize: context.resClamp(28, 24, 32),
               fontWeight: FontWeight.bold,
               height: 1.2,
@@ -262,6 +278,12 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
             decoration: BoxDecoration(
               color: const Color(0xFF242424),
               borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: const Color(
+                  0xFFEF4822,
+                ), // Màu xám nhẹ đồng bộ với đường kẻ dọc ở giữa
+                width: 1,
+              ),
             ),
             child: Row(
               children: [
