@@ -875,7 +875,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
           shape: RoundedRectangleBorder(
             side: const BorderSide(
               width: 2,
-              color: Color.fromARGB(255, 238, 234, 19),
+              color: Color(0xFFEF4822),
             ),
             borderRadius: BorderRadius.circular(cardRadius),
           ),
@@ -897,7 +897,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                 top: Radius.circular(cardRadius),
               ),
               child: Container(
-                height: context.resH(120), // Chiều cao responsive
+                height: context.resH(152), // Chiều cao responsive
                 width: double.infinity,
                 color: Colors.white,
                 child: Image.asset(
@@ -921,17 +921,17 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Color(0xFFFFA514),
                         fontSize: context.resClamp(13, 11, 15), // Font co giãn
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     // Hiển thị thông tin từ Model thay vì text cứng
-                    _buildIconRow(
-                      context,
-                      Icons.person_outline,
-                      data.trainerName ?? 'N/A',
-                    ),
+                    // _buildIconRow(
+                    //   context,
+                    //   Icons.person_outline,
+                    //   data.trainerName ?? 'N/A',
+                    // ),
                     _buildIconRow(
                       context,
                       Icons.calendar_today,

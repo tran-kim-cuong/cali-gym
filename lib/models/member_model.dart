@@ -80,7 +80,7 @@ class MembershipCard {
     this.membershipCardNumber,
     this.membershipNameCard,
 
-    this.mbClassificationName
+    this.mbClassificationName,
   });
 
   factory MembershipCard.fromJson(Map<String, dynamic> json) {
@@ -88,16 +88,16 @@ class MembershipCard {
       membershipNumber: json['mB_membership_number'],
       membershipType: json['mB_membership_type'],
       mbMemberId: json['mB_MemberId'],
-      startDate: _parseDate(json['mB_start_date']),
-      endDate: _parseDate(json['mB_end_date']),
+      startDate: _parseDate(json['mB_start_date'] ?? '1990/01/01'),
+      endDate: _parseDate(json['mB_end_date'] ?? '2099/12/31'),
       isOwner: json['mB_isOwner'],
       hasBenefit: json['mB_hasBenefit'],
       advanceBookingBeforeXDays: _parseInt(
         json['mB_advance_booking_before_xdays'],
       ),
-      clubList: json['club_list'] != null
-          ? (json['club_list'] as List).map((e) => Club.fromJson(e)).toList()
-          : [],
+      // clubList: json['club_list'] != null
+      //     ? (json['club_list'] as List).map((e) => Club.fromJson(e)).toList()
+      //     : [],
       benefitMember: json['benefit_member'] is List
           ? (json['benefit_member'] as List)
                 .map((e) => Benefit.fromJson(e))

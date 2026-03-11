@@ -20,7 +20,7 @@ List<Map<String, dynamic>> buildMemberCards(MemberModel? member) {
               .map((e) => e.productCode!)
               .join(','),
           "mbMembershipNameCard": card.membershipNameCard ?? "",
-          "mbClassificationName": card.mbClassificationName ?? ""
+          "mbClassificationName": card.mbClassificationName ?? "",
         };
       }).toList() ??
       [];
