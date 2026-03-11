@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
@@ -8,6 +9,7 @@ import 'package:californiaflutter/helpers/loading_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
 import 'package:californiaflutter/pages/layouts/class_detail.dart';
+import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/common_modal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +80,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: context.resH(160),
+                        height: context.resH(12),
                       ), // Đệm để đẩy text xuống dưới ảnh
                       _buildMainInfo(context),
                       _buildStatsRow(context),
@@ -115,6 +117,18 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
             width: double.infinity,
             height: double.infinity,
             fit: BoxFit.cover,
+          ),
+          Positioned.fill(
+            child: BackdropFilter(
+              // Điều chỉnh sigmaX và sigmaY để tăng/giảm độ mờ (số càng cao càng mờ)
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: Container(
+                // Phủ một lớp màu tối nhẹ để đảm bảo chữ phía trên luôn rõ nét
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.2),
+                ),
+              ),
+            ),
           ),
           // Lớp phủ tối dần lên trên
           Container(
@@ -185,7 +199,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
           Text(
             widget.schedule.className ?? 'Gentle Yoga',
             style: TextStyle(
-              color: Colors.white,
+              color: Color(0xFFFFA514),
               fontSize: context.resClamp(24, 20, 28),
               fontWeight: FontWeight.w600,
             ),
@@ -245,6 +259,12 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
       decoration: BoxDecoration(
         color: const Color(0xFF242424),
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: const Color(
+            0xFFEF4822,
+          ), // Màu xám nhẹ đồng bộ với đường kẻ dọc ở giữa
+          width: 1,
+        ),
       ),
       child: Row(
         children: [
@@ -476,234 +496,227 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
           // Để cập nhật số ghế ngay trong modal
           builder: (context, setModalState) {
             return Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(
-                context.resW(20),
-                context.resH(24),
-                context.resW(20),
-                bottomPadding > 0
-                    ? bottomPadding + 10
-                    : 24, // Xử lý thanh tác vụ
+              clipBehavior: Clip
+                  .antiAlias, // Đảm bảo hình nền không tràn khỏi bo góc modal
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              child: Stack(
                 children: [
-                  // 1. HEADER CHỌN CHỖ
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: const BoxDecoration(
-                      // border: Border(
-                      //   bottom: BorderSide(color: Color(0xFF3E3E3E), width: 1),
-                      // ),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'schedule_detail.lbl_select_seat'.tr(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: context.resClamp(16, 14, 18),
-                        fontWeight: FontWeight.w600,
+                  // 1. LỚP NỀN (BACKGROUND)
+                  Positioned.fill(
+                    child: Opacity(
+                      opacity:
+                          0.1, // Độ mờ thấp để không gây rối mắt khi chọn ghế
+                      child: CommonBackgroundWidget.buildBackgroundImage(
+                        context,
+                        "assets/images/v5/home_empty.png", // Sử dụng lại nền của app
                       ),
                     ),
                   ),
 
-                  SizedBox(height: context.resH(24)),
-
-                  // 2. VÙNG CHỌN SỐ GHẾ (Wheel Picker)
-                  // VÙNG CHỌN SỐ GHẾ
-                  Container(
-                    height: context.resH(220),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF262626),
-                      borderRadius: BorderRadius.circular(8),
-                      // border: Border.all(
-                      //   color: const Color(0xFF0091FF),
-                      //   width: 1.5,
-                      // ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      context.resW(20),
+                      context.resH(24),
+                      context.resW(20),
+                      bottomPadding > 0
+                          ? bottomPadding + 10
+                          : 24, // Xử lý thanh tác vụ
                     ),
-                    child: ListWheelScrollView.useDelegate(
-                      // 2. GẮN CONTROLLER VÀO ĐÂY
-                      controller: seatController,
-                      itemExtent: context.resH(50), // Responsive chiều cao mục
-                      diameterRatio: 2.0,
-                      physics: const FixedExtentScrollPhysics(),
-                      onSelectedItemChanged: (index) {
-                        final seatValue = availableSeats[index];
-                        // Cập nhật trạng thái khi người dùng cuộn
-                        setModalState(
-                          () => selectedSeat = int.parse(seatValue),
-                        );
-                      },
-                      childDelegate: ListWheelChildBuilderDelegate(
-                        childCount: availableSeats.length,
-                        builder: (context, index) {
-                          final seatValue = availableSeats[index];
-
-                          int selectSeat = int.parse(seatValue);
-                          final isSelected = selectSeat == selectedSeat;
-
-                          return Center(
-                            child: Text(
-                              seatValue,
-                              style: TextStyle(
-                                color: isSelected
-                                    ? Colors.white
-                                    : Colors.white.withValues(alpha: 0.3),
-                                // 3. RESPONSIVE FONT SIZE
-                                fontSize: isSelected
-                                    ? context.resClamp(24, 22, 26)
-                                    : context.resClamp(18, 16, 20),
-                                fontWeight: isSelected
-                                    ? FontWeight.w700
-                                    : FontWeight.w400,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: context.resH(32)),
-
-                  // 3. CỤM NÚT HỦY VÀ XÁC NHẬN
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Color(0xFF3E3E3E)),
-                            minimumSize: Size(
-                              double.infinity,
-                              context.resH(48),
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // 1. HEADER CHỌN CHỖ
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: const BoxDecoration(
+                            // border: Border(
+                            //   bottom: BorderSide(color: Color(0xFF3E3E3E), width: 1),
+                            // ),
                           ),
+                          alignment: Alignment.center,
                           child: Text(
-                            'common.btn_cancel'.tr(),
-                            style: TextStyle(color: Colors.white),
+                            'schedule_detail.lbl_select_seat'.tr(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: context.resClamp(16, 14, 18),
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: context.resW(16)),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            var response = await handleApi(
-                              context,
-                              BaseApi().client.post(
-                                '/api/booking/seat/book',
-                                data: {
-                                  "clientcode": AppSession().clientId,
-                                  "phone_number": AppSession().phoneNumber,
-                                  "schedule_id": widget.schedule.scheduleId
-                                      .toString(),
-                                  "seat_number": "$selectedSeat",
-                                },
-                              ),
-                            );
 
-                            if (!context.mounted) return;
+                        SizedBox(height: context.resH(24)),
 
-                            if (response?.statusCode == 200 &&
-                                response?.data != null) {
-                              final bool success =
-                                  response?.data['success'] ?? false;
-                              // final String errorCode =
-                              //     response?.data['error_code']?.toString() ??
-                              //     "";
-                              final String message =
-                                  response?.data['message'] ?? "";
+                        // 2. VÙNG CHỌN SỐ GHẾ (Wheel Picker)
+                        // VÙNG CHỌN SỐ GHẾ
+                        Container(
+                          height: context.resH(220),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(8),
+                            // border: Border.all(
+                            //   color: const Color(0xFF0091FF),
+                            //   width: 1.5,
+                            // ),
+                          ),
+                          child: ListWheelScrollView.useDelegate(
+                            // 2. GẮN CONTROLLER VÀO ĐÂY
+                            controller: seatController,
+                            itemExtent: context.resH(
+                              50,
+                            ), // Responsive chiều cao mục
+                            diameterRatio: 2.0,
+                            physics: const FixedExtentScrollPhysics(),
+                            onSelectedItemChanged: (index) {
+                              final seatValue = availableSeats[index];
+                              // Cập nhật trạng thái khi người dùng cuộn
+                              setModalState(
+                                () => selectedSeat = int.parse(seatValue),
+                              );
+                            },
+                            childDelegate: ListWheelChildBuilderDelegate(
+                              childCount: availableSeats.length,
+                              builder: (context, index) {
+                                final seatValue = availableSeats[index];
 
-                              if (success) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ClassDetailScreen(
-                                      scheduleId: widget.schedule.scheduleId,
-                                      seatCode: selectedSeat.toString(),
-                                      clubCode: widget
-                                          .schedule
-                                          .clubCode, // ? Need check data
+                                int selectSeat = int.parse(seatValue);
+                                final isSelected = selectSeat == selectedSeat;
+
+                                return Center(
+                                  child: Text(
+                                    seatValue,
+                                    style: TextStyle(
+                                      color: isSelected
+                                          ? Colors.white
+                                          : Colors.white.withValues(alpha: 0.3),
+                                      // 3. RESPONSIVE FONT SIZE
+                                      fontSize: isSelected
+                                          ? context.resClamp(24, 22, 26)
+                                          : context.resClamp(18, 16, 20),
+                                      fontWeight: isSelected
+                                          ? FontWeight.w700
+                                          : FontWeight.w400,
                                     ),
                                   ),
                                 );
-                              } else {
-                                CommonModalWidget.showWarningModal(
-                                  context: context,
-                                  imagePath: dotenv.get(
-                                    'IMAGES_WARNING_ILLUSTRATION',
-                                  ),
-                                  title: '',
-                                  description: message,
-                                  buttonText: "common.btn_understand".tr(),
-                                );
-                              }
-                            } else {}
-                            // Navigator.pop(context);
-                            // Logic xác nhận đặt chỗ với selectedSeat
-                            // String sToken = await getToken();
-                            // if (!context.mounted) return;
-
-                            // // print(sToken);
-                            // debugPrint(AppSession().clientId);
-                            // var phone = AppSession().phoneNumber;
-                            // debugPrint(phone);
-                            // debugPrint(widget.schedule.scheduleId.toString());
-                            // BookingClassSeatModel bcs = await bookingClassSeat(
-                            //   sToken,
-                            //   AppSession().clientId,
-                            //   AppSession().phoneNumber,
-                            //   widget.schedule.scheduleId.toString(),
-                            //   "$selectedSeat",
-                            // );
-
-                            // if (!context.mounted) return;
-
-                            // if (bcs.data != null) {
-                            //   debugPrint(bcs.data!.ticketInfo?.ticketNumber);
-                            //   // Bạn có thể in log để kiểm tra số ghế đã chọn
-                            //   debugPrint(
-                            //     "Đặt chỗ thành công cho ghế số: $selectedSeat",
-                            //   );
-
-                            //   Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) => ClassDetailScreen(
-                            //         scheduleId: widget.schedule.scheduleId,
-                            //       ),
-                            //     ),
-                            //   );
-                            // } else {
-                            //   debugPrint("Lỗi booking lớp");
-                            // }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFD92229),
-                            minimumSize: Size(
-                              double.infinity,
-                              context.resH(48),
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                          child: Text(
-                            'common.accept'.tr(),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              },
                             ),
                           ),
                         ),
-                      ),
-                    ],
+
+                        SizedBox(height: context.resH(32)),
+
+                        // 3. CỤM NÚT HỦY VÀ XÁC NHẬN
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () => Navigator.pop(context),
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                    color: Color(0xFF3E3E3E),
+                                  ),
+                                  minimumSize: Size(
+                                    double.infinity,
+                                    context.resH(48),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                                child: Text(
+                                  'common.btn_cancel'.tr(),
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: context.resW(16)),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  var response = await handleApi(
+                                    context,
+                                    BaseApi().client.post(
+                                      '/api/booking/seat/book',
+                                      data: {
+                                        "clientcode": AppSession().clientId,
+                                        "phone_number":
+                                            AppSession().phoneNumber,
+                                        "schedule_id": widget
+                                            .schedule
+                                            .scheduleId
+                                            .toString(),
+                                        "seat_number": "$selectedSeat",
+                                      },
+                                    ),
+                                  );
+
+                                  if (!context.mounted) return;
+
+                                  if (response?.statusCode == 200 &&
+                                      response?.data != null) {
+                                    final bool success =
+                                        response?.data['success'] ?? false;
+                                    // final String errorCode =
+                                    //     response?.data['error_code']?.toString() ??
+                                    //     "";
+                                    final String message =
+                                        response?.data['message'] ?? "";
+
+                                    if (success) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ClassDetailScreen(
+                                            scheduleId:
+                                                widget.schedule.scheduleId,
+                                            seatCode: selectedSeat.toString(),
+                                            clubCode: widget
+                                                .schedule
+                                                .clubCode, // ? Need check data
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      CommonModalWidget.showWarningModal(
+                                        context: context,
+                                        imagePath: dotenv.get(
+                                          'IMAGES_WARNING_ILLUSTRATION',
+                                        ),
+                                        title: '',
+                                        description: message,
+                                        buttonText: "common.btn_understand"
+                                            .tr(),
+                                      );
+                                    }
+                                  } else {}
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFD92229),
+                                  minimumSize: Size(
+                                    double.infinity,
+                                    context.resH(48),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                                child: Text(
+                                  'common.accept'.tr(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
