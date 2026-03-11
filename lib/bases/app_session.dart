@@ -30,7 +30,7 @@ class AppSession {
     phoneNumber = await SessionManager.getPhoneNumber() ?? "";
     clientId = await SessionManager.getClientId() ?? "";
     member = SessionManager.member;
-    customerId = SessionManager.sCustomerId;
+    customerId = await SessionManager.getCustomerId() ?? "";
 
     bool loggedIn = await SessionManager.isLoggedIn();
     isLoggedIn = loggedIn && phoneNumber.isNotEmpty;

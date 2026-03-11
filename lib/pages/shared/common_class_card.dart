@@ -18,6 +18,12 @@ class CommonClassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> watermarkImages = [
+      'assets/images/watermark/image 1527.png', // index % 3 == 0
+      'assets/images/watermark/image 1526.png', // index % 3 == 1
+      'assets/images/watermark/image 1556.png', // index % 3 == 2
+    ];
+
     // Logic định dạng ngày/giờ tập trung tại đây
     final String formattedDate = data.startDate != null
         ? DateFormat('dd/MM/yyyy').format(data.startDate!)
@@ -35,10 +41,7 @@ class CommonClassCard extends StatelessWidget {
       decoration: ShapeDecoration(
         color: const Color(0xFF3E3E3E),
         shape: RoundedRectangleBorder(
-          side: const BorderSide(
-            width: 2,
-            color: Color(0xFFEF4822),
-          ),
+          side: const BorderSide(width: 2, color: Color(0xFFEF4822)),
           borderRadius: BorderRadius.circular(8),
         ),
         shadows: const [
@@ -60,40 +63,53 @@ class CommonClassCard extends StatelessWidget {
             child: _buildImage(index),
           ),
 
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              context.resW(8),
-              context.resW(8),
-              context.resW(8),
-              context.resW(4),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Tên lớp học
-                Text(
-                  data.serviceName ?? 'N/A',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: context.resClamp(14, 12, 16),
-                    fontWeight: FontWeight.w600,
+          Stack(
+            children: [
+              // Hình watermark chìm canh bên phải
+              Positioned(
+                bottom: -5,
+                right: -5,
+                child: Opacity(
+                  opacity: 0.8, // Độ chìm của watermark
+                  child: Image.asset(
+                    watermarkImages[index % watermarkImages.length],
+                    width: context.resW(100),
+                    fit: BoxFit.contain,
                   ),
                 ),
-                const SizedBox(height: 4),
-                // Ngày tháng
-                _buildInfoRow(context, Icons.calendar_today, formattedDate),
-                const SizedBox(height: 2),
-                // Giờ tập
-                _buildInfoRow(context, Icons.access_time, timeRange),
+              ),
 
-                SizedBox(height: context.resH(8)),
-
-                // Nút Check-in
-                _buildCheckInButton(context),
-              ],
-            ),
+              // Nội dung văn bản và nút bấm
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  context.resW(8),
+                  context.resW(8),
+                  context.resW(8),
+                  context.resW(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data.serviceName ?? 'N/A',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: const Color(0xFFF7941D), // Màu cam như hình mẫu
+                        fontSize: context.resClamp(14, 12, 16),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    _buildInfoRow(context, Icons.calendar_today, formattedDate),
+                    const SizedBox(height: 4),
+                    _buildInfoRow(context, Icons.access_time, timeRange),
+                    SizedBox(height: context.resH(12)),
+                    _buildCheckInButton(context),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -147,7 +163,7 @@ class CommonClassCard extends StatelessWidget {
         height: context.resH(32),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: const Color(0xFF6B6B6B),
+          color: const Color(0xFFDA2128), // #DA2128
           borderRadius: BorderRadius.circular(4),
         ),
         child: Text(

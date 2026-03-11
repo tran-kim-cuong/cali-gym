@@ -84,7 +84,7 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
                     ),
                     itemCount: classes.length,
                     itemBuilder: (context, index) {
-                      return _buildClassItem(context, classes[index]);
+                      return _buildClassItem(context, index, classes[index]);
                     },
                   ),
                 ),
@@ -139,10 +139,21 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
   }
 
   // Widget từng Item lớp học theo snippet thiết kế của bạn
-  Widget _buildClassItem(BuildContext context, BookingData item) {
+  Widget _buildClassItem(BuildContext context, int index, BookingData item) {
     // Xác định màu sắc tag dựa trên trạng thái
     //item.status == "Chờ xác nhận";
-    final Color tagColor = const Color(0xFF859DFE);
+    final List<String> watermarks = [
+      'assets/images/watermark/image 1527.png', // Index 0, 3, 6...
+      'assets/images/watermark/image 1526.png', // Index 1, 4, 7...
+      'assets/images/watermark/image 1556.png', // Index 2, 5, 8...
+    ];
+    final String selectedWatermark = watermarks[index % watermarks.length];
+
+    // Màu tag trạng thái dựa trên dữ liệu thực tế
+    final Color tagColor = (index % 2 == 0)
+        ? const Color(0xFFFFB359)
+        : const Color(0xFF59BFFF);
+    final String tagText = (index % 2 == 0) ? 'Sắp diễn ra' : 'Đang diễn ra';
 
     return InkWell(
       onTap: () {
@@ -163,9 +174,10 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
         margin: EdgeInsets.only(bottom: context.resH(16)),
         clipBehavior: Clip.antiAlias,
         decoration: ShapeDecoration(
-          color: const Color(0xFF242424),
+          color: const Color(0xFF3E3E3E),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(context.resW(4)),
+            side: const BorderSide(color: Color(0xFFEF4822), width: 1.5),
           ),
         ),
         child: Stack(
@@ -173,11 +185,10 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Ảnh lớp học - Scale theo thiết bị
-                Container(
-                  width: context.resW(128),
-                  height: context.resH(119),
-                  decoration: const BoxDecoration(color: Colors.white),
+                // ẢNH LỚP HỌC (LẤP ĐẦY CHIỀU CAO)
+                SizedBox(
+                  width: context.resW(140),
+                  height: context.resH(130),
                   child: Image.asset(
                     ImageHelper.getClassThumbnail(item.classType),
                     fit: BoxFit.cover,
@@ -188,60 +199,101 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
                   ),
                 ),
 
-                // Thông tin lớp học
+                // PHẦN THÔNG TIN BÊN PHẢI
                 Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(context.resW(8)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.serviceName ?? 'N/A',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: context.resClamp(14, 12, 16),
-                            fontWeight: FontWeight.w600,
-                            height: 1.5,
+                  child: Stack(
+                    children: [
+                      // 3. GẮN WATERMARK CANH PHẢI DƯỚI
+                      Positioned(
+                        bottom: context.resH(-3),
+                        right: context.resW(5),
+                        child: Opacity(
+                          opacity: 0.8, // Độ mờ của hình watermark chìm
+                          child: Image.asset(
+                            selectedWatermark,
+                            //width: context.resW(110),
+                            fit: BoxFit.cover,
                           ),
                         ),
-                        SizedBox(height: context.resH(10)),
-                        _buildIconInfo(
-                          context,
-                          Icons.person,
-                          'Giáo viên ${item.trainerName ?? 'N/A'}',
+                      ),
+
+                      // NỘI DUNG CHỮ
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          context.resW(12),
+                          context.resH(12), // 4. DỊCH CHUYỂN XUỐNG 1 TÍ
+                          context.resW(8),
+                          context.resH(8),
                         ),
-                        _buildIconInfo(
-                          context,
-                          Icons.access_time,
-                          DateFormat(
-                            'dd/MM/yyyy hh:MM a',
-                          ).format(item.startDate!),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Tên lớp học màu cam rực
+                            Padding(
+                              padding: EdgeInsets.only(
+                                right: context.resW(85),
+                              ), // Chừa chỗ cho tag trạng thái
+                              child: Text(
+                                item.serviceName ?? 'N/A',
+                                maxLines:
+                                    2, // Cho phép xuống dòng nếu tên quá dài
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: const Color(0xFFF7941D),
+                                  fontSize: context.resClamp(16, 14, 18),
+                                  fontWeight: FontWeight.bold,
+                                  height: 1.2,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: context.resH(10)),
+                            _buildIconInfo(
+                              context,
+                              Icons.person_outline,
+                              'Giáo viên ${item.trainerName ?? 'N/A'}',
+                            ),
+                            _buildIconInfo(
+                              context,
+                              Icons.calendar_month_outlined,
+                              DateFormat(
+                                'dd/MM/yyyy h:mm a',
+                              ).format(item.startDate!),
+                            ),
+                            _buildIconInfo(
+                              context,
+                              Icons.location_on_outlined,
+                              '${item.clubName}',
+                            ),
+                          ],
                         ),
-                        _buildIconInfo(
-                          context,
-                          Icons.location_on,
-                          '${item.clubName}',
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
 
-            // Tag trạng thái - Positioned ở góc phải
+            // TAG TRẠNG THÁI
             Positioned(
               top: 0,
               right: 0,
               child: Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: context.resW(8),
-                  vertical: context.resH(4),
+                  horizontal: context.resW(10),
+                  vertical: context.resH(6),
                 ),
                 decoration: BoxDecoration(
                   color: tagColor,
                   borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(context.resW(4)),
+                    bottomLeft: Radius.circular(context.resW(8)),
+                  ),
+                ),
+                child: Text(
+                  tagText,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
