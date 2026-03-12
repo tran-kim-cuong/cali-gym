@@ -18,5 +18,6 @@
     "info_sub_seat": "seats",
     "info_sub_trainer": "Trainer",
     "tag_widget_status": "Waiting for confirmation",
-    "title": "Class details"
+    "title": "Class details",
+    "class_already_evaluated": "You have already evaluated this class"
 }

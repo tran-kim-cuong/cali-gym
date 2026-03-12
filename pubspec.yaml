@@ -51,6 +51,9 @@ dependencies:
   firebase_core: ^4.5.0
   package_info_plus: ^8.0.0 #
   url_launcher: ^6.3.1  # Thêm dòng này
+  cached_network_image: ^3.4.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
 # Cấu hình icon ở cuối file pubspec.yaml hoặc tạo file riêng
 flutter_launcher_icons:
@@ -92,9 +95,9 @@ flutter:
       - assets/images/profiles/
       - assets/images/loyalty/
       - assets/translations/ # Khai báo đường dẫn chứa file ngôn ngữ
-      - assets/images/cards/
       - .env
       - assets/images/watermark/
+      - assets/jsons/
 
   fonts:
       - family: Inter

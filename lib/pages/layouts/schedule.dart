@@ -7,6 +7,7 @@ import 'package:californiaflutter/pages/layouts/history_schedule.dart';
 import 'package:californiaflutter/pages/layouts/schedule_detail.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
+import 'package:californiaflutter/services/vietnam_time_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -27,10 +28,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
   List<Map<String, dynamic>> _clubs = [];
   List<Map<String, dynamic>> _services = [];
   String sClubs = '';
+  DateTime? _nowVietnam;
+
+  DateTime get _effectiveVietnamNow =>
+      _nowVietnam ?? VietnamTimeService.instance.getDeviceNowVietnam();
 
   DateTime _getDateTimeFromIndex(int index) {
-    DateTime now = DateTime.now();
-    return now.add(Duration(days: index));
+    final DateTime base = _effectiveVietnamNow;
+    final DateTime todayInVietnam = DateTime(base.year, base.month, base.day);
+    return todayInVietnam.add(Duration(days: index));
   }
 
   // 3. Hàm lấy nhãn Thứ (T2-CN) dựa trên DateTime thực tế
@@ -501,6 +507,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
 
   Future<void> _fetchSchedulesByDate(String fromDate, String toDate) async {
     try {
+      final DateTime nowVietnam = await VietnamTimeService.instance
+          .getNowVietnamWithFallback();
+      if (!mounted) return;
+
       // Sử dụng handleApi để quản lý trạng thái loading
       // print('${fromDate} ${toDate} ${sClubs}');
       final response = await handleApi(
@@ -524,6 +534,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
             .map((json) => ScheduleModel.fromJson(json))
             .toList();
 
+        fetchedSchedules =
+            fetchedSchedules.where((schedule) {
+              final DateTime? endDate = schedule.endDate;
+              if (endDate == null) return false;
+              return !endDate.isBefore(nowVietnam);
+            }).toList()..sort((a, b) {
+              if (a.startDate == null || b.startDate == null) return 0;
+              return a.startDate!.compareTo(b.startDate!);
+            });
+
         // final selectedServiceIds = _services.map((s) => s['name']).toList();
         // // print(selectedServiceIds);
         // fetchedSchedules = fetchedSchedules.where((schedule) {
@@ -533,6 +553,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
 
         // 3. Cập nhật giao diện
         setState(() {
+          _nowVietnam = nowVietnam;
           _schedules = fetchedSchedules;
         });
       }
@@ -550,8 +571,20 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
 
     // 2. TỰ ĐỘNG GỌI API NGAY KHI VÀO MÀN HÌNH
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchDataForIndex(_selectedDateIndex);
+      _initAndFetchSchedules();
     });
+  }
+
+  Future<void> _initAndFetchSchedules() async {
+    final DateTime nowVietnam = await VietnamTimeService.instance
+        .getNowVietnamWithFallback();
+    if (!mounted) return;
+
+    setState(() {
+      _nowVietnam = nowVietnam;
+    });
+
+    _fetchDataForIndex(_selectedDateIndex);
   }
 
   @override
@@ -873,10 +906,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
         decoration: ShapeDecoration(
           color: const Color(0xFF3E3E3E),
           shape: RoundedRectangleBorder(
-            side: const BorderSide(
-              width: 2,
-              color: Color(0xFFEF4822),
-            ),
+            side: const BorderSide(width: 2, color: Color(0xFFEF4822)),
             borderRadius: BorderRadius.circular(cardRadius),
           ),
           // Đổ bóng cứng theo phong cách thiết kế của bạn

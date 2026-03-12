@@ -1,8 +1,9 @@
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
-import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
 import 'package:californiaflutter/helpers/convert_model.dart';
+import 'package:californiaflutter/helpers/loading_widget.dart';
+import 'package:californiaflutter/helpers/member_cache_manager.dart';
 import 'package:californiaflutter/models/booking_class_model.dart';
 import 'package:californiaflutter/models/member_model.dart';
 import 'package:californiaflutter/pages/layouts/class.dart';
@@ -20,7 +21,6 @@ import 'package:californiaflutter/pages/shared/common_membership_card.dart';
 import 'package:californiaflutter/pages/shared/common_point_badge.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:californiaflutter/pages/widgets/common_user_share_card.dart';
-import 'package:californiaflutter/services/booking_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -37,8 +37,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with LoadingWrapper, NotificationMixin {
+class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
   // int _selectedIndex = 0;
   String? _activeCardId;
   List<Map<String, dynamic>> _memberCards = [];
@@ -46,23 +45,34 @@ class _HomeScreenState extends State<HomeScreen>
   String? clientId;
 
   bool _isProcessing = false;
+  bool _isInitialLoading = true;
+  Map<String, dynamic>? _latestMemberRaw;
 
   @override
   void initState() {
     super.initState();
     _memberCards = buildMemberCards(SessionManager.member);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // clientId = await SessionManager.getClientId();
-      Future.wait([_checkNotificationPermission(), _initData()]);
+      _checkNotificationPermission();
+      _loadInitialData();
     });
   }
 
-  Future<void> _initData() async {
+  Future<void> _loadInitialData() async {
+    await _refreshHomeData(showBlockingLoading: true);
+  }
+
+  Future<void> _refreshHomeData({bool showBlockingLoading = false}) async {
     if (_isProcessing) return; // Nếu đang load thì không chạy nữa
     _isProcessing = true;
 
-    // 1. GOM 2 TÁC VỤ VÀO 1 HANDLE API DUY NHẤT
-    await handleApi(context, () async {
+    if (showBlockingLoading && mounted) {
+      setState(() {
+        _isInitialLoading = true;
+      });
+    }
+
+    try {
       final clientId =
           await SessionManager.getClientId() ?? AppSession().clientId;
       final results = await Future.wait([
@@ -71,7 +81,9 @@ class _HomeScreenState extends State<HomeScreen>
       ]);
 
       final MemberModel? member = results[0] as MemberModel?;
-      final List<BookingData> upcomingClasses = results[1] as List<BookingData>;
+      final List<BookingData>? upcomingClasses =
+          results[1] as List<BookingData>?;
+      final bool hasRefreshError = member == null || upcomingClasses == null;
 
       if (!mounted) return;
 
@@ -79,36 +91,70 @@ class _HomeScreenState extends State<HomeScreen>
         if (member != null) {
           AppSession().member = member;
           SessionManager.member = member;
-          SessionManager.sTenKh = member.firstName!;
-          SessionManager.sMembershipNumber = member.membershipNumber!;
+          SessionManager.sTenKh = member.firstName ?? "";
+          SessionManager.sMembershipNumber = member.membershipNumber ?? "";
           _memberCards = buildMemberCards(AppSession().member);
         }
-        _upcomingClasses = upcomingClasses;
+        if (upcomingClasses != null) {
+          _upcomingClasses = upcomingClasses;
+        }
       });
 
-      await WidgetsBinding.instance.endOfFrame;
-    }());
-    _isProcessing = false;
-    // Sau khi cả 2 load xong, Loading sẽ tự tắt
-    debugPrint("--- Đã tải xong toàn bộ dữ liệu trang Home ---");
+      if (member != null && _latestMemberRaw != null) {
+        await MemberCacheManager().saveMemberRaw(_latestMemberRaw!);
+      }
+
+      if (hasRefreshError && mounted) {
+        showTopNotification(
+          "Không thể cập nhật dữ liệu mới, đang hiển thị dữ liệu đã lưu",
+          isError: true,
+        );
+      }
+    } finally {
+      if (showBlockingLoading && mounted) {
+        setState(() {
+          _isInitialLoading = false;
+        });
+      }
+      _isProcessing = false;
+      debugPrint("--- Đã tải xong toàn bộ dữ liệu trang Home ---");
+    }
   }
 
   // --- GIỮ NGUYÊN LOGIC API ---
-  Future<List<BookingData>> _fetchUpcomingClasses(String clientId) async {
+  Future<List<BookingData>?> _fetchUpcomingClasses(String clientId) async {
     try {
-      final List<BookingData> rs = await BookingService.getUpcomingClasses(
-        clientId,
+      final response = await BaseApi().client.post(
+        '/api/booking/post/getUserBookedClasses',
+        data: {"clientcode": clientId},
       );
 
-      return rs;
+      if (response.statusCode == 200 && response.data != null) {
+        final List<dynamic> rawData = response.data is List
+            ? response.data as List<dynamic>
+            : (response.data['booking_data'] ?? []) as List<dynamic>;
+
+        final List<BookingData> fetchedClasses = rawData
+            .map((e) => BookingData.fromJson(e))
+            .toList();
+
+        fetchedClasses.sort((a, b) {
+          if (a.startDate == null || b.startDate == null) return 0;
+          return a.startDate!.compareTo(b.startDate!);
+        });
+
+        return fetchedClasses;
+      }
+
+      return [];
     } catch (e) {
       debugPrint("Lỗi lấy danh sách lớp: $e");
+      return null;
     }
-
-    return [];
   }
 
   Future<MemberModel?> _fetchMemberCards() async {
+    _latestMemberRaw = null;
     try {
       final response = await BaseApi().client.post(
         '/api/booking/check/member',
@@ -119,7 +165,11 @@ class _HomeScreenState extends State<HomeScreen>
       );
 
       if (200 == response.statusCode && response.data != null) {
-        final member = MemberModel.fromJson(response.data['data']);
+        final dynamic rawData = response.data['data'];
+        if (rawData is! Map) return null;
+        final memberRaw = Map<String, dynamic>.from(rawData);
+        _latestMemberRaw = memberRaw;
+        final member = MemberModel.fromJson(memberRaw);
         return member;
         // if (mounted) {
         //   setState(() {
@@ -132,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen>
         // }
       }
     } catch (e) {
-      showTopNotification("Không thể cập nhật thông tin thẻ", isError: true);
+      debugPrint("Lỗi lấy thông tin thẻ: $e");
     }
 
     return null;
@@ -168,9 +218,9 @@ class _HomeScreenState extends State<HomeScreen>
               onNotification: (ScrollNotification notification) {
                 if (notification.metrics.pixels < -100 &&
                     notification is ScrollUpdateNotification) {
-                  // 2. KÍCH HOẠT: Chỉ gọi _initData khi không có loading nào đang chạy
+                  // 2. KÍCH HOẠT: Chỉ gọi refresh khi không có loading nào đang chạy
                   // Bạn có thể dùng một biến flag để tránh gọi liên tục nhiều lần trong 1 lần kéo
-                  _initData();
+                  _refreshHomeData();
                 }
                 return false;
               },
@@ -319,6 +369,7 @@ class _HomeScreenState extends State<HomeScreen>
 
           // THÔNG BÁO
           buildNotificationWidget(),
+          if (_isInitialLoading) const Positioned.fill(child: LoadingWidget()),
         ],
       ),
       // floatingActionButton: _buildCaliFAB(),
