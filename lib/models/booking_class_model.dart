@@ -47,6 +47,7 @@ class BookingData {
   DateTime? endDate;
   String? classType;
   String? trainerName;
+  bool? confirmed;
 
   BookingData({
     this.scheduleId,
@@ -57,6 +58,7 @@ class BookingData {
     this.startDate,
     this.endDate,
     this.classType,
+    this.confirmed,
   });
 
   BookingData.fromJson(Map<String, dynamic> json) {
@@ -68,6 +70,7 @@ class BookingData {
     startDate = DateTime.parse(json['start_date']);
     endDate = DateTime.parse(json['end_date']);
     classType = json['class_type'];
+    confirmed = json['confirmed'];
   }
 
   Map<String, dynamic> toJson() {
@@ -80,6 +83,7 @@ class BookingData {
     data['start_date'] = startDate?.toIso8601String();
     data['end_date'] = endDate?.toIso8601String();
     data['class_type'] = classType;
+    data['confirmed'] = confirmed;
     return data;
   }
 }
