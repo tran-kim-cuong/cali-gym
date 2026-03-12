@@ -4,6 +4,7 @@ import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/services/api_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -45,16 +46,39 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
   bool isShareCard = false;
   String defaultSupplementary = "Supplementary Card";
 
+  // Dữ liệu thẻ từ JSON
+  String _cardImageUrl =
+      'https://booking.cali.vn/storage/app/media/Cards/Default.png';
+  Color _textColor = Colors.white;
+
+  Color get _textColorDim => _textColor.withValues(alpha: 0.7);
+
   @override
   void initState() {
     super.initState();
 
     isShareCard = (defaultSupplementary == widget.data['mbClassificationName']);
+    _loadCardData();
 
     // Nếu khởi tạo mà đã mở sẵn thì chạy luôn (trường hợp hiếm)
     if (widget.isExpanded) {
       _startQrSession();
     }
+  }
+
+  Future<void> _loadCardData() async {
+    await ImageHelper.initMembershipCards();
+    final cardData = ImageHelper.getMembershipCardData(
+      membershipType: widget.data['membershipType'] as String?,
+      membershipNameCard: widget.data['mbMembershipNameCard'] as String?,
+    );
+    if (!mounted || cardData == null) return;
+    final colorHex = (cardData['color'] as String).replaceAll('#', '');
+    final fullHex = colorHex.length == 6 ? 'FF$colorHex' : colorHex;
+    setState(() {
+      _cardImageUrl = cardData['img'] as String;
+      _textColor = Color(int.parse(fullHex, radix: 16));
+    });
   }
 
   // Hàm này quan trọng: Lắng nghe khi cha thay đổi trạng thái isExpanded
@@ -123,11 +147,7 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         image: DecorationImage(
-          image: AssetImage(
-            ImageHelper.getCardImageByMembershipType(
-              widget.data['membershipType'],
-            ),
-          ),
+          image: CachedNetworkImageProvider(_cardImageUrl),
           fit: BoxFit.cover,
         ),
         // gradient: LinearGradient(
@@ -160,7 +180,6 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
           //     ),
           //   ),
           // ),
-
           Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -180,9 +199,9 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
                     if (widget.isExpanded)
                       GestureDetector(
                         onTap: widget.onToggle,
-                        child: const Icon(
+                        child: Icon(
                           Icons.close,
-                          color: Colors.white70,
+                          color: _textColorDim,
                           size: 20,
                         ),
                       ),
@@ -224,16 +243,16 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.white),
+              border: Border.all(color: _textColor),
               borderRadius: BorderRadius.circular(6),
-              color: Colors.white.withValues(alpha: 0.1),
+              color: _textColor.withValues(alpha: 0.1),
             ),
             child: Text(
               !isShareCard
                   ? "member_card.btn_show_qr".tr()
                   : "member_card.btn_share_card_title".tr(),
               style: TextStyle(
-                color: Colors.white,
+                color: _textColor,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
@@ -258,7 +277,7 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
             Text(
               "00:${_timeLeft.toString().padLeft(2, '0')}s",
               style: TextStyle(
-                color: Colors.white,
+                color: _textColor,
                 fontSize: context.resClamp(16, 14, 18),
                 fontWeight: FontWeight.bold,
               ),
@@ -302,8 +321,8 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
       children: [
         Text(
           widget.data['name']?.toString().toUpperCase() ?? '',
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: _textColor,
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
@@ -311,17 +330,17 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
         const SizedBox(height: 4),
         Text(
           widget.data['id'] ?? '',
-          style: const TextStyle(color: Colors.white, fontSize: 14),
+          style: TextStyle(color: _textColor, fontSize: 14),
         ),
         const SizedBox(height: 8),
         Text(
           widget.data['mbMembershipNameCard'] ?? '',
-          style: const TextStyle(color: Colors.white70, fontSize: 12),
+          style: TextStyle(color: _textColorDim, fontSize: 12),
         ),
         const SizedBox(height: 8),
         Text(
           '${'member_card.expire_date'.tr()}${widget.data['expiry']}',
-          style: const TextStyle(color: Colors.white70, fontSize: 12),
+          style: TextStyle(color: _textColorDim, fontSize: 12),
         ),
       ],
     );

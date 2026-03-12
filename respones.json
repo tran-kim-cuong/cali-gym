@@ -1,0 +1,2198 @@
+{
+    "success": true,
+    "message": "success",
+    "data": {
+        "clientcode": "S0100904",
+        "membership_number": "LW:MBS-MTEST-2601-000020",
+        "membership_type": "Iconic",
+        "email": "",
+        "phonenumber": "0879270997",
+        "phonenumber2": "",
+        "gender": "100000000",
+        "firstname": "DƯƠNG TRÍ DŨNG",
+        "lastname": "",
+        "end_date": "2027/01/28",
+        "birthdate": "1987/08/10",
+        "fullname": "",
+        "remaning_session": 0,
+        "burn_session": "",
+        "advance_booking_before_xdays": 7,
+        "list_membership_card": [
+            {
+                "mB_advance_booking_before_xdays": 7,
+                "mB_end_date": "2027/01/28",
+                "mB_start_date": "2026/01/28",
+                "mB_membership_number": "LW:MBS-MTEST-2601-000020",
+                "mB_membership_type": "Iconic",
+                "mB_membership_card_number": "MBS-MTEST-2601-000020",
+                "mB_membership_namecard": "ICONIC",
+                "mB_isOwner": true,
+                "mB_hasBenefit": true,
+                "nutritionPackageName": "INITIAL CONSULTING PACKAGE: One (1) nutrition consultation package, including (i) online personal nutrition consultation and personal meal plan during the first two (2) months of the original/ primary term. Một (1) gói tư vấn dinh dưỡng, bao gồm (i) dịch vụ tư vấn cá nhân trực tuyến với chuyên viên dinh dưỡng và dịch vụ thiết kế kế hoạch dinh dưỡng cá nhân trong hai (2) tháng đầu tiên của thời hạn gốc/ thời hạn ban đầu.",
+                "hasNutritionPackage": 1,
+                "mB_classification": 100000000,
+                "mB_classificationName": "Individual",
+                "mB_MembershipId": "MBS-MTEST-2601-000020",
+                "mB_MemberId": "S0100904",
+                "mB_MemberFullName": " DƯƠNG TRÍ DŨNG",
+                "benefit_member": [
+                    {
+                        "productCode": "tsm",
+                        "productNameEN": "Small Towel",
+                        "productNameVI": "Khăn nhỏ",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "txl",
+                        "productNameEN": "Big towel",
+                        "productNameVI": "Khăn lớn",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "set-1txl-1tsm",
+                        "productNameEN": "Towel set (1 big + 1 small)",
+                        "productNameVI": "Bộ khăn (1 lớn + 1 nhỏ)",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "lok",
+                        "productNameEN": "Lock",
+                        "productNameVI": "Khóa",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "acc",
+                        "productNameEN": "Access card for VIP area",
+                        "productNameVI": "Thẻ ra vào khu vực VIP",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "coa",
+                        "productNameEN": "Bathrobe",
+                        "productNameVI": "Áo choàng",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "vpa",
+                        "productNameEN": "Workout Pant",
+                        "productNameVI": "Quần tập",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "vts",
+                        "productNameEN": "Workout T-shirt",
+                        "productNameVI": "Áo tập",
+                        "quantityMaximum": 1
+                    }
+                ],
+                "club_list": [
+                    {
+                        "club_Code": "CAMY",
+                        "club_Name": "AEON Mall Bình Tân"
+                    },
+                    {
+                        "club_Code": "MAMU",
+                        "club_Name": "Aeon Mall Club"
+                    },
+                    {
+                        "club_Code": "CAMU",
+                        "club_Name": "AEON Mall Tân Phú"
+                    },
+                    {
+                        "club_Code": "MAMY",
+                        "club_Name": "AEON Mall Yoga"
+                    },
+                    {
+                        "club_Code": "MBDS",
+                        "club_Name": "Bình Dương California"
+                    },
+                    {
+                        "club_Code": "CBDS",
+                        "club_Name": "Binh Duong Square"
+                    },
+                    {
+                        "club_Code": "CCTC",
+                        "club_Name": "Cali Tower"
+                    },
+                    {
+                        "club_Code": "MCTC",
+                        "club_Name": "Cali Tower California"
+                    },
+                    {
+                        "club_Code": "MTDK",
+                        "club_Name": "CaliKids Academy"
+                    },
+                    {
+                        "club_Code": "MCVC",
+                        "club_Name": "Cần Thơ Vincom California"
+                    },
+                    {
+                        "club_Code": "MCPT",
+                        "club_Name": "Capital Building Tower"
+                    },
+                    {
+                        "club_Code": "CCPT",
+                        "club_Name": "Capital Tower"
+                    },
+                    {
+                        "club_Code": "MCCC",
+                        "club_Name": "Centuryon Center Club"
+                    },
+                    {
+                        "club_Code": "MVMC",
+                        "club_Name": "D6 Viet Market Club"
+                    },
+                    {
+                        "club_Code": "CDNG",
+                        "club_Name": "Da nang"
+                    },
+                    {
+                        "club_Code": "MDNG",
+                        "club_Name": "Đà Nẵng California"
+                    },
+                    {
+                        "club_Code": "MDNE",
+                        "club_Name": "Đà Nẵng ERI"
+                    },
+                    {
+                        "club_Code": "MGME",
+                        "club_Name": "Eri GME"
+                    },
+                    {
+                        "club_Code": "SDNE",
+                        "club_Name": "ERI service - Da Nang"
+                    },
+                    {
+                        "club_Code": "SGME",
+                        "club_Name": "ERI service - Gigamall"
+                    },
+                    {
+                        "club_Code": "SHDE",
+                        "club_Name": "ERI service - Hang Da"
+                    },
+                    {
+                        "club_Code": "SLME",
+                        "club_Name": "ERI service - Landmark 81"
+                    },
+                    {
+                        "club_Code": "SMAE",
+                        "club_Name": "ERI service - MEDIAMART"
+                    },
+                    {
+                        "club_Code": "SPPE",
+                        "club_Name": "ERI service - Pear Plaza"
+                    },
+                    {
+                        "club_Code": "SPCE",
+                        "club_Name": "ERI service - Pico Plaza"
+                    },
+                    {
+                        "club_Code": "SRCE",
+                        "club_Name": "ERI service - Royal City"
+                    },
+                    {
+                        "club_Code": "SSCE",
+                        "club_Name": "ERI service - Saigon Centre"
+                    },
+                    {
+                        "club_Code": "SLHE",
+                        "club_Name": "ERI service - Sky City"
+                    },
+                    {
+                        "club_Code": "STDE",
+                        "club_Name": "ERI service - Thao Dien Pearl"
+                    },
+                    {
+                        "club_Code": "SVVE",
+                        "club_Name": "ERI service - Vivo"
+                    },
+                    {
+                        "club_Code": "SVTE",
+                        "club_Name": "ERI service - Vung Tau"
+                    },
+                    {
+                        "club_Code": "SWPE",
+                        "club_Name": "ERI service - West Point"
+                    },
+                    {
+                        "club_Code": "MFDC",
+                        "club_Name": "Flemington Diamond Club"
+                    },
+                    {
+                        "club_Code": "CFDC",
+                        "club_Name": "Flemington Tower"
+                    },
+                    {
+                        "club_Code": "CGMC",
+                        "club_Name": "Giga Mall"
+                    },
+                    {
+                        "club_Code": "MGMC",
+                        "club_Name": "Giga Mall California Club"
+                    },
+                    {
+                        "club_Code": "MGVC",
+                        "club_Name": "Gò Vấp California"
+                    },
+                    {
+                        "club_Code": "CGVC",
+                        "club_Name": "Gò Vấp Mall"
+                    },
+                    {
+                        "club_Code": "CGDC",
+                        "club_Name": "Gold View"
+                    },
+                    {
+                        "club_Code": "MGDC",
+                        "club_Name": "GoldView HCM"
+                    },
+                    {
+                        "club_Code": "CHDY",
+                        "club_Name": "Handico"
+                    },
+                    {
+                        "club_Code": "MHDY",
+                        "club_Name": "Handico Yoga Plus"
+                    },
+                    {
+                        "club_Code": "CHDC",
+                        "club_Name": "Hang Da Center"
+                    },
+                    {
+                        "club_Code": "MHDC",
+                        "club_Name": "Hang Da Club"
+                    },
+                    {
+                        "club_Code": "MHDE",
+                        "club_Name": "Hang Da ERI"
+                    },
+                    {
+                        "club_Code": "HCTC",
+                        "club_Name": "HCTC"
+                    },
+                    {
+                        "club_Code": "HDNG",
+                        "club_Name": "HDNG"
+                    },
+                    {
+                        "club_Code": "HGMC",
+                        "club_Name": "HGMC"
+                    },
+                    {
+                        "club_Code": "HHVP",
+                        "club_Name": "HHVP"
+                    },
+                    {
+                        "club_Code": "HLMC",
+                        "club_Name": "HLMC"
+                    },
+                    {
+                        "club_Code": "HMPC",
+                        "club_Name": "HMPC"
+                    },
+                    {
+                        "club_Code": "HPCO",
+                        "club_Name": "HPCO"
+                    },
+                    {
+                        "club_Code": "HRCC",
+                        "club_Name": "HRCC"
+                    },
+                    {
+                        "club_Code": "HSCC",
+                        "club_Name": "HSCC"
+                    },
+                    {
+                        "club_Code": "HSCT",
+                        "club_Name": "HSCT"
+                    },
+                    {
+                        "club_Code": "HTCM",
+                        "club_Name": "HTCM"
+                    },
+                    {
+                        "club_Code": "HTDU",
+                        "club_Name": "HTDU"
+                    },
+                    {
+                        "club_Code": "CHVP",
+                        "club_Name": "Hung Vuong Plaza"
+                    },
+                    {
+                        "club_Code": "MHVP",
+                        "club_Name": "Hùng Vương Plaza"
+                    },
+                    {
+                        "club_Code": "HVVO",
+                        "club_Name": "HVVO"
+                    },
+                    {
+                        "club_Code": "HWPC",
+                        "club_Name": "HWPC"
+                    },
+                    {
+                        "club_Code": "SJCQ",
+                        "club_Name": "Jetts Cong Quynh"
+                    },
+                    {
+                        "club_Code": "SJVJ",
+                        "club_Name": "Jetts VietJet"
+                    },
+                    {
+                        "club_Code": "CTDC",
+                        "club_Name": "Khanh Gia Mall Vincom"
+                    },
+                    {
+                        "club_Code": "MLMC",
+                        "club_Name": "Landmark Centuryon Club"
+                    },
+                    {
+                        "club_Code": "MLME",
+                        "club_Name": "Landmark ERI"
+                    },
+                    {
+                        "club_Code": "CLMC",
+                        "club_Name": "Landmark81"
+                    },
+                    {
+                        "club_Code": "CVTC",
+                        "club_Name": "Lapen Center"
+                    },
+                    {
+                        "club_Code": "CLTC",
+                        "club_Name": "Lim 2 Tower"
+                    },
+                    {
+                        "club_Code": "MLTC",
+                        "club_Name": "Lim Tower"
+                    },
+                    {
+                        "club_Code": "CMAC",
+                        "club_Name": "MAC Plaza"
+                    },
+                    {
+                        "club_Code": "MMAC",
+                        "club_Name": "MAC plaza California Club"
+                    },
+                    {
+                        "club_Code": "MMAE",
+                        "club_Name": "Machinco Plaza Eri"
+                    },
+                    {
+                        "club_Code": "MEST",
+                        "club_Name": "MEST Test Only"
+                    },
+                    {
+                        "club_Code": "CMPC",
+                        "club_Name": "Mipec"
+                    },
+                    {
+                        "club_Code": "MMPC",
+                        "club_Name": "Mipec Club"
+                    },
+                    {
+                        "club_Code": "MUDC",
+                        "club_Name": "MUDC"
+                    },
+                    {
+                        "club_Code": "MNTC",
+                        "club_Name": "Nha Trang California"
+                    },
+                    {
+                        "club_Code": "CNTC",
+                        "club_Name": "Nha Trang Center"
+                    },
+                    {
+                        "club_Code": "CPPC",
+                        "club_Name": "Pearl Plaza"
+                    },
+                    {
+                        "club_Code": "MPPC",
+                        "club_Name": "Pearl Plaza California"
+                    },
+                    {
+                        "club_Code": "MPPE",
+                        "club_Name": "Pearl Plaza ERI"
+                    },
+                    {
+                        "club_Code": "HPBH",
+                        "club_Name": "Pegasus Biên Hòa"
+                    },
+                    {
+                        "club_Code": "MPBH",
+                        "club_Name": "Pegasus Biên Hòa"
+                    },
+                    {
+                        "club_Code": "CPBH",
+                        "club_Name": "Pegasus Plaza"
+                    },
+                    {
+                        "club_Code": "CPCH",
+                        "club_Name": "Pico"
+                    },
+                    {
+                        "club_Code": "CPCO",
+                        "club_Name": "Pico Plaza"
+                    },
+                    {
+                        "club_Code": "MPCO",
+                        "club_Name": "Pico Plaza California"
+                    },
+                    {
+                        "club_Code": "MPCE",
+                        "club_Name": "Pico Plaza ERI"
+                    },
+                    {
+                        "club_Code": "MPCH",
+                        "club_Name": "Pico Plaza HN"
+                    },
+                    {
+                        "club_Code": "MQAB",
+                        "club_Name": "Queen Ann Building"
+                    },
+                    {
+                        "club_Code": "MRCE",
+                        "club_Name": "Royal Centuryon ERI"
+                    },
+                    {
+                        "club_Code": "CRCC",
+                        "club_Name": "Royal City"
+                    },
+                    {
+                        "club_Code": "MRCC",
+                        "club_Name": "Royal City Club"
+                    },
+                    {
+                        "club_Code": "CSCC",
+                        "club_Name": "Sài Gòn Center"
+                    },
+                    {
+                        "club_Code": "MSCC",
+                        "club_Name": "Saigon Center Centuryon"
+                    },
+                    {
+                        "club_Code": "MSCE",
+                        "club_Name": "Saigon Center ERI"
+                    },
+                    {
+                        "club_Code": "CSCT",
+                        "club_Name": "Sky City Tower"
+                    },
+                    {
+                        "club_Code": "MSCT",
+                        "club_Name": "Sky City Tower"
+                    },
+                    {
+                        "club_Code": "CWPC",
+                        "club_Name": "Somerset West Point"
+                    },
+                    {
+                        "club_Code": "MWPE",
+                        "club_Name": "Somerset West Point ERI"
+                    },
+                    {
+                        "club_Code": "CTDU",
+                        "club_Name": "Thảo Điền"
+                    },
+                    {
+                        "club_Code": "MTDU",
+                        "club_Name": "Thảo Điền club"
+                    },
+                    {
+                        "club_Code": "MTDE",
+                        "club_Name": "Thao Dien ERI"
+                    },
+                    {
+                        "club_Code": "HTDY",
+                        "club_Name": "Thảo Điền Hypoxi"
+                    },
+                    {
+                        "club_Code": "MTDP",
+                        "club_Name": "Thao Dien Pearl"
+                    },
+                    {
+                        "club_Code": "MTDY",
+                        "club_Name": "Thảo Điền Yoga"
+                    },
+                    {
+                        "club_Code": "MTDC",
+                        "club_Name": "Thủ Đức California"
+                    },
+                    {
+                        "club_Code": "CTCM",
+                        "club_Name": "Time City"
+                    },
+                    {
+                        "club_Code": "MTCM",
+                        "club_Name": "Time City Mall"
+                    },
+                    {
+                        "club_Code": "CTTC",
+                        "club_Name": "TTC"
+                    },
+                    {
+                        "club_Code": "HTTC",
+                        "club_Name": "TTC"
+                    },
+                    {
+                        "club_Code": "MTTC",
+                        "club_Name": "TTC"
+                    },
+                    {
+                        "club_Code": "RTTC",
+                        "club_Name": "TTC - Retail"
+                    },
+                    {
+                        "club_Code": "CVMC",
+                        "club_Name": "Việt Market"
+                    },
+                    {
+                        "club_Code": "CVSC",
+                        "club_Name": "Vincom Star City"
+                    },
+                    {
+                        "club_Code": "MVSC",
+                        "club_Name": "Vincom Star City Club"
+                    },
+                    {
+                        "club_Code": "CCVC",
+                        "club_Name": "Vincom Xuan Khanh"
+                    },
+                    {
+                        "club_Code": "VITA",
+                        "club_Name": "VITA"
+                    },
+                    {
+                        "club_Code": "MVVO",
+                        "club_Name": "Vivo California"
+                    },
+                    {
+                        "club_Code": "CVVO",
+                        "club_Name": "ViVo City"
+                    },
+                    {
+                        "club_Code": "MVVE",
+                        "club_Name": "VIVO ERI"
+                    },
+                    {
+                        "club_Code": "MVTC",
+                        "club_Name": "Vung Tau California"
+                    },
+                    {
+                        "club_Code": "MWPC",
+                        "club_Name": "West Point Club"
+                    }
+                ]
+            },
+            {
+                "mB_advance_booking_before_xdays": 1,
+                "mB_end_date": "2027/01/27",
+                "mB_start_date": "2026/01/27",
+                "mB_membership_number": "LW:MBS-MTEST-2601-000018_2",
+                "mB_membership_type": "Diamond-X",
+                "mB_membership_card_number": "MBS-MTEST-2601-000018_2-1",
+                "mB_membership_namecard": "DIAMOND-X 2025 FLOATING",
+                "mB_isOwner": true,
+                "mB_hasBenefit": true,
+                "nutritionPackageName": "",
+                "hasNutritionPackage": 0,
+                "mB_classification": 100000008,
+                "mB_classificationName": "Floating",
+                "mB_MembershipId": "MBS-MTEST-2601-000018_2",
+                "mB_MemberId": "S0100904",
+                "mB_MemberFullName": " DƯƠNG TRÍ DŨNG",
+                "benefit_member": [
+                    {
+                        "productCode": "tsm",
+                        "productNameEN": "Small Towel",
+                        "productNameVI": "Khăn nhỏ",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "txl",
+                        "productNameEN": "Big towel",
+                        "productNameVI": "Khăn lớn",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "set-1txl-1tsm",
+                        "productNameEN": "Towel set (1 big + 1 small)",
+                        "productNameVI": "Bộ khăn (1 lớn + 1 nhỏ)",
+                        "quantityMaximum": 1
+                    }
+                ],
+                "club_list": [
+                    {
+                        "club_Code": "CAMY",
+                        "club_Name": "AEON Mall Bình Tân"
+                    },
+                    {
+                        "club_Code": "MAMU",
+                        "club_Name": "Aeon Mall Club"
+                    },
+                    {
+                        "club_Code": "CAMU",
+                        "club_Name": "AEON Mall Tân Phú"
+                    },
+                    {
+                        "club_Code": "MAMY",
+                        "club_Name": "AEON Mall Yoga"
+                    },
+                    {
+                        "club_Code": "MBDS",
+                        "club_Name": "Bình Dương California"
+                    },
+                    {
+                        "club_Code": "CBDS",
+                        "club_Name": "Binh Duong Square"
+                    },
+                    {
+                        "club_Code": "CCTC",
+                        "club_Name": "Cali Tower"
+                    },
+                    {
+                        "club_Code": "MCTC",
+                        "club_Name": "Cali Tower California"
+                    },
+                    {
+                        "club_Code": "MTDK",
+                        "club_Name": "CaliKids Academy"
+                    },
+                    {
+                        "club_Code": "MCVC",
+                        "club_Name": "Cần Thơ Vincom California"
+                    },
+                    {
+                        "club_Code": "MCPT",
+                        "club_Name": "Capital Building Tower"
+                    },
+                    {
+                        "club_Code": "CCPT",
+                        "club_Name": "Capital Tower"
+                    },
+                    {
+                        "club_Code": "MCCC",
+                        "club_Name": "Centuryon Center Club"
+                    },
+                    {
+                        "club_Code": "MVMC",
+                        "club_Name": "D6 Viet Market Club"
+                    },
+                    {
+                        "club_Code": "CDNG",
+                        "club_Name": "Da nang"
+                    },
+                    {
+                        "club_Code": "MDNG",
+                        "club_Name": "Đà Nẵng California"
+                    },
+                    {
+                        "club_Code": "MDNE",
+                        "club_Name": "Đà Nẵng ERI"
+                    },
+                    {
+                        "club_Code": "MGME",
+                        "club_Name": "Eri GME"
+                    },
+                    {
+                        "club_Code": "SDNE",
+                        "club_Name": "ERI service - Da Nang"
+                    },
+                    {
+                        "club_Code": "SGME",
+                        "club_Name": "ERI service - Gigamall"
+                    },
+                    {
+                        "club_Code": "SHDE",
+                        "club_Name": "ERI service - Hang Da"
+                    },
+                    {
+                        "club_Code": "SLME",
+                        "club_Name": "ERI service - Landmark 81"
+                    },
+                    {
+                        "club_Code": "SMAE",
+                        "club_Name": "ERI service - MEDIAMART"
+                    },
+                    {
+                        "club_Code": "SPPE",
+                        "club_Name": "ERI service - Pear Plaza"
+                    },
+                    {
+                        "club_Code": "SPCE",
+                        "club_Name": "ERI service - Pico Plaza"
+                    },
+                    {
+                        "club_Code": "SRCE",
+                        "club_Name": "ERI service - Royal City"
+                    },
+                    {
+                        "club_Code": "SSCE",
+                        "club_Name": "ERI service - Saigon Centre"
+                    },
+                    {
+                        "club_Code": "SLHE",
+                        "club_Name": "ERI service - Sky City"
+                    },
+                    {
+                        "club_Code": "STDE",
+                        "club_Name": "ERI service - Thao Dien Pearl"
+                    },
+                    {
+                        "club_Code": "SVVE",
+                        "club_Name": "ERI service - Vivo"
+                    },
+                    {
+                        "club_Code": "SVTE",
+                        "club_Name": "ERI service - Vung Tau"
+                    },
+                    {
+                        "club_Code": "SWPE",
+                        "club_Name": "ERI service - West Point"
+                    },
+                    {
+                        "club_Code": "MFDC",
+                        "club_Name": "Flemington Diamond Club"
+                    },
+                    {
+                        "club_Code": "CFDC",
+                        "club_Name": "Flemington Tower"
+                    },
+                    {
+                        "club_Code": "CGMC",
+                        "club_Name": "Giga Mall"
+                    },
+                    {
+                        "club_Code": "MGMC",
+                        "club_Name": "Giga Mall California Club"
+                    },
+                    {
+                        "club_Code": "MGVC",
+                        "club_Name": "Gò Vấp California"
+                    },
+                    {
+                        "club_Code": "CGVC",
+                        "club_Name": "Gò Vấp Mall"
+                    },
+                    {
+                        "club_Code": "CGDC",
+                        "club_Name": "Gold View"
+                    },
+                    {
+                        "club_Code": "MGDC",
+                        "club_Name": "GoldView HCM"
+                    },
+                    {
+                        "club_Code": "CHDY",
+                        "club_Name": "Handico"
+                    },
+                    {
+                        "club_Code": "MHDY",
+                        "club_Name": "Handico Yoga Plus"
+                    },
+                    {
+                        "club_Code": "CHDC",
+                        "club_Name": "Hang Da Center"
+                    },
+                    {
+                        "club_Code": "MHDC",
+                        "club_Name": "Hang Da Club"
+                    },
+                    {
+                        "club_Code": "MHDE",
+                        "club_Name": "Hang Da ERI"
+                    },
+                    {
+                        "club_Code": "HCTC",
+                        "club_Name": "HCTC"
+                    },
+                    {
+                        "club_Code": "HDNG",
+                        "club_Name": "HDNG"
+                    },
+                    {
+                        "club_Code": "HGMC",
+                        "club_Name": "HGMC"
+                    },
+                    {
+                        "club_Code": "HHVP",
+                        "club_Name": "HHVP"
+                    },
+                    {
+                        "club_Code": "HLMC",
+                        "club_Name": "HLMC"
+                    },
+                    {
+                        "club_Code": "HMPC",
+                        "club_Name": "HMPC"
+                    },
+                    {
+                        "club_Code": "HPCO",
+                        "club_Name": "HPCO"
+                    },
+                    {
+                        "club_Code": "HRCC",
+                        "club_Name": "HRCC"
+                    },
+                    {
+                        "club_Code": "HSCC",
+                        "club_Name": "HSCC"
+                    },
+                    {
+                        "club_Code": "HSCT",
+                        "club_Name": "HSCT"
+                    },
+                    {
+                        "club_Code": "HTCM",
+                        "club_Name": "HTCM"
+                    },
+                    {
+                        "club_Code": "HTDU",
+                        "club_Name": "HTDU"
+                    },
+                    {
+                        "club_Code": "CHVP",
+                        "club_Name": "Hung Vuong Plaza"
+                    },
+                    {
+                        "club_Code": "MHVP",
+                        "club_Name": "Hùng Vương Plaza"
+                    },
+                    {
+                        "club_Code": "HVVO",
+                        "club_Name": "HVVO"
+                    },
+                    {
+                        "club_Code": "HWPC",
+                        "club_Name": "HWPC"
+                    },
+                    {
+                        "club_Code": "SJCQ",
+                        "club_Name": "Jetts Cong Quynh"
+                    },
+                    {
+                        "club_Code": "SJVJ",
+                        "club_Name": "Jetts VietJet"
+                    },
+                    {
+                        "club_Code": "CTDC",
+                        "club_Name": "Khanh Gia Mall Vincom"
+                    },
+                    {
+                        "club_Code": "MLMC",
+                        "club_Name": "Landmark Centuryon Club"
+                    },
+                    {
+                        "club_Code": "MLME",
+                        "club_Name": "Landmark ERI"
+                    },
+                    {
+                        "club_Code": "CLMC",
+                        "club_Name": "Landmark81"
+                    },
+                    {
+                        "club_Code": "CVTC",
+                        "club_Name": "Lapen Center"
+                    },
+                    {
+                        "club_Code": "CLTC",
+                        "club_Name": "Lim 2 Tower"
+                    },
+                    {
+                        "club_Code": "MLTC",
+                        "club_Name": "Lim Tower"
+                    },
+                    {
+                        "club_Code": "CMAC",
+                        "club_Name": "MAC Plaza"
+                    },
+                    {
+                        "club_Code": "MMAC",
+                        "club_Name": "MAC plaza California Club"
+                    },
+                    {
+                        "club_Code": "MMAE",
+                        "club_Name": "Machinco Plaza Eri"
+                    },
+                    {
+                        "club_Code": "MEST",
+                        "club_Name": "MEST Test Only"
+                    },
+                    {
+                        "club_Code": "CMPC",
+                        "club_Name": "Mipec"
+                    },
+                    {
+                        "club_Code": "MMPC",
+                        "club_Name": "Mipec Club"
+                    },
+                    {
+                        "club_Code": "MUDC",
+                        "club_Name": "MUDC"
+                    },
+                    {
+                        "club_Code": "MNTC",
+                        "club_Name": "Nha Trang California"
+                    },
+                    {
+                        "club_Code": "CNTC",
+                        "club_Name": "Nha Trang Center"
+                    },
+                    {
+                        "club_Code": "CPPC",
+                        "club_Name": "Pearl Plaza"
+                    },
+                    {
+                        "club_Code": "MPPC",
+                        "club_Name": "Pearl Plaza California"
+                    },
+                    {
+                        "club_Code": "MPPE",
+                        "club_Name": "Pearl Plaza ERI"
+                    },
+                    {
+                        "club_Code": "HPBH",
+                        "club_Name": "Pegasus Biên Hòa"
+                    },
+                    {
+                        "club_Code": "MPBH",
+                        "club_Name": "Pegasus Biên Hòa"
+                    },
+                    {
+                        "club_Code": "CPBH",
+                        "club_Name": "Pegasus Plaza"
+                    },
+                    {
+                        "club_Code": "CPCH",
+                        "club_Name": "Pico"
+                    },
+                    {
+                        "club_Code": "CPCO",
+                        "club_Name": "Pico Plaza"
+                    },
+                    {
+                        "club_Code": "MPCO",
+                        "club_Name": "Pico Plaza California"
+                    },
+                    {
+                        "club_Code": "MPCE",
+                        "club_Name": "Pico Plaza ERI"
+                    },
+                    {
+                        "club_Code": "MPCH",
+                        "club_Name": "Pico Plaza HN"
+                    },
+                    {
+                        "club_Code": "MQAB",
+                        "club_Name": "Queen Ann Building"
+                    },
+                    {
+                        "club_Code": "MRCE",
+                        "club_Name": "Royal Centuryon ERI"
+                    },
+                    {
+                        "club_Code": "CRCC",
+                        "club_Name": "Royal City"
+                    },
+                    {
+                        "club_Code": "MRCC",
+                        "club_Name": "Royal City Club"
+                    },
+                    {
+                        "club_Code": "CSCC",
+                        "club_Name": "Sài Gòn Center"
+                    },
+                    {
+                        "club_Code": "MSCC",
+                        "club_Name": "Saigon Center Centuryon"
+                    },
+                    {
+                        "club_Code": "MSCE",
+                        "club_Name": "Saigon Center ERI"
+                    },
+                    {
+                        "club_Code": "CSCT",
+                        "club_Name": "Sky City Tower"
+                    },
+                    {
+                        "club_Code": "MSCT",
+                        "club_Name": "Sky City Tower"
+                    },
+                    {
+                        "club_Code": "CWPC",
+                        "club_Name": "Somerset West Point"
+                    },
+                    {
+                        "club_Code": "MWPE",
+                        "club_Name": "Somerset West Point ERI"
+                    },
+                    {
+                        "club_Code": "CTDU",
+                        "club_Name": "Thảo Điền"
+                    },
+                    {
+                        "club_Code": "MTDU",
+                        "club_Name": "Thảo Điền club"
+                    },
+                    {
+                        "club_Code": "MTDE",
+                        "club_Name": "Thao Dien ERI"
+                    },
+                    {
+                        "club_Code": "HTDY",
+                        "club_Name": "Thảo Điền Hypoxi"
+                    },
+                    {
+                        "club_Code": "MTDP",
+                        "club_Name": "Thao Dien Pearl"
+                    },
+                    {
+                        "club_Code": "MTDY",
+                        "club_Name": "Thảo Điền Yoga"
+                    },
+                    {
+                        "club_Code": "MTDC",
+                        "club_Name": "Thủ Đức California"
+                    },
+                    {
+                        "club_Code": "CTCM",
+                        "club_Name": "Time City"
+                    },
+                    {
+                        "club_Code": "MTCM",
+                        "club_Name": "Time City Mall"
+                    },
+                    {
+                        "club_Code": "CTTC",
+                        "club_Name": "TTC"
+                    },
+                    {
+                        "club_Code": "HTTC",
+                        "club_Name": "TTC"
+                    },
+                    {
+                        "club_Code": "MTTC",
+                        "club_Name": "TTC"
+                    },
+                    {
+                        "club_Code": "RTTC",
+                        "club_Name": "TTC - Retail"
+                    },
+                    {
+                        "club_Code": "CVMC",
+                        "club_Name": "Việt Market"
+                    },
+                    {
+                        "club_Code": "CVSC",
+                        "club_Name": "Vincom Star City"
+                    },
+                    {
+                        "club_Code": "MVSC",
+                        "club_Name": "Vincom Star City Club"
+                    },
+                    {
+                        "club_Code": "CCVC",
+                        "club_Name": "Vincom Xuan Khanh"
+                    },
+                    {
+                        "club_Code": "VITA",
+                        "club_Name": "VITA"
+                    },
+                    {
+                        "club_Code": "MVVO",
+                        "club_Name": "Vivo California"
+                    },
+                    {
+                        "club_Code": "CVVO",
+                        "club_Name": "ViVo City"
+                    },
+                    {
+                        "club_Code": "MVVE",
+                        "club_Name": "VIVO ERI"
+                    },
+                    {
+                        "club_Code": "MVTC",
+                        "club_Name": "Vung Tau California"
+                    },
+                    {
+                        "club_Code": "MWPC",
+                        "club_Name": "West Point Club"
+                    }
+                ]
+            },
+            {
+                "mB_advance_booking_before_xdays": 1,
+                "mB_end_date": "2050/07/23",
+                "mB_start_date": "2026/01/17",
+                "mB_membership_number": "LW:S0100904",
+                "mB_membership_type": "Staff",
+                "mB_membership_card_number": "S0100904",
+                "mB_membership_namecard": "Staff Membership",
+                "mB_isOwner": true,
+                "mB_hasBenefit": false,
+                "nutritionPackageName": "",
+                "hasNutritionPackage": 0,
+                "mB_classification": 100000000,
+                "mB_classificationName": "Individual",
+                "mB_MembershipId": "S0100904",
+                "mB_MemberId": "S0100904",
+                "mB_MemberFullName": " DƯƠNG TRÍ DŨNG",
+                "benefit_member": "",
+                "club_list": [
+                    {
+                        "club_Code": "CAMY",
+                        "club_Name": "AEON Mall Bình Tân"
+                    },
+                    {
+                        "club_Code": "MAMU",
+                        "club_Name": "Aeon Mall Club"
+                    },
+                    {
+                        "club_Code": "CAMU",
+                        "club_Name": "AEON Mall Tân Phú"
+                    },
+                    {
+                        "club_Code": "MAMY",
+                        "club_Name": "AEON Mall Yoga"
+                    },
+                    {
+                        "club_Code": "MBDS",
+                        "club_Name": "Bình Dương California"
+                    },
+                    {
+                        "club_Code": "CBDS",
+                        "club_Name": "Binh Duong Square"
+                    },
+                    {
+                        "club_Code": "CCTC",
+                        "club_Name": "Cali Tower"
+                    },
+                    {
+                        "club_Code": "MCTC",
+                        "club_Name": "Cali Tower California"
+                    },
+                    {
+                        "club_Code": "MTDK",
+                        "club_Name": "CaliKids Academy"
+                    },
+                    {
+                        "club_Code": "MCVC",
+                        "club_Name": "Cần Thơ Vincom California"
+                    },
+                    {
+                        "club_Code": "MCPT",
+                        "club_Name": "Capital Building Tower"
+                    },
+                    {
+                        "club_Code": "CCPT",
+                        "club_Name": "Capital Tower"
+                    },
+                    {
+                        "club_Code": "MCCC",
+                        "club_Name": "Centuryon Center Club"
+                    },
+                    {
+                        "club_Code": "MVMC",
+                        "club_Name": "D6 Viet Market Club"
+                    },
+                    {
+                        "club_Code": "CDNG",
+                        "club_Name": "Da nang"
+                    },
+                    {
+                        "club_Code": "MDNG",
+                        "club_Name": "Đà Nẵng California"
+                    },
+                    {
+                        "club_Code": "MDNE",
+                        "club_Name": "Đà Nẵng ERI"
+                    },
+                    {
+                        "club_Code": "MGME",
+                        "club_Name": "Eri GME"
+                    },
+                    {
+                        "club_Code": "SDNE",
+                        "club_Name": "ERI service - Da Nang"
+                    },
+                    {
+                        "club_Code": "SGME",
+                        "club_Name": "ERI service - Gigamall"
+                    },
+                    {
+                        "club_Code": "SHDE",
+                        "club_Name": "ERI service - Hang Da"
+                    },
+                    {
+                        "club_Code": "SLME",
+                        "club_Name": "ERI service - Landmark 81"
+                    },
+                    {
+                        "club_Code": "SMAE",
+                        "club_Name": "ERI service - MEDIAMART"
+                    },
+                    {
+                        "club_Code": "SPPE",
+                        "club_Name": "ERI service - Pear Plaza"
+                    },
+                    {
+                        "club_Code": "SPCE",
+                        "club_Name": "ERI service - Pico Plaza"
+                    },
+                    {
+                        "club_Code": "SRCE",
+                        "club_Name": "ERI service - Royal City"
+                    },
+                    {
+                        "club_Code": "SSCE",
+                        "club_Name": "ERI service - Saigon Centre"
+                    },
+                    {
+                        "club_Code": "SLHE",
+                        "club_Name": "ERI service - Sky City"
+                    },
+                    {
+                        "club_Code": "STDE",
+                        "club_Name": "ERI service - Thao Dien Pearl"
+                    },
+                    {
+                        "club_Code": "SVVE",
+                        "club_Name": "ERI service - Vivo"
+                    },
+                    {
+                        "club_Code": "SVTE",
+                        "club_Name": "ERI service - Vung Tau"
+                    },
+                    {
+                        "club_Code": "SWPE",
+                        "club_Name": "ERI service - West Point"
+                    },
+                    {
+                        "club_Code": "MFDC",
+                        "club_Name": "Flemington Diamond Club"
+                    },
+                    {
+                        "club_Code": "CFDC",
+                        "club_Name": "Flemington Tower"
+                    },
+                    {
+                        "club_Code": "CGMC",
+                        "club_Name": "Giga Mall"
+                    },
+                    {
+                        "club_Code": "MGMC",
+                        "club_Name": "Giga Mall California Club"
+                    },
+                    {
+                        "club_Code": "MGVC",
+                        "club_Name": "Gò Vấp California"
+                    },
+                    {
+                        "club_Code": "CGVC",
+                        "club_Name": "Gò Vấp Mall"
+                    },
+                    {
+                        "club_Code": "CGDC",
+                        "club_Name": "Gold View"
+                    },
+                    {
+                        "club_Code": "MGDC",
+                        "club_Name": "GoldView HCM"
+                    },
+                    {
+                        "club_Code": "CHDY",
+                        "club_Name": "Handico"
+                    },
+                    {
+                        "club_Code": "MHDY",
+                        "club_Name": "Handico Yoga Plus"
+                    },
+                    {
+                        "club_Code": "CHDC",
+                        "club_Name": "Hang Da Center"
+                    },
+                    {
+                        "club_Code": "MHDC",
+                        "club_Name": "Hang Da Club"
+                    },
+                    {
+                        "club_Code": "MHDE",
+                        "club_Name": "Hang Da ERI"
+                    },
+                    {
+                        "club_Code": "HCTC",
+                        "club_Name": "HCTC"
+                    },
+                    {
+                        "club_Code": "HDNG",
+                        "club_Name": "HDNG"
+                    },
+                    {
+                        "club_Code": "HGMC",
+                        "club_Name": "HGMC"
+                    },
+                    {
+                        "club_Code": "HHVP",
+                        "club_Name": "HHVP"
+                    },
+                    {
+                        "club_Code": "HLMC",
+                        "club_Name": "HLMC"
+                    },
+                    {
+                        "club_Code": "HMPC",
+                        "club_Name": "HMPC"
+                    },
+                    {
+                        "club_Code": "HPCO",
+                        "club_Name": "HPCO"
+                    },
+                    {
+                        "club_Code": "HRCC",
+                        "club_Name": "HRCC"
+                    },
+                    {
+                        "club_Code": "HSCC",
+                        "club_Name": "HSCC"
+                    },
+                    {
+                        "club_Code": "HSCT",
+                        "club_Name": "HSCT"
+                    },
+                    {
+                        "club_Code": "HTCM",
+                        "club_Name": "HTCM"
+                    },
+                    {
+                        "club_Code": "HTDU",
+                        "club_Name": "HTDU"
+                    },
+                    {
+                        "club_Code": "CHVP",
+                        "club_Name": "Hung Vuong Plaza"
+                    },
+                    {
+                        "club_Code": "MHVP",
+                        "club_Name": "Hùng Vương Plaza"
+                    },
+                    {
+                        "club_Code": "HVVO",
+                        "club_Name": "HVVO"
+                    },
+                    {
+                        "club_Code": "HWPC",
+                        "club_Name": "HWPC"
+                    },
+                    {
+                        "club_Code": "SJCQ",
+                        "club_Name": "Jetts Cong Quynh"
+                    },
+                    {
+                        "club_Code": "SJVJ",
+                        "club_Name": "Jetts VietJet"
+                    },
+                    {
+                        "club_Code": "CTDC",
+                        "club_Name": "Khanh Gia Mall Vincom"
+                    },
+                    {
+                        "club_Code": "MLMC",
+                        "club_Name": "Landmark Centuryon Club"
+                    },
+                    {
+                        "club_Code": "MLME",
+                        "club_Name": "Landmark ERI"
+                    },
+                    {
+                        "club_Code": "CLMC",
+                        "club_Name": "Landmark81"
+                    },
+                    {
+                        "club_Code": "CVTC",
+                        "club_Name": "Lapen Center"
+                    },
+                    {
+                        "club_Code": "CLTC",
+                        "club_Name": "Lim 2 Tower"
+                    },
+                    {
+                        "club_Code": "MLTC",
+                        "club_Name": "Lim Tower"
+                    },
+                    {
+                        "club_Code": "CMAC",
+                        "club_Name": "MAC Plaza"
+                    },
+                    {
+                        "club_Code": "MMAC",
+                        "club_Name": "MAC plaza California Club"
+                    },
+                    {
+                        "club_Code": "MMAE",
+                        "club_Name": "Machinco Plaza Eri"
+                    },
+                    {
+                        "club_Code": "MEST",
+                        "club_Name": "MEST Test Only"
+                    },
+                    {
+                        "club_Code": "CMPC",
+                        "club_Name": "Mipec"
+                    },
+                    {
+                        "club_Code": "MMPC",
+                        "club_Name": "Mipec Club"
+                    },
+                    {
+                        "club_Code": "MUDC",
+                        "club_Name": "MUDC"
+                    },
+                    {
+                        "club_Code": "MNTC",
+                        "club_Name": "Nha Trang California"
+                    },
+                    {
+                        "club_Code": "CNTC",
+                        "club_Name": "Nha Trang Center"
+                    },
+                    {
+                        "club_Code": "CPPC",
+                        "club_Name": "Pearl Plaza"
+                    },
+                    {
+                        "club_Code": "MPPC",
+                        "club_Name": "Pearl Plaza California"
+                    },
+                    {
+                        "club_Code": "MPPE",
+                        "club_Name": "Pearl Plaza ERI"
+                    },
+                    {
+                        "club_Code": "HPBH",
+                        "club_Name": "Pegasus Biên Hòa"
+                    },
+                    {
+                        "club_Code": "MPBH",
+                        "club_Name": "Pegasus Biên Hòa"
+                    },
+                    {
+                        "club_Code": "CPBH",
+                        "club_Name": "Pegasus Plaza"
+                    },
+                    {
+                        "club_Code": "CPCH",
+                        "club_Name": "Pico"
+                    },
+                    {
+                        "club_Code": "CPCO",
+                        "club_Name": "Pico Plaza"
+                    },
+                    {
+                        "club_Code": "MPCO",
+                        "club_Name": "Pico Plaza California"
+                    },
+                    {
+                        "club_Code": "MPCE",
+                        "club_Name": "Pico Plaza ERI"
+                    },
+                    {
+                        "club_Code": "MPCH",
+                        "club_Name": "Pico Plaza HN"
+                    },
+                    {
+                        "club_Code": "MQAB",
+                        "club_Name": "Queen Ann Building"
+                    },
+                    {
+                        "club_Code": "MRCE",
+                        "club_Name": "Royal Centuryon ERI"
+                    },
+                    {
+                        "club_Code": "CRCC",
+                        "club_Name": "Royal City"
+                    },
+                    {
+                        "club_Code": "MRCC",
+                        "club_Name": "Royal City Club"
+                    },
+                    {
+                        "club_Code": "CSCC",
+                        "club_Name": "Sài Gòn Center"
+                    },
+                    {
+                        "club_Code": "MSCC",
+                        "club_Name": "Saigon Center Centuryon"
+                    },
+                    {
+                        "club_Code": "MSCE",
+                        "club_Name": "Saigon Center ERI"
+                    },
+                    {
+                        "club_Code": "CSCT",
+                        "club_Name": "Sky City Tower"
+                    },
+                    {
+                        "club_Code": "MSCT",
+                        "club_Name": "Sky City Tower"
+                    },
+                    {
+                        "club_Code": "CWPC",
+                        "club_Name": "Somerset West Point"
+                    },
+                    {
+                        "club_Code": "MWPE",
+                        "club_Name": "Somerset West Point ERI"
+                    },
+                    {
+                        "club_Code": "CTDU",
+                        "club_Name": "Thảo Điền"
+                    },
+                    {
+                        "club_Code": "MTDU",
+                        "club_Name": "Thảo Điền club"
+                    },
+                    {
+                        "club_Code": "MTDE",
+                        "club_Name": "Thao Dien ERI"
+                    },
+                    {
+                        "club_Code": "HTDY",
+                        "club_Name": "Thảo Điền Hypoxi"
+                    },
+                    {
+                        "club_Code": "MTDP",
+                        "club_Name": "Thao Dien Pearl"
+                    },
+                    {
+                        "club_Code": "MTDY",
+                        "club_Name": "Thảo Điền Yoga"
+                    },
+                    {
+                        "club_Code": "MTDC",
+                        "club_Name": "Thủ Đức California"
+                    },
+                    {
+                        "club_Code": "CTCM",
+                        "club_Name": "Time City"
+                    },
+                    {
+                        "club_Code": "MTCM",
+                        "club_Name": "Time City Mall"
+                    },
+                    {
+                        "club_Code": "CTTC",
+                        "club_Name": "TTC"
+                    },
+                    {
+                        "club_Code": "HTTC",
+                        "club_Name": "TTC"
+                    },
+                    {
+                        "club_Code": "MTTC",
+                        "club_Name": "TTC"
+                    },
+                    {
+                        "club_Code": "RTTC",
+                        "club_Name": "TTC - Retail"
+                    },
+                    {
+                        "club_Code": "CVMC",
+                        "club_Name": "Việt Market"
+                    },
+                    {
+                        "club_Code": "CVSC",
+                        "club_Name": "Vincom Star City"
+                    },
+                    {
+                        "club_Code": "MVSC",
+                        "club_Name": "Vincom Star City Club"
+                    },
+                    {
+                        "club_Code": "CCVC",
+                        "club_Name": "Vincom Xuan Khanh"
+                    },
+                    {
+                        "club_Code": "VITA",
+                        "club_Name": "VITA"
+                    },
+                    {
+                        "club_Code": "MVVO",
+                        "club_Name": "Vivo California"
+                    },
+                    {
+                        "club_Code": "CVVO",
+                        "club_Name": "ViVo City"
+                    },
+                    {
+                        "club_Code": "MVVE",
+                        "club_Name": "VIVO ERI"
+                    },
+                    {
+                        "club_Code": "MVTC",
+                        "club_Name": "Vung Tau California"
+                    },
+                    {
+                        "club_Code": "MWPC",
+                        "club_Name": "West Point Club"
+                    }
+                ]
+            },
+            {
+                "mB_advance_booking_before_xdays": "",
+                "mB_end_date": "2027/01/28",
+                "mB_start_date": "2026/01/28",
+                "mB_membership_number": "LW:MBS-MTEST-2601-000020_1?GC26030522245",
+                "mB_membership_type": "ICONIC Supplement",
+                "mB_membership_card_number": "MBS-MTEST-2601-000020_1",
+                "mB_membership_namecard": "ICONIC Supplement",
+                "mB_isOwner": true,
+                "mB_hasBenefit": true,
+                "nutritionPackageName": "INITIAL CONSULTING PACKAGE: One (1) nutrition consultation package, including (i) online personal nutrition consultation and personal meal plan during the first two (2) months of the original/ primary term. Một (1) gói tư vấn dinh dưỡng, bao gồm (i) dịch vụ tư vấn cá nhân trực tuyến với chuyên viên dinh dưỡng và dịch vụ thiết kế kế hoạch dinh dưỡng cá nhân trong hai (2) tháng đầu tiên của thời hạn gốc/ thời hạn ban đầu.",
+                "hasNutritionPackage": 1,
+                "mB_classification": 100000003,
+                "mB_classificationName": "Supplementary Card",
+                "mB_MembershipId": "MBS-MTEST-2601-000020_1",
+                "mB_MemberId": "S0100904",
+                "mB_MemberFullName": " DƯƠNG TRÍ DŨNG",
+                "benefit_member": [
+                    {
+                        "productCode": "tsm",
+                        "productNameEN": "Small Towel",
+                        "productNameVI": "Khăn nhỏ",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "txl",
+                        "productNameEN": "Big towel",
+                        "productNameVI": "Khăn lớn",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "set-1txl-1tsm",
+                        "productNameEN": "Towel set (1 big + 1 small)",
+                        "productNameVI": "Bộ khăn (1 lớn + 1 nhỏ)",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "lok",
+                        "productNameEN": "Lock",
+                        "productNameVI": "Khóa",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "acc",
+                        "productNameEN": "Access card for VIP area",
+                        "productNameVI": "Thẻ ra vào khu vực VIP",
+                        "quantityMaximum": 1
+                    },
+                    {
+                        "productCode": "coa",
+                        "productNameEN": "Bathrobe",
+                        "productNameVI": "Áo choàng",
+                        "quantityMaximum": 1
+                    }
+                ],
+                "club_list": [
+                    {
+                        "club_Code": "CAMY",
+                        "club_Name": "AEON Mall Bình Tân"
+                    },
+                    {
+                        "club_Code": "MAMU",
+                        "club_Name": "Aeon Mall Club"
+                    },
+                    {
+                        "club_Code": "CAMU",
+                        "club_Name": "AEON Mall Tân Phú"
+                    },
+                    {
+                        "club_Code": "MAMY",
+                        "club_Name": "AEON Mall Yoga"
+                    },
+                    {
+                        "club_Code": "MBDS",
+                        "club_Name": "Bình Dương California"
+                    },
+                    {
+                        "club_Code": "CBDS",
+                        "club_Name": "Binh Duong Square"
+                    },
+                    {
+                        "club_Code": "CCTC",
+                        "club_Name": "Cali Tower"
+                    },
+                    {
+                        "club_Code": "MCTC",
+                        "club_Name": "Cali Tower California"
+                    },
+                    {
+                        "club_Code": "MTDK",
+                        "club_Name": "CaliKids Academy"
+                    },
+                    {
+                        "club_Code": "MCVC",
+                        "club_Name": "Cần Thơ Vincom California"
+                    },
+                    {
+                        "club_Code": "MCPT",
+                        "club_Name": "Capital Building Tower"
+                    },
+                    {
+                        "club_Code": "CCPT",
+                        "club_Name": "Capital Tower"
+                    },
+                    {
+                        "club_Code": "MCCC",
+                        "club_Name": "Centuryon Center Club"
+                    },
+                    {
+                        "club_Code": "MVMC",
+                        "club_Name": "D6 Viet Market Club"
+                    },
+                    {
+                        "club_Code": "CDNG",
+                        "club_Name": "Da nang"
+                    },
+                    {
+                        "club_Code": "MDNG",
+                        "club_Name": "Đà Nẵng California"
+                    },
+                    {
+                        "club_Code": "MDNE",
+                        "club_Name": "Đà Nẵng ERI"
+                    },
+                    {
+                        "club_Code": "MGME",
+                        "club_Name": "Eri GME"
+                    },
+                    {
+                        "club_Code": "SDNE",
+                        "club_Name": "ERI service - Da Nang"
+                    },
+                    {
+                        "club_Code": "SGME",
+                        "club_Name": "ERI service - Gigamall"
+                    },
+                    {
+                        "club_Code": "SHDE",
+                        "club_Name": "ERI service - Hang Da"
+                    },
+                    {
+                        "club_Code": "SLME",
+                        "club_Name": "ERI service - Landmark 81"
+                    },
+                    {
+                        "club_Code": "SMAE",
+                        "club_Name": "ERI service - MEDIAMART"
+                    },
+                    {
+                        "club_Code": "SPPE",
+                        "club_Name": "ERI service - Pear Plaza"
+                    },
+                    {
+                        "club_Code": "SPCE",
+                        "club_Name": "ERI service - Pico Plaza"
+                    },
+                    {
+                        "club_Code": "SRCE",
+                        "club_Name": "ERI service - Royal City"
+                    },
+                    {
+                        "club_Code": "SSCE",
+                        "club_Name": "ERI service - Saigon Centre"
+                    },
+                    {
+                        "club_Code": "SLHE",
+                        "club_Name": "ERI service - Sky City"
+                    },
+                    {
+                        "club_Code": "STDE",
+                        "club_Name": "ERI service - Thao Dien Pearl"
+                    },
+                    {
+                        "club_Code": "SVVE",
+                        "club_Name": "ERI service - Vivo"
+                    },
+                    {
+                        "club_Code": "SVTE",
+                        "club_Name": "ERI service - Vung Tau"
+                    },
+                    {
+                        "club_Code": "SWPE",
+                        "club_Name": "ERI service - West Point"
+                    },
+                    {
+                        "club_Code": "MFDC",
+                        "club_Name": "Flemington Diamond Club"
+                    },
+                    {
+                        "club_Code": "CFDC",
+                        "club_Name": "Flemington Tower"
+                    },
+                    {
+                        "club_Code": "CGMC",
+                        "club_Name": "Giga Mall"
+                    },
+                    {
+                        "club_Code": "MGMC",
+                        "club_Name": "Giga Mall California Club"
+                    },
+                    {
+                        "club_Code": "MGVC",
+                        "club_Name": "Gò Vấp California"
+                    },
+                    {
+                        "club_Code": "CGVC",
+                        "club_Name": "Gò Vấp Mall"
+                    },
+                    {
+                        "club_Code": "CGDC",
+                        "club_Name": "Gold View"
+                    },
+                    {
+                        "club_Code": "MGDC",
+                        "club_Name": "GoldView HCM"
+                    },
+                    {
+                        "club_Code": "CHDY",
+                        "club_Name": "Handico"
+                    },
+                    {
+                        "club_Code": "MHDY",
+                        "club_Name": "Handico Yoga Plus"
+                    },
+                    {
+                        "club_Code": "CHDC",
+                        "club_Name": "Hang Da Center"
+                    },
+                    {
+                        "club_Code": "MHDC",
+                        "club_Name": "Hang Da Club"
+                    },
+                    {
+                        "club_Code": "MHDE",
+                        "club_Name": "Hang Da ERI"
+                    },
+                    {
+                        "club_Code": "HCTC",
+                        "club_Name": "HCTC"
+                    },
+                    {
+                        "club_Code": "HDNG",
+                        "club_Name": "HDNG"
+                    },
+                    {
+                        "club_Code": "HGMC",
+                        "club_Name": "HGMC"
+                    },
+                    {
+                        "club_Code": "HHVP",
+                        "club_Name": "HHVP"
+                    },
+                    {
+                        "club_Code": "HLMC",
+                        "club_Name": "HLMC"
+                    },
+                    {
+                        "club_Code": "HMPC",
+                        "club_Name": "HMPC"
+                    },
+                    {
+                        "club_Code": "HPCO",
+                        "club_Name": "HPCO"
+                    },
+                    {
+                        "club_Code": "HRCC",
+                        "club_Name": "HRCC"
+                    },
+                    {
+                        "club_Code": "HSCC",
+                        "club_Name": "HSCC"
+                    },
+                    {
+                        "club_Code": "HSCT",
+                        "club_Name": "HSCT"
+                    },
+                    {
+                        "club_Code": "HTCM",
+                        "club_Name": "HTCM"
+                    },
+                    {
+                        "club_Code": "HTDU",
+                        "club_Name": "HTDU"
+                    },
+                    {
+                        "club_Code": "CHVP",
+                        "club_Name": "Hung Vuong Plaza"
+                    },
+                    {
+                        "club_Code": "MHVP",
+                        "club_Name": "Hùng Vương Plaza"
+                    },
+                    {
+                        "club_Code": "HVVO",
+                        "club_Name": "HVVO"
+                    },
+                    {
+                        "club_Code": "HWPC",
+                        "club_Name": "HWPC"
+                    },
+                    {
+                        "club_Code": "SJCQ",
+                        "club_Name": "Jetts Cong Quynh"
+                    },
+                    {
+                        "club_Code": "SJVJ",
+                        "club_Name": "Jetts VietJet"
+                    },
+                    {
+                        "club_Code": "CTDC",
+                        "club_Name": "Khanh Gia Mall Vincom"
+                    },
+                    {
+                        "club_Code": "MLMC",
+                        "club_Name": "Landmark Centuryon Club"
+                    },
+                    {
+                        "club_Code": "MLME",
+                        "club_Name": "Landmark ERI"
+                    },
+                    {
+                        "club_Code": "CLMC",
+                        "club_Name": "Landmark81"
+                    },
+                    {
+                        "club_Code": "CVTC",
+                        "club_Name": "Lapen Center"
+                    },
+                    {
+                        "club_Code": "CLTC",
+                        "club_Name": "Lim 2 Tower"
+                    },
+                    {
+                        "club_Code": "MLTC",
+                        "club_Name": "Lim Tower"
+                    },
+                    {
+                        "club_Code": "CMAC",
+                        "club_Name": "MAC Plaza"
+                    },
+                    {
+                        "club_Code": "MMAC",
+                        "club_Name": "MAC plaza California Club"
+                    },
+                    {
+                        "club_Code": "MMAE",
+                        "club_Name": "Machinco Plaza Eri"
+                    },
+                    {
+                        "club_Code": "MEST",
+                        "club_Name": "MEST Test Only"
+                    },
+                    {
+                        "club_Code": "CMPC",
+                        "club_Name": "Mipec"
+                    },
+                    {
+                        "club_Code": "MMPC",
+                        "club_Name": "Mipec Club"
+                    },
+                    {
+                        "club_Code": "MUDC",
+                        "club_Name": "MUDC"
+                    },
+                    {
+                        "club_Code": "MNTC",
+                        "club_Name": "Nha Trang California"
+                    },
+                    {
+                        "club_Code": "CNTC",
+                        "club_Name": "Nha Trang Center"
+                    },
+                    {
+                        "club_Code": "CPPC",
+                        "club_Name": "Pearl Plaza"
+                    },
+                    {
+                        "club_Code": "MPPC",
+                        "club_Name": "Pearl Plaza California"
+                    },
+                    {
+                        "club_Code": "MPPE",
+                        "club_Name": "Pearl Plaza ERI"
+                    },
+                    {
+                        "club_Code": "HPBH",
+                        "club_Name": "Pegasus Biên Hòa"
+                    },
+                    {
+                        "club_Code": "MPBH",
+                        "club_Name": "Pegasus Biên Hòa"
+                    },
+                    {
+                        "club_Code": "CPBH",
+                        "club_Name": "Pegasus Plaza"
+                    },
+                    {
+                        "club_Code": "CPCH",
+                        "club_Name": "Pico"
+                    },
+                    {
+                        "club_Code": "CPCO",
+                        "club_Name": "Pico Plaza"
+                    },
+                    {
+                        "club_Code": "MPCO",
+                        "club_Name": "Pico Plaza California"
+                    },
+                    {
+                        "club_Code": "MPCE",
+                        "club_Name": "Pico Plaza ERI"
+                    },
+                    {
+                        "club_Code": "MPCH",
+                        "club_Name": "Pico Plaza HN"
+                    },
+                    {
+                        "club_Code": "MQAB",
+                        "club_Name": "Queen Ann Building"
+                    },
+                    {
+                        "club_Code": "MRCE",
+                        "club_Name": "Royal Centuryon ERI"
+                    },
+                    {
+                        "club_Code": "CRCC",
+                        "club_Name": "Royal City"
+                    },
+                    {
+                        "club_Code": "MRCC",
+                        "club_Name": "Royal City Club"
+                    },
+                    {
+                        "club_Code": "CSCC",
+                        "club_Name": "Sài Gòn Center"
+                    },
+                    {
+                        "club_Code": "MSCC",
+                        "club_Name": "Saigon Center Centuryon"
+                    },
+                    {
+                        "club_Code": "MSCE",
+                        "club_Name": "Saigon Center ERI"
+                    },
+                    {
+                        "club_Code": "CSCT",
+                        "club_Name": "Sky City Tower"
+                    },
+                    {
+                        "club_Code": "MSCT",
+                        "club_Name": "Sky City Tower"
+                    },
+                    {
+                        "club_Code": "CWPC",
+                        "club_Name": "Somerset West Point"
+                    },
+                    {
+                        "club_Code": "MWPE",
+                        "club_Name": "Somerset West Point ERI"
+                    },
+                    {
+                        "club_Code": "CTDU",
+                        "club_Name": "Thảo Điền"
+                    },
+                    {
+                        "club_Code": "MTDU",
+                        "club_Name": "Thảo Điền club"
+                    },
+                    {
+                        "club_Code": "MTDE",
+                        "club_Name": "Thao Dien ERI"
+                    },
+                    {
+                        "club_Code": "HTDY",
+                        "club_Name": "Thảo Điền Hypoxi"
+                    },
+                    {
+                        "club_Code": "MTDP",
+                        "club_Name": "Thao Dien Pearl"
+                    },
+                    {
+                        "club_Code": "MTDY",
+                        "club_Name": "Thảo Điền Yoga"
+                    },
+                    {
+                        "club_Code": "MTDC",
+                        "club_Name": "Thủ Đức California"
+                    },
+                    {
+                        "club_Code": "CTCM",
+                        "club_Name": "Time City"
+                    },
+                    {
+                        "club_Code": "MTCM",
+                        "club_Name": "Time City Mall"
+                    },
+                    {
+                        "club_Code": "CTTC",
+                        "club_Name": "TTC"
+                    },
+                    {
+                        "club_Code": "HTTC",
+                        "club_Name": "TTC"
+                    },
+                    {
+                        "club_Code": "MTTC",
+                        "club_Name": "TTC"
+                    },
+                    {
+                        "club_Code": "RTTC",
+                        "club_Name": "TTC - Retail"
+                    },
+                    {
+                        "club_Code": "CVMC",
+                        "club_Name": "Việt Market"
+                    },
+                    {
+                        "club_Code": "CVSC",
+                        "club_Name": "Vincom Star City"
+                    },
+                    {
+                        "club_Code": "MVSC",
+                        "club_Name": "Vincom Star City Club"
+                    },
+                    {
+                        "club_Code": "CCVC",
+                        "club_Name": "Vincom Xuan Khanh"
+                    },
+                    {
+                        "club_Code": "VITA",
+                        "club_Name": "VITA"
+                    },
+                    {
+                        "club_Code": "MVVO",
+                        "club_Name": "Vivo California"
+                    },
+                    {
+                        "club_Code": "CVVO",
+                        "club_Name": "ViVo City"
+                    },
+                    {
+                        "club_Code": "MVVE",
+                        "club_Name": "VIVO ERI"
+                    },
+                    {
+                        "club_Code": "MVTC",
+                        "club_Name": "Vung Tau California"
+                    },
+                    {
+                        "club_Code": "MWPC",
+                        "club_Name": "West Point Club"
+                    }
+                ]
+            }
+        ],
+        "hasNutritionPackage": 0,
+        "nutritionPackageName": ""
+    }
+}

@@ -1,0 +1,592 @@
+[
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Alpha.png",
+        "color": "#FDFDFD",
+        "membershipType": "ALPHA"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Altus.png",
+        "color": "#FDFDFD",
+        "membershipType": "ALTUS"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Aqua.png",
+        "color": "#000000",
+        "membershipType": "AQUA"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Athletes.png",
+        "color": "#FDFDFD",
+        "membershipType": "ATHLETES"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Athletes Plus.png",
+        "color": "#FDFDFD",
+        "membershipType": "ATHLETES_PLUS"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Black Founding.png",
+        "color": "#FDFDFD",
+        "membershipType": "BLACK_FOUNDING"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Black Founding - Sup.png",
+        "color": "#FDFDFD",
+        "membershipType": "BLACK_FOUNDING_SUP"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/CA Loyal.png",
+        "color": "#FDFDFD",
+        "membershipType": "CA_LOYAL"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/CA GOLD.png",
+        "color": "#FDFDFD",
+        "membershipType": "CA_GOLD"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/CA Platinum.png",
+        "color": "#000000",
+        "membershipType": "CA_PLATINUM"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Centuryon.png",
+        "color": "#FDFDFD",
+        "membershipType": "CENTURYON"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Centuryon Charter.png",
+        "color": "#FDFDFD",
+        "membershipType": "CENTURYON_CHARTER"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Centuryon Charter 2016.png",
+        "color": "#FDFDFD",
+        "membershipType": "CENTURYON_CHART_VER.2016"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Centuryon Charter 2016 - Sup.png",
+        "color": "#FDFDFD",
+        "membershipType": "CENTURYON_CHART_VER._2016_SUPPLEMENT"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Centuryon Charter 2020.png",
+        "color": "#000000",
+        "membershipType": "CENTURYON_CHARTER_2020"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Centuryon Charter 2022.png",
+        "color": "#FDFDFD",
+        "membershipType": "CENTURYON_CHART_VER.2022"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Centuryon Charter 2022 - Sup.png",
+        "color": "#FDFDFD",
+        "membershipType": "CENTURYON_CHART_VER._2022_SUPPLEMENT"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Centuryon Charter 2023.png",
+        "color": "#000000",
+        "membershipType": "CENTURYON_CHART_VER._2023_SINGLE"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Centuryon Crystal.png",
+        "color": "#FDFDFD",
+        "membershipType": "CENTURYON_CRYSTAL"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Centuryon Crystal.png",
+        "color": "#FDFDFD",
+        "membershipType": "CRYSTAL"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Centuryon Diamond.png",
+        "color": "#000000",
+        "membershipType": "CENTURYON_DIAMOND"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/CFYC PLus.png",
+        "color": "#FDFDFD",
+        "membershipType": "CFYC_PLUS"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Champion.png",
+        "color": "#FDFDFD",
+        "membershipType": "CHAMPION"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Champion - Sup.png",
+        "color": "#FDFDFD",
+        "membershipType": "CHAMPION_SUPPLEMENTARY"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Delta.png",
+        "color": "#FDFDFD",
+        "membershipType": "DELTA"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Diamond.png",
+        "color": "#FDFDFD",
+        "membershipType": "DIAMOND"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Dues Membership.png",
+        "color": "#FDFDFD",
+        "membershipType": "DUES_CA"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Diamond X.png",
+        "color": "#FDFDFD",
+        "membershipType": "DIAMOND-X"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Diamond X.png",
+        "color": "#FDFDFD",
+        "membershipType": "DIAMOND-X_2025_FLOATING"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Diamond X VIP.png",
+        "color": "#FDFDFD",
+        "membershipType": "DIAMOND-X_VIP"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Diamond X VIP Plus.png",
+        "color": "#000000",
+        "membershipType": "DIAMOND-X_VIP_PLUS"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Due Diamond.png",
+        "color": "#FDFDFD",
+        "membershipType": "DUE_DIAMOND"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Due Gold.png",
+        "color": "#FDFDFD",
+        "membershipType": "DUE_GOLD"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Due Platinum.png",
+        "color": "#000000",
+        "membershipType": "DUE_PLATINUM"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Dues Membership.png",
+        "color": "#FDFDFD",
+        "membershipType": "DUES_MEMBERSHIP"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Dues Membership.png",
+        "color": "#FDFDFD",
+        "membershipType": "DUES_RECURRENT"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Excelsior.png",
+        "color": "#000000",
+        "membershipType": "EXCELSIOR"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Executive.png",
+        "color": "#FDFDFD",
+        "membershipType": "EXECUTIVE"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Executive 2020.png",
+        "color": "#FDFDFD",
+        "membershipType": "EXECUTIVE_2020"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Fight Club.png",
+        "color": "#FDFDFD",
+        "membershipType": "FIGHT_CLUB"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Fight Club Plus.png",
+        "color": "#FDFDFD",
+        "membershipType": "FIGHT_CLUB_PLUS"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Smart.png",
+        "color": "#FDFDFD",
+        "membershipType": "FLG_SMART"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Gold.png",
+        "color": "#FDFDFD",
+        "membershipType": "GOLD"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Gold Plus.png",
+        "color": "#FDFDFD",
+        "membershipType": "GOLD_PLUS"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Gold Premium.png",
+        "color": "#FDFDFD",
+        "membershipType": "GOLD_PREMIUM"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Gold VIP.png",
+        "color": "#FDFDFD",
+        "membershipType": "GOLD_VIP"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Gold VIP Guest.png",
+        "color": "#000000",
+        "membershipType": "GOLD_VIP_GUEST"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/GP.png",
+        "color": "#FDFDFD",
+        "membershipType": "GP"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Guest Pass.png",
+        "color": "#FDFDFD",
+        "membershipType": "GUEST_PASS"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Hero.png",
+        "color": "#FDFDFD",
+        "membershipType": "HERO"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/HERO_2020.png",
+        "color": "#FDFDFD",
+        "membershipType": "HERO_2020"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Hero Star.png",
+        "color": "#FDFDFD",
+        "membershipType": "HERO_STAR"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Hero VIP.png",
+        "color": "#FDFDFD",
+        "membershipType": "HERO_VIP"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Hero VIP - Sup.png",
+        "color": "#FDFDFD",
+        "membershipType": "HERO_VIP_SUPPLEMENT"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/ICONIC.png",
+        "color": "#FDFDFD",
+        "membershipType": "ICONIC"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/ICONIC 2023.png",
+        "color": "#FDFDFD",
+        "membershipType": "ICONIC_2023"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/ICONIC 2023 - Sup.png",
+        "color": "#000000",
+        "membershipType": "ICONIC_2023_SUPPLEMENT"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/ICONIC Black Founding.png",
+        "color": "#FDFDFD",
+        "membershipType": "ICONIC_BLACK_FOUNDING"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/ICONIC Black Founding - Sup.png",
+        "color": "#000000",
+        "membershipType": "ICONIC_BLACK_FOUNDING_SUPPLEMENT"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/ICONIC - Sup.png",
+        "color": "#000000",
+        "membershipType": "ICONIC_SUPPLEMENT"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Infinity.png",
+        "color": "#FDFDFD",
+        "membershipType": "INFINITY"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/InfinityX.png",
+        "color": "#FDFDFD",
+        "membershipType": "INFINITY_X"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Jasmine.png",
+        "color": "#000000",
+        "membershipType": "JASMINE"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Jupiter.png",
+        "color": "#FDFDFD",
+        "membershipType": "JUPITER"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Lavender.png",
+        "color": "#000000",
+        "membershipType": "LAVENDER"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Lily.png",
+        "color": "#000000",
+        "membershipType": "LILY"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Lotus.png",
+        "color": "#000000",
+        "membershipType": "LOTUS"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Lotus VIP Guest.png",
+        "color": "#FDFDFD",
+        "membershipType": "LOTUS_VIP_GUEST"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Lsmart.png",
+        "color": "#FDFDFD",
+        "membershipType": "LSMART"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Mars.png",
+        "color": "#FDFDFD",
+        "membershipType": "MARS"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/OL.png",
+        "color": "#FDFDFD",
+        "membershipType": "OL"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Orchid.png",
+        "color": "#000000",
+        "membershipType": "ORCHID"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Orchid VIP Guest.png",
+        "color": "#FDFDFD",
+        "membershipType": "ORCHID_VIP_GUEST"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Platinum.png",
+        "color": "#000000",
+        "membershipType": "PLATINUM"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Platinum Plus.png",
+        "color": "#000000",
+        "membershipType": "PLATINUM_PLUS"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Platinum Premium.png",
+        "color": "#FDFDFD",
+        "membershipType": "PLATINUM_PREMIUM"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Platinum VIP Guest.png",
+        "color": "#FDFDFD",
+        "membershipType": "PLATINUM_VIP_GUEST"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Premier.png",
+        "color": "#000000",
+        "membershipType": "PREMIER"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Premier X.png",
+        "color": "#000000",
+        "membershipType": "PREMIER_X"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Premium.png",
+        "color": "#FDFDFD",
+        "membershipType": "PREMIUM"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Prestige.png",
+        "color": "#FDFDFD",
+        "membershipType": "PRESTIGE"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Royale.png",
+        "color": "#000000",
+        "membershipType": "ROYALE"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Royale Plus.png",
+        "color": "#FDFDFD",
+        "membershipType": "ROYALE_PLUS"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Royale Plus VIP Guest.png",
+        "color": "#FDFDFD",
+        "membershipType": "ROYALE_PLUS_VIP_GUEST"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Royale VIP Guest.png",
+        "color": "#FDFDFD",
+        "membershipType": "ROYALE_VIP_GUEST"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Ruby.png",
+        "color": "#FDFDFD",
+        "membershipType": "RUBY"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Ruby VIP Guest.png",
+        "color": "#FDFDFD",
+        "membershipType": "RUBY_VIP_GUEST"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Sapphire.png",
+        "color": "#FDFDFD",
+        "membershipType": "SAPHIRRE"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Silver.png",
+        "color": "#000000",
+        "membershipType": "SILVER"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Silver VIP Guest.png",
+        "color": "#FDFDFD",
+        "membershipType": "SILVER_VIP_GUEST"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Smart.png",
+        "color": "#FDFDFD",
+        "membershipType": "SMART"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Staff.png",
+        "color": "#FDFDFD",
+        "membershipType": "STAFF"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Sunshine.png",
+        "color": "#000000",
+        "membershipType": "SUNSHINE"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Titanium.png",
+        "color": "#FDFDFD",
+        "membershipType": "TITANIUM"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Titanium VIP Guest.png",
+        "color": "#FDFDFD",
+        "membershipType": "TITANIUM_VIP_GUEST"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Titanium X.png",
+        "color": "#FDFDFD",
+        "membershipType": "TITANIUM-X"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Treasure X.png",
+        "color": "#FDFDFD",
+        "membershipType": "TREASURE_X"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/UFC Athletes.png",
+        "color": "#FDFDFD",
+        "membershipType": "UFC_ATHLETES"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/UFC Executive.png",
+        "color": "#FDFDFD",
+        "membershipType": "UFC_EXECUTIVE"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/UFC Gold.png",
+        "membershipType": "UFC_GOLD",
+        "color": "#FDFDFD"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Universe.png",
+        "color": "#FDFDFD",
+        "membershipType": "UNIVERSE"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/White Diamond Founding.png",
+        "color": "#000000",
+        "membershipType": "WDF"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/White Diamond.png",
+        "color": "#000000",
+        "membershipType": "WHITE_DIAMOND"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/White Diamond Founding.png",
+        "color": "#000000",
+        "membershipType": "WHITE_DIAMOND_FOUNDING"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/White Diamond VIP Guest.png",
+        "color": "#FDFDFD",
+        "membershipType": "WHITE_DIAMOND_VIP_GUEST"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Wsmart.png",
+        "color": "#FDFDFD",
+        "membershipType": "WSMART"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/X-Membership.png",
+        "color": "#FDFDFD",
+        "membershipType": "X-MEMBERSHIP"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/XV.png",
+        "color": "#000000",
+        "membershipType": "XV"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Zenith.png",
+        "color": "#000000",
+        "membershipType": "ZENITH"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Default.png",
+        "color": "#000000",
+        "membershipType": "DEFAULT"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Califresh_Card.png",
+        "color": "#FDFDFD",
+        "membershipType": "CALIFRESH_PREPAID_CARD"
+    },
+    {
+        "img": "https://booking.cali.vn/storage/app/media/Cards/_txinh.png",
+        "color": "#FDFDFD",
+        "membershipType": "TXINH"
+    },
+    {
+        "color": "#FDFDFD",
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Cali-GymCredit-Background.png",
+        "membershipType": "GYM_CREDIT"
+    },
+    {
+        "color": "#FDFDFD",
+        "img": "https://booking.cali.vn/storage/app/media/Cards/CRESCENT.png",
+        "membershipType": "CRESCENT"
+    },
+    {
+        "color": "#FDFDFD",
+        "img": "https://booking.cali.vn/storage/app/media/Cards/VIP+Fouding.jpg",
+        "membershipType": "VIP_FOUNDING"
+    },
+    {
+        "color": "#FDFDFD",
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Founding.jpg",
+        "membershipType": "FOUNDING"
+    },
+    {
+        "color": "#FDFDFD",
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Founding.jpg",
+        "membershipType": "FOUNDING"
+    },
+    {
+        "color": "#000000",
+        "img": "https://booking.cali.vn/storage/app/media/Cards/Vip+Founding+Supplementary.jpg",
+        "membershipType": "VIP_FOUNDING_SUPPLEMENTARY"
+    }
+]

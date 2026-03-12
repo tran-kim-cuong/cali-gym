@@ -1,8 +1,13 @@
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
+import 'package:californiaflutter/helpers/convert_model.dart';
+import 'package:californiaflutter/helpers/member_cache_manager.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/pages/layouts/history_schedule.dart';
 import 'package:californiaflutter/pages/layouts/login.dart';
+import 'package:californiaflutter/pages/layouts/member_card.dart';
+import 'package:californiaflutter/pages/layouts/personal_info.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -113,6 +118,42 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
 
                       // SizedBox(height: context.resH(24)),
 
+                      // SECTION: CÁ NHÂN
+                      _buildSectionTitle('profile.sec_privacy'.tr()),
+                      _buildMenuItem(
+                        'assets/images/profiles/user.svg',
+                        'profile.sec_privacy_info'.tr(),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const PersonalInfoScreen(),
+                          ),
+                        ),
+                      ),
+                      _buildMenuItem(
+                        'assets/images/profiles/card.svg',
+                        'profile.sec_privacy_member_card'.tr(),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => MemberListScreen(
+                              cards: buildMemberCards(SessionManager.member),
+                            ),
+                          ),
+                        ),
+                      ),
+                      _buildMenuItem(
+                        'assets/images/vuesax/teacher.svg',
+                        'profile.sec_privacy_future_class'.tr(),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const HistoryScheduleScreen(),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: context.resH(16)),
+
                       // SECTION: CÀI ĐẶT
                       _buildSectionTitle('profile.sec_settings'.tr()),
                       _buildSwitchItem(
@@ -141,6 +182,21 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
 
                       // NÚT ĐĂNG XUẤT
                       _buildLogoutButton(),
+
+                      // VERSION
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: context.resH(20),
+                        ),
+                        child: Text(
+                          'Version 1.0.1',
+                          style: TextStyle(
+                            color: const Color(0xFF9A9A9A),
+                            fontSize: context.resClamp(12, 11, 13),
+                            fontFamily: 'Inter',
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -157,16 +213,10 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
   Widget _buildUserInfo() {
     return Column(
       children: [
-        Container(
-          width: context.resW(72),
-          height: context.resW(72),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: NetworkImage("https://placehold.co/72x72"),
-              fit: BoxFit.cover,
-            ),
-          ),
+        Image.asset(
+          'assets/images/logo_profile.png',
+          height: context.resH(80),
+          fit: BoxFit.contain,
         ),
         SizedBox(height: context.resH(12)),
         Text(
@@ -174,7 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
           style: TextStyle(
             color: Colors.white,
             fontSize: context.resClamp(16, 14, 18),
-            fontFamily: 'Mulish', // Theo snippet user
+            fontFamily: 'Mulish',
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -242,6 +292,44 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
   //     ),
   //   );
   // }
+
+  Widget _buildMenuItem(String iconPath, String label, {VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap ?? () {},
+      child: Container(
+        height: context.resH(48),
+        padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
+        child: Row(
+          children: [
+            SizedBox(
+              width: context.resW(20),
+              height: context.resW(20),
+              child: SvgPicture.asset(
+                iconPath,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+                fit: BoxFit.contain,
+              ),
+            ),
+            SizedBox(width: context.resW(12)),
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: context.resClamp(14, 13, 15),
+                  fontFamily: 'Inter',
+                ),
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: Color(0xFF9A9A9A), size: 16),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildSwitchItem(String iconPath, String label) {
     return Container(
@@ -448,6 +536,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
         // 2. Clear dữ liệu dưới Disk (SharedPreferences)
         // Đảm bảo SessionManager đã có hàm logout() hoặc clear()
         await SessionManager.logout();
+        await MemberCacheManager().clearMemberCache();
 
         // 3. Clear dữ liệu trên RAM (AppSession)
         AppSession().clear();

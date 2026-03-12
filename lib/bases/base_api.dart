@@ -58,13 +58,38 @@ class BaseApi {
     _dioCrm.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          // KIỂM TRA: Nếu request chưa có header Authorization thì mới dùng default
-          // Việc này giúp bạn có thể truyền 'key' khác từ bên ngoài vào khi gọi API
           if (!options.headers.containsKey('Authorization') &&
               !options.headers.containsKey('authorization')) {
             options.headers['Authorization'] = basicAuth;
           }
+          debugPrint(
+            '⚡ [CRM REQUEST] ${options.method} ${options.baseUrl}${options.path}',
+          );
+          debugPrint('⚡ [CRM REQUEST] Headers: ${options.headers}');
+          if (options.data != null) {
+            debugPrint('⚡ [CRM REQUEST] Body: ${options.data}');
+          }
+          if (options.queryParameters.isNotEmpty) {
+            debugPrint('⚡ [CRM REQUEST] Query: ${options.queryParameters}');
+          }
           return handler.next(options);
+        },
+        onResponse: (r, h) {
+          debugPrint(
+            '⚡ [CRM RESPONSE] ${r.statusCode} ${r.requestOptions.method} ${r.requestOptions.baseUrl}${r.requestOptions.path}',
+          );
+          debugPrint('⚡ [CRM RESPONSE] Data: ${r.data}');
+          return h.next(r);
+        },
+        onError: (e, h) {
+          debugPrint(
+            '⚡ [CRM ERROR] ${e.response?.statusCode} ${e.requestOptions.method} ${e.requestOptions.baseUrl}${e.requestOptions.path}',
+          );
+          debugPrint('⚡ [CRM ERROR] Message: ${e.message}');
+          if (e.response?.data != null) {
+            debugPrint('⚡ [CRM ERROR] Response: ${e.response?.data}');
+          }
+          return h.next(e);
         },
       ),
     );
@@ -102,21 +127,43 @@ class BaseApi {
       onRequest: (options, handler) async {
         if (useToken) {
           String? token = await SessionManager.getToken();
-          // debugPrint(token);
           if (token != null) {
             options.headers["Authorization"] = "Bearer $token";
             options.headers["Content-Type"] = "application/json";
           }
         }
 
+        debugPrint(
+          '⚡ [REQUEST] ${options.method} ${options.baseUrl}${options.path}',
+        );
+        debugPrint('⚡ [REQUEST] Headers: ${options.headers}');
+        if (options.data != null) {
+          debugPrint('⚡ [REQUEST] Body: ${options.data}');
+        }
+        if (options.queryParameters.isNotEmpty) {
+          debugPrint('⚡ [REQUEST] Query: ${options.queryParameters}');
+        }
+
         return handler.next(options);
       },
       onResponse: (r, h) {
+        debugPrint(
+          '⚡ [RESPONSE] ${r.statusCode} ${r.requestOptions.method} ${r.requestOptions.baseUrl}${r.requestOptions.path}',
+        );
+        debugPrint('⚡ [RESPONSE] Data: ${r.data}');
         return h.next(r);
       },
       onError: (e, h) async {
+        debugPrint(
+          '⚡ [ERROR] ${e.response?.statusCode} ${e.requestOptions.method} ${e.requestOptions.baseUrl}${e.requestOptions.path}',
+        );
+        debugPrint('⚡ [ERROR] Message: ${e.message}');
+        if (e.response?.data != null) {
+          debugPrint('⚡ [ERROR] Response: ${e.response?.data}');
+        }
+
         if (useToken && e.response?.statusCode == 401) {
-          debugPrint("Token expired. Re-logging in...");
+          debugPrint('⚡ [AUTH] Token expired. Re-logging in...');
           String? newToken = await _performReLogin();
 
           if (newToken != null) {

@@ -7,7 +7,6 @@ import 'package:californiaflutter/pages/shared/common_modal.dart';
 import 'package:californiaflutter/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_svg/svg.dart';
 
 class OtherBenefitsScreen extends StatefulWidget {
   const OtherBenefitsScreen({super.key});
@@ -30,56 +29,56 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
       "code": "tsm",
       'name': 'Khăn nhỏ',
       'count': 0,
-      'icon': 'assets/images/vuesax/towel-svgrepo-com 1.svg',
+      'icon': 'assets/images/vuesax/ic_towel.png',
     },
     {
       'id': 'towel_large',
       "code": "txl",
       'name': 'Khăn to',
       'count': 0,
-      'icon': 'assets/images/vuesax/towel-svgrepo-com 1.svg',
+      'icon': 'assets/images/vuesax/ic_towel.png',
     },
     {
       'id': 'towel_set',
       "code": "set-1txl-1tsm",
       'name': 'Set khăn (1 to + 1 nhỏ)',
       'count': 0,
-      'icon': 'assets/images/vuesax/towel-svgrepo-com 1.svg',
+      'icon': 'assets/images/vuesax/ic_towel.png',
     },
     {
       'id': 'robe',
       "code": "coa",
       'name': 'Áo choàng',
       'count': 0,
-      'icon': 'assets/images/vuesax/wear-svgrepo-com 1.svg',
+      'icon': 'assets/images/vuesax/ic_robe.png',
     },
     {
       'id': 'shirt',
       "code": "vts",
       'name': 'Áo tập',
       'count': 0,
-      'icon': 'assets/images/vuesax/wear-svgrepo-com 1.svg',
+      'icon': 'assets/images/vuesax/ic_shirt.png',
     },
     {
       'id': 'pants',
       "code": "vpa",
       'name': 'Quần tập',
       'count': 0,
-      'icon': 'assets/images/vuesax/pant-pants-svgrepo-com 1.svg',
+      'icon': 'assets/images/vuesax/ic_pants.png',
     },
     {
       'id': 'lock',
       "code": "lok",
       'name': 'Khoá',
       'count': 0,
-      'icon': 'assets/images/vuesax/lock-svgrepo-com 1.svg',
+      'icon': 'assets/images/vuesax/ic_lock.png',
     },
     {
       'id': 'vip',
       "code": "acc",
       'name': 'Thẻ ra vào khu vực VIP',
       'count': 0,
-      'icon': 'assets/images/vuesax/card-svgrepo-com 1.svg',
+      'icon': 'assets/images/vuesax/ic_vip_card.png',
     },
   ];
   List<Map<String, dynamic>> _products = [];
@@ -423,19 +422,16 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
     );
   }
 
-  Widget _buildProductItem(int index, String name, int count, String svgPath) {
+  Widget _buildProductItem(int index, String name, int count, String iconPath) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: context.resH(8)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Hiển thị SVG trước tên
-          SvgPicture.asset(
-            svgPath,
+          Image.asset(
+            iconPath,
             width: context.resW(24).clamp(20.0, 26.0),
             height: context.resW(24).clamp(20.0, 26.0),
-            // Phủ màu trắng cho icon để nổi bật trên nền tối
-            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
           ),
           SizedBox(width: context.resW(12)),
           Expanded(

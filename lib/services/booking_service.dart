@@ -1,5 +1,6 @@
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/models/booking_class_model.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class BookingService {
@@ -36,6 +37,34 @@ class BookingService {
     } catch (e) {
       debugPrint("--- BookingService Error: $e ---");
       return []; // Trả về list rỗng nếu có lỗi để tránh crash UI
+    }
+  }
+
+  /// Gửi đánh giá lớp học
+  static Future<Map<String, dynamic>> submitClassReview({
+    required String clientCode,
+    required int scheduleId,
+    required int rate,
+    required String description,
+  }) async {
+    try {
+      final formData = FormData.fromMap({
+        'clientcode': clientCode,
+        'schedule_id': scheduleId.toString(),
+        'rate': rate.toString(),
+        'description': description,
+      });
+      final response = await BaseApi().client.post(
+        '/post/submitClassReview',
+        data: formData,
+      );
+      if (response.statusCode == 200 && response.data != null) {
+        return Map<String, dynamic>.from(response.data);
+      }
+      return {'success': false, 'message': 'Đã xảy ra lỗi, vui lòng thử lại'};
+    } catch (e) {
+      debugPrint("--- BookingService.submitClassReview Error: $e ---");
+      return {'success': false, 'message': 'Đã xảy ra lỗi, vui lòng thử lại'};
     }
   }
 }

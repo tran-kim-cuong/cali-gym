@@ -19,7 +19,8 @@
     "info_sub_seat": "chỗ ngồi",
     "info_sub_trainer": "Giáo viên",
     "tag_widget_status": "Chờ xác nhận",
-    "title": "Chi tiết lớp"
+    "title": "Chi tiết lớp",
+    "class_already_evaluated": "Đã đánh giá lớp học trước đó"
   },
   "common": {
     "lang_vi": "Tiếng Việt",

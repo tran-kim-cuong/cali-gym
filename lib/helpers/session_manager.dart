@@ -39,6 +39,16 @@ class SessionManager {
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(keyIsLoggedIn);
+    await prefs.remove(keyToken);
+    await prefs.remove(sSdt);
+    await prefs.remove(_keyClientId);
+    await prefs.remove(_keyCustomerId);
+
+    member = MemberModel();
+    sTenKh = "";
+    sMembershipNumber = "";
+    sClientId = "";
+    sCustomerId = "";
   }
 
   // Hàm lấy Token mà bạn đang tìm
