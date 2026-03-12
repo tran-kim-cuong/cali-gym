@@ -16,8 +16,6 @@ class HistoryScheduleScreen extends StatefulWidget {
 class _HistoryScheduleScreenState extends State<HistoryScheduleScreen> {
   // Biến trạng thái cho Tab chính (Hoàn thành / Chưa hoàn thành)
   bool _isCompletedSelected = false;
-  // Biến trạng thái cho Sub-tab (Sắp diễn ra / Đã hủy)
-  bool _isUpcomingSelected = true;
 
   @override
   Widget build(BuildContext context) {
@@ -94,38 +92,6 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen> {
                       onTap: () => _handleMainTabChange(false),
                     ),
                   ],
-                ),
-
-                SizedBox(height: context.resH(16)),
-
-                // Sub-filter: Sắp/Đang diễn ra | Đã hủy
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
-                  child: Container(
-                    padding: EdgeInsets.all(context.resW(4)),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF3E3E3E),
-                      borderRadius: BorderRadius.circular(context.resW(30)),
-                    ),
-                    child: Row(
-                      children: [
-                        _buildSubTab(
-                          context,
-                          "Sắp/Đang diễn ra",
-                          isActive: _isUpcomingSelected,
-                          onTap: () =>
-                              setState(() => _isUpcomingSelected = true),
-                        ),
-                        _buildSubTab(
-                          context,
-                          "Đã huỷ",
-                          isActive: !_isUpcomingSelected,
-                          onTap: () =>
-                              setState(() => _isUpcomingSelected = false),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
 
                 // Empty State Content
@@ -255,8 +221,6 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen> {
   void _handleMainTabChange(bool isCompleted) {
     setState(() {
       _isCompletedSelected = isCompleted;
-      // Reset sub-tab về "Sắp diễn ra" khi đổi tab chính
-      _isUpcomingSelected = true;
     });
   }
 
@@ -274,36 +238,6 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen> {
         // 3. Sử dụng ColorFilter thay cho thuộc tính color đã cũ
         // colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
         fit: BoxFit.contain,
-      ),
-    );
-  }
-
-  // Widget xây dựng Pill Tab - Scale bo góc và Padding
-  Widget _buildSubTab(
-    BuildContext context,
-    String title, {
-    required bool isActive,
-    required VoidCallback onTap,
-  }) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: context.resH(8)),
-          decoration: BoxDecoration(
-            color: isActive ? const Color(0xFF242424) : Colors.transparent,
-            borderRadius: BorderRadius.circular(context.resW(20)),
-          ),
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: context.resClamp(12, 10, 14),
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
       ),
     );
   }
