@@ -6,6 +6,7 @@ import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/pages/layouts/history_schedule.dart';
 import 'package:californiaflutter/pages/layouts/login.dart';
 import 'package:californiaflutter/pages/layouts/member_card.dart';
+import 'package:californiaflutter/pages/layouts/personal_info.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -121,6 +122,12 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
                       _buildMenuItem(
                         'assets/images/profiles/user.svg',
                         'profile.sec_privacy_info'.tr(),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const PersonalInfoScreen(),
+                          ),
+                        ),
                       ),
                       _buildMenuItem(
                         'assets/images/profiles/card.svg',
