@@ -487,6 +487,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                       }
                     }
                   },
+                  opacityImage: 'assets/images/v5/image 1517.png',
                 );
               },
               style: OutlinedButton.styleFrom(

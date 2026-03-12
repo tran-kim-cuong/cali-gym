@@ -5,12 +5,14 @@
     "lnk_sitemaps": "Xem sơ đồ",
     "lbl_duration": "Thời lượng học",
     "lbl_subfix_mins": "phút",
-    "lbl_seatno":"Vị trí ngồi",
-    "lbl_prefix_ifno":"Còn",
-    "lbl_subfix_seatno":"chỗ",
-    "lbl_introduce":"Giới thiệu",
-    "lbl_default_desc":"Gentle Yoga là sự kết hợp của các tư thế chậm và đơn giản...",
-    "lbl_notice":"Lưu ý",
-    "lbl_pick_seat":"Đặt chỗ",
-    "lbl_select_seat":"Chọn chỗ"
+    "lbl_seatno": "Vị trí ngồi",
+    "lbl_prefix_ifno": "Còn",
+    "lbl_subfix_seatno": "chỗ",
+    "lbl_introduce": "Giới thiệu",
+    "lbl_default_desc": "Gentle Yoga là sự kết hợp của các tư thế chậm và đơn giản...",
+    "lbl_notice": "Lưu ý",
+    "lbl_pick_seat": "Đặt chỗ",
+    "lbl_select_seat": "Chọn chỗ",
+
+    "lbl_full_seat": "Hết chỗ"
 }
