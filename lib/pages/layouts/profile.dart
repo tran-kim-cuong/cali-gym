@@ -1,8 +1,11 @@
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
+import 'package:californiaflutter/helpers/convert_model.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/pages/layouts/history_schedule.dart';
 import 'package:californiaflutter/pages/layouts/login.dart';
+import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -112,6 +115,36 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
                       // ),
 
                       // SizedBox(height: context.resH(24)),
+
+                      // SECTION: CÁ NHÂN
+                      _buildSectionTitle('profile.sec_privacy'.tr()),
+                      _buildMenuItem(
+                        'assets/images/profiles/user.svg',
+                        'profile.sec_privacy_info'.tr(),
+                      ),
+                      _buildMenuItem(
+                        'assets/images/profiles/card.svg',
+                        'profile.sec_privacy_member_card'.tr(),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => MemberListScreen(
+                              cards: buildMemberCards(SessionManager.member),
+                            ),
+                          ),
+                        ),
+                      ),
+                      _buildMenuItem(
+                        'assets/images/vuesax/teacher.svg',
+                        'profile.sec_privacy_future_class'.tr(),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const HistoryScheduleScreen(),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: context.resH(16)),
 
                       // SECTION: CÀI ĐẶT
                       _buildSectionTitle('profile.sec_settings'.tr()),
@@ -236,6 +269,44 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
   //     ),
   //   );
   // }
+
+  Widget _buildMenuItem(String iconPath, String label, {VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap ?? () {},
+      child: Container(
+        height: context.resH(48),
+        padding: EdgeInsets.symmetric(horizontal: context.resW(20)),
+        child: Row(
+          children: [
+            SizedBox(
+              width: context.resW(20),
+              height: context.resW(20),
+              child: SvgPicture.asset(
+                iconPath,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+                fit: BoxFit.contain,
+              ),
+            ),
+            SizedBox(width: context.resW(12)),
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: context.resClamp(14, 13, 15),
+                  fontFamily: 'Inter',
+                ),
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: Color(0xFF9A9A9A), size: 16),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildSwitchItem(String iconPath, String label) {
     return Container(
