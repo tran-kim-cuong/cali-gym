@@ -498,12 +498,28 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                         ),
                         onPressed: selectedRating == 0
                             ? null
-                            : () {
+                            : () async {
                                 Navigator.pop(ctx);
+                                final result = await handleApi(
+                                  context,
+                                  BookingService.submitClassReview(
+                                    clientCode: AppSession().clientId,
+                                    scheduleId: item.scheduleId ?? 0,
+                                    rate: selectedRating,
+                                    description: commentController.text.trim(),
+                                  ),
+                                );
+                                if (!mounted) return;
+                                final message =
+                                    result?['message'] as String? ??
+                                    'Đã xảy ra lỗi, vui lòng thử lại';
+                                final isSuccess = result?['success'] == true;
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Cảm ơn bạn đã đánh giá!'),
-                                    backgroundColor: Color(0xFF4CAF50),
+                                  SnackBar(
+                                    content: Text(message),
+                                    backgroundColor: isSuccess
+                                        ? const Color(0xFF4CAF50)
+                                        : const Color(0xFFE04A50),
                                   ),
                                 );
                               },
