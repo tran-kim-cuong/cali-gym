@@ -157,16 +157,10 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
   Widget _buildUserInfo() {
     return Column(
       children: [
-        Container(
-          width: context.resW(72),
-          height: context.resW(72),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: NetworkImage("https://placehold.co/72x72"),
-              fit: BoxFit.cover,
-            ),
-          ),
+        Image.asset(
+          'assets/images/logo_profile.png',
+          height: context.resH(80),
+          fit: BoxFit.contain,
         ),
         SizedBox(height: context.resH(12)),
         Text(
@@ -174,7 +168,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
           style: TextStyle(
             color: Colors.white,
             fontSize: context.resClamp(16, 14, 18),
-            fontFamily: 'Mulish', // Theo snippet user
+            fontFamily: 'Mulish',
             fontWeight: FontWeight.w600,
           ),
         ),
