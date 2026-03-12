@@ -5,7 +5,7 @@
         <key>CFBundleDevelopmentRegion</key>
         <string>$(DEVELOPMENT_LANGUAGE)</string>
         <key>CFBundleDisplayName</key>
-        <string>Cali GYM</string>
+        <string>Cali Life</string>
         <key>CFBundleExecutable</key>
         <string>$(EXECUTABLE_NAME)</string>
         <key>CFBundleIdentifier</key>
@@ -46,14 +46,14 @@
         <key>UIApplicationSupportsIndirectInputEvents</key>
         <true/>
         <key>NSCameraUsageDescription</key>
-        <string>Cali GYM cần quyền truy cập Camera để bạn có thể chụp ảnh cập nhật hồ sơ cá nhân và kết quả tập luyện.
+        <string>Cali Life cần quyền truy cập Camera để bạn có thể chụp ảnh cập nhật hồ sơ cá nhân và kết quả tập luyện.
         </string>
 
         <key>NSPhotoLibraryUsageDescription</key>
-        <string>Cali GYM cần quyền truy cập Thư viện ảnh để bạn có thể chọn và tải ảnh lên hồ sơ của mình.</string>
+        <string>Cali Life cần quyền truy cập Thư viện ảnh để bạn có thể chọn và tải ảnh lên hồ sơ của mình.</string>
 
         <key>NSMicrophoneUsageDescription</key>
-        <string>Cali GYM cần quyền sử dụng Micro để thu âm khi bạn quay video quá trình tập luyện.</string>
+        <string>Cali Life cần quyền sử dụng Micro để thu âm khi bạn quay video quá trình tập luyện.</string>
 
         <key>LSApplicationQueriesSchemes</key>
         <array>
