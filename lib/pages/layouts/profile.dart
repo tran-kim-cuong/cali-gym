@@ -181,6 +181,21 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
 
                       // NÚT ĐĂNG XUẤT
                       _buildLogoutButton(),
+
+                      // VERSION
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: context.resH(20),
+                        ),
+                        child: Text(
+                          'Version 1.0.1',
+                          style: TextStyle(
+                            color: const Color(0xFF9A9A9A),
+                            fontSize: context.resClamp(12, 11, 13),
+                            fontFamily: 'Inter',
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
