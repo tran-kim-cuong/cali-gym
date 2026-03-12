@@ -7,6 +7,7 @@ import 'package:californiaflutter/pages/layouts/class_detail.dart';
 import 'package:californiaflutter/pages/master.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/services/booking_service.dart';
+import 'package:californiaflutter/services/vietnam_time_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -33,16 +34,35 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
   // Logic gọi API lấy danh sách lớp học sắp tới
   Future<void> _fetchLatestClasses() async {
     try {
-      final List<BookingData> rs =
-          await handleApi(
-            context,
-            BookingService.getUpcomingClasses(AppSession().clientId),
-          ) ??
-          [];
+      final Future<List<BookingData>> classesFuture = handleApi(
+        context,
+        BookingService.getUpcomingClasses(AppSession().clientId),
+      ).then((value) => value ?? <BookingData>[]);
+
+      final Future<DateTime> nowVietnamFuture = VietnamTimeService.instance
+          .getNowVietnamWithFallback();
+
+      final List<dynamic> results = await Future.wait<dynamic>([
+        classesFuture,
+        nowVietnamFuture,
+      ]);
+
+      final List<BookingData> rs = results[0] as List<BookingData>;
+      final DateTime nowVietnam = results[1] as DateTime;
+
+      final List<BookingData> availableClasses =
+          rs.where((item) {
+            final DateTime? endDate = item.endDate;
+            if (endDate == null) return false;
+            return !endDate.isBefore(nowVietnam);
+          }).toList()..sort((a, b) {
+            if (a.startDate == null || b.startDate == null) return 0;
+            return a.startDate!.compareTo(b.startDate!);
+          });
 
       if (mounted) {
         setState(() {
-          classes = rs;
+          classes = availableClasses;
         });
       }
     } catch (e) {
