@@ -1,6 +1,7 @@
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/convert_model.dart';
+import 'package:californiaflutter/helpers/member_cache_manager.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/pages/layouts/history_schedule.dart';
@@ -535,6 +536,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
         // 2. Clear dữ liệu dưới Disk (SharedPreferences)
         // Đảm bảo SessionManager đã có hàm logout() hoặc clear()
         await SessionManager.logout();
+        await MemberCacheManager().clearMemberCache();
 
         // 3. Clear dữ liệu trên RAM (AppSession)
         AppSession().clear();

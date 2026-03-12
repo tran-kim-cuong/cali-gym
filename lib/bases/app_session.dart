@@ -1,4 +1,5 @@
 import 'package:californiaflutter/helpers/session_manager.dart';
+import 'package:californiaflutter/helpers/member_cache_manager.dart';
 import 'package:californiaflutter/models/member_model.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/widgets.dart';
@@ -29,8 +30,12 @@ class AppSession {
     // Await một lần duy nhất tại đây
     phoneNumber = await SessionManager.getPhoneNumber() ?? "";
     clientId = await SessionManager.getClientId() ?? "";
-    member = SessionManager.member;
+    member = MemberCacheManager().getCachedMember() ?? SessionManager.member;
     customerId = await SessionManager.getCustomerId() ?? "";
+
+    SessionManager.member = member ?? MemberModel();
+    SessionManager.sTenKh = member?.firstName ?? "";
+    SessionManager.sMembershipNumber = member?.membershipNumber ?? "";
 
     bool loggedIn = await SessionManager.isLoggedIn();
     isLoggedIn = loggedIn && phoneNumber.isNotEmpty;
@@ -86,6 +91,8 @@ class AppSession {
       member = mem;
       // Lưu object member nếu cần
       SessionManager.member = mem;
+      SessionManager.sTenKh = mem.firstName ?? "";
+      SessionManager.sMembershipNumber = mem.membershipNumber ?? "";
     }
 
     // Cập nhật trạng thái đăng nhập

@@ -1,6 +1,7 @@
 // import 'package:californiaflutter/pages/layouts/home.dart';
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
+import 'package:californiaflutter/helpers/member_cache_manager.dart';
 import 'package:californiaflutter/pages/layouts/welcome.dart';
 import 'package:californiaflutter/pages/master.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -22,6 +23,7 @@ void main() async {
 
   // 2. Khởi tạo Localization
   // GOM CHUNG CÁC TÁC VỤ CHỜ LOADING TẠI ĐÂY
+  await MemberCacheManager().init();
   await Future.wait([
     EasyLocalization.ensureInitialized(), // Khởi tạo đa ngôn ngữ
     dotenv.load(fileName: ".env"), // Load cấu hình môi trường
