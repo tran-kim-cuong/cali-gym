@@ -510,10 +510,13 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                                   ),
                                 );
                                 if (!mounted) return;
-                                final message =
-                                    result?['message'] as String? ??
-                                    'Đã xảy ra lỗi, vui lòng thử lại';
                                 final isSuccess = result?['success'] == true;
+                                final message = isSuccess
+                                    ? (result?['message'] as String? ??
+                                          'class_detail.class_already_evaluated'
+                                              .tr())
+                                    : 'class_detail.class_already_evaluated'
+                                          .tr();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(message),
