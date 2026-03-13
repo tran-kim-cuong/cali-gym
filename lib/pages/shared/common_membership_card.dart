@@ -13,6 +13,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 class CommonMembershipCard extends StatefulWidget {
   final Map<String, dynamic> data;
   final EdgeInsetsGeometry? margin;
+  final Map<String, dynamic>? visualOverride;
 
   // Thêm 2 tham số này để quản lý trạng thái từ bên ngoài
   final bool isExpanded; // Thẻ này có đang mở QR không?
@@ -22,6 +23,7 @@ class CommonMembershipCard extends StatefulWidget {
     super.key,
     required this.data,
     this.margin,
+    this.visualOverride,
     required this.isExpanded,
     required this.onToggle,
     this.onQrClick, // --- THÊM DÒNG NÀY ---
@@ -56,8 +58,11 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
   @override
   void initState() {
     super.initState();
-
-    isShareCard = (defaultSupplementary == widget.data['mbClassificationName']);
+    debugPrint("isOwner ${widget.data['isOwner']}");
+    if (widget.data['isOwner'] == true &&
+        defaultSupplementary == widget.data['mbClassificationName']) {
+      isShareCard = true;
+    }
     _loadCardData();
 
     // Nếu khởi tạo mà đã mở sẵn thì chạy luôn (trường hợp hiếm)
@@ -68,10 +73,12 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
 
   Future<void> _loadCardData() async {
     await ImageHelper.initMembershipCards();
-    final cardData = ImageHelper.getMembershipCardData(
-      membershipType: widget.data['membershipType'] as String?,
-      membershipNameCard: widget.data['mbMembershipNameCard'] as String?,
-    );
+    final cardData =
+        widget.visualOverride ??
+        ImageHelper.getMembershipCardData(
+          membershipType: widget.data['membershipType'] as String?,
+          membershipNameCard: widget.data['mbMembershipNameCard'] as String?,
+        );
     if (!mounted || cardData == null) return;
     final colorHex = (cardData['color'] as String).replaceAll('#', '');
     final fullHex = colorHex.length == 6 ? 'FF$colorHex' : colorHex;
@@ -85,6 +92,17 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
   @override
   void didUpdateWidget(covariant CommonMembershipCard oldWidget) {
     super.didUpdateWidget(oldWidget);
+    final hasVisualDataChanged =
+        oldWidget.data['membershipType'] != widget.data['membershipType'] ||
+        oldWidget.data['mbMembershipNameCard'] !=
+            widget.data['mbMembershipNameCard'] ||
+        oldWidget.visualOverride?['img'] != widget.visualOverride?['img'] ||
+        oldWidget.visualOverride?['color'] != widget.visualOverride?['color'];
+
+    if (hasVisualDataChanged) {
+      _loadCardData();
+    }
+
     if (widget.isExpanded != oldWidget.isExpanded) {
       if (widget.isExpanded) {
         _startQrSession(); // Mở -> Bắt đầu tạo mã và đếm

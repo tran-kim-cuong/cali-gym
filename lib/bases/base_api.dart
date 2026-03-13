@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:californiaflutter/helpers/session_manager.dart';
+import 'package:californiaflutter/helpers/app_debug_logger.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class BaseApi {
@@ -62,33 +62,15 @@ class BaseApi {
               !options.headers.containsKey('authorization')) {
             options.headers['Authorization'] = basicAuth;
           }
-          debugPrint(
-            '⚡ [CRM REQUEST] ${options.method} ${options.baseUrl}${options.path}',
-          );
-          debugPrint('⚡ [CRM REQUEST] Headers: ${options.headers}');
-          if (options.data != null) {
-            debugPrint('⚡ [CRM REQUEST] Body: ${options.data}');
-          }
-          if (options.queryParameters.isNotEmpty) {
-            debugPrint('⚡ [CRM REQUEST] Query: ${options.queryParameters}');
-          }
+          AppDebugLogger.apiRequest(options, scope: 'CRM REQUEST');
           return handler.next(options);
         },
         onResponse: (r, h) {
-          debugPrint(
-            '⚡ [CRM RESPONSE] ${r.statusCode} ${r.requestOptions.method} ${r.requestOptions.baseUrl}${r.requestOptions.path}',
-          );
-          debugPrint('⚡ [CRM RESPONSE] Data: ${r.data}');
+          AppDebugLogger.apiResponse(r, scope: 'CRM RESPONSE');
           return h.next(r);
         },
         onError: (e, h) {
-          debugPrint(
-            '⚡ [CRM ERROR] ${e.response?.statusCode} ${e.requestOptions.method} ${e.requestOptions.baseUrl}${e.requestOptions.path}',
-          );
-          debugPrint('⚡ [CRM ERROR] Message: ${e.message}');
-          if (e.response?.data != null) {
-            debugPrint('⚡ [CRM ERROR] Response: ${e.response?.data}');
-          }
+          AppDebugLogger.apiError(e, scope: 'CRM ERROR');
           return h.next(e);
         },
       ),
@@ -117,7 +99,7 @@ class BaseApi {
         return newToken;
       }
     } catch (e) {
-      debugPrint("Lỗi khi tự động Login lại: $e");
+      AppDebugLogger.log('⚡ [AUTH] Lỗi khi tự động Login lại', data: e);
     }
     return null;
   }
@@ -133,37 +115,19 @@ class BaseApi {
           }
         }
 
-        debugPrint(
-          '⚡ [REQUEST] ${options.method} ${options.baseUrl}${options.path}',
-        );
-        debugPrint('⚡ [REQUEST] Headers: ${options.headers}');
-        if (options.data != null) {
-          debugPrint('⚡ [REQUEST] Body: ${options.data}');
-        }
-        if (options.queryParameters.isNotEmpty) {
-          debugPrint('⚡ [REQUEST] Query: ${options.queryParameters}');
-        }
+        AppDebugLogger.apiRequest(options);
 
         return handler.next(options);
       },
       onResponse: (r, h) {
-        debugPrint(
-          '⚡ [RESPONSE] ${r.statusCode} ${r.requestOptions.method} ${r.requestOptions.baseUrl}${r.requestOptions.path}',
-        );
-        debugPrint('⚡ [RESPONSE] Data: ${r.data}');
+        AppDebugLogger.apiResponse(r);
         return h.next(r);
       },
       onError: (e, h) async {
-        debugPrint(
-          '⚡ [ERROR] ${e.response?.statusCode} ${e.requestOptions.method} ${e.requestOptions.baseUrl}${e.requestOptions.path}',
-        );
-        debugPrint('⚡ [ERROR] Message: ${e.message}');
-        if (e.response?.data != null) {
-          debugPrint('⚡ [ERROR] Response: ${e.response?.data}');
-        }
+        AppDebugLogger.apiError(e);
 
         if (useToken && e.response?.statusCode == 401) {
-          debugPrint('⚡ [AUTH] Token expired. Re-logging in...');
+          AppDebugLogger.log('⚡ [AUTH] Token expired. Re-logging in...');
           String? newToken = await _performReLogin();
 
           if (newToken != null) {

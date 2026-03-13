@@ -86,7 +86,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
   void _updateCount(int index, int delta) {
     setState(() {
       int newVal = _products[index]['count'] + delta;
-      if (newVal >= 0) _products[index]['count'] = newVal;
+      if (newVal >= 0 && newVal <= 1) _products[index]['count'] = newVal;
     });
   }
 
@@ -109,6 +109,11 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
               _selectedCard?['benefitMember'].split(',').contains(item['code']),
         )
         .toList();
+  }
+
+  bool _isSelectedMemberCard(Map<String, dynamic> card) {
+    return _selectedCard?['membershipNumber'] == card['membershipNumber'] &&
+        _selectedCard?['membershipType'] == card['membershipType'];
   }
 
   // HÀM HIỂN THỊ CHỌN THẺ (BOTTOM SHEET) THEO SNIPPET
@@ -166,14 +171,17 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
                       itemCount: _memberCards.length,
                       itemBuilder: (context, index) {
                         final card = _memberCards[index];
-                        bool isCurrent = _selectedCard?['id'] == card['id'];
+                        final isCurrent = _isSelectedMemberCard(card);
 
                         return InkWell(
                           onTap: () {
-                            setState(() => _selectedCard = card);
-                            // print(_selectedCard);
-                            //Filtter Benefit
-                            getProductByCard();
+                            setState(() {
+                              _selectedCard = card;
+                              _msCard = SessionManager
+                                  .member
+                                  .listMembershipCard![index];
+                              getProductByCard();
+                            });
                             Navigator.pop(context);
                           },
                           child: Container(

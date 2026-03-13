@@ -73,14 +73,14 @@ jobs:
       CHOKIDAR_USEPOLLING: 'true'
 
   # 6. Đẩy file APK lên Firebase App Distribution
-  - task: FirebaseAppDistribution@5
-    displayName: 'Upload to Firebase'
-    inputs:
-      appId: '$(FIREBASE_APP_ID)'
-      privateKeyPath: '$(firebaseServiceAccount.secureFilePath)'
-      filePath: '$(Build.SourcesDirectory)/build/app/outputs/flutter-apk/app-release.apk'
-      testerGroups: 'internal-tester'
-      releaseNotes: 'Auto update from Azure DevOps. Build ID: $(Build.BuildId)'
+  # - task: FirebaseAppDistribution@5
+  #   displayName: 'Upload to Firebase'
+  #   inputs:
+  #     appId: '$(FIREBASE_APP_ID)'
+  #     privateKeyPath: '$(firebaseServiceAccount.secureFilePath)'
+  #     filePath: '$(Build.SourcesDirectory)/build/app/outputs/flutter-apk/app-release.apk'
+  #     testerGroups: 'internal-tester'
+  #     releaseNotes: 'Auto update from Azure DevOps. Build ID: $(Build.BuildId)'
 
   # ---> ĐOẠN THÊM MỚI CHO ANDROID Ở ĐÂY <---
   - task: PublishBuildArtifacts@1
@@ -93,60 +93,60 @@ jobs:
 # ==========================================
 # LUỒNG 2: BUILD & DEPLOY IOS (Thêm mới)
 # ==========================================
-- job: Build_iOS
-  displayName: 'Build and Deploy iOS'
-  pool:
-    vmImage: 'macOS-latest' # Bắt buộc dùng macOS cho iOS
-  steps:
-  # 1. Cài đặt chứng chỉ .p12
-  - task: InstallAppleCertificate@2
-    displayName: 'Installer Apple Certificate (.p12)'
-    inputs:
-      certSecureFile: 'ios-cali.p12' # Đổi lại nếu tên file p12 của bạn khác
-      certPwd: '$(P12_PASSWORD)'             # Biến này sẽ lấy từ group ios-release-vars
-      keychain: 'temp'
+# - job: Build_iOS
+#   displayName: 'Build and Deploy iOS'
+#   pool:
+#     vmImage: 'macOS-latest' # Bắt buộc dùng macOS cho iOS
+#   steps:
+#   # 1. Cài đặt chứng chỉ .p12
+#   - task: InstallAppleCertificate@2
+#     displayName: 'Installer Apple Certificate (.p12)'
+#     inputs:
+#       certSecureFile: 'ios-cali.p12' # Đổi lại nếu tên file p12 của bạn khác
+#       certPwd: '$(P12_PASSWORD)'             # Biến này sẽ lấy từ group ios-release-vars
+#       keychain: 'temp'
 
-  # 2. Cài đặt Provisioning Profile
-  - task: InstallAppleProvisioningProfile@1
-    displayName: 'Installer Provisioning Profile'
-    inputs:
-      provisioningProfileLocation: 'secureFiles'
-      provProfileSecureFile: 'ioscali.mobileprovision' # Đổi lại nếu tên profile của bạn khác
+#   # 2. Cài đặt Provisioning Profile
+#   - task: InstallAppleProvisioningProfile@1
+#     displayName: 'Installer Provisioning Profile'
+#     inputs:
+#       provisioningProfileLocation: 'secureFiles'
+#       provProfileSecureFile: 'ioscali.mobileprovision' # Đổi lại nếu tên profile của bạn khác
 
-  # 3. Cài đặt Flutter SDK
-  - task: FlutterInstall@0
-    displayName: 'Installer Flutter SDK'
-    inputs:
-      mode: 'auto'
-      channel: 'stable'
-      version: 'latest'
+#   # 3. Cài đặt Flutter SDK
+#   - task: FlutterInstall@0
+#     displayName: 'Installer Flutter SDK'
+#     inputs:
+#       mode: 'auto'
+#       channel: 'stable'
+#       version: 'latest'
 
-  # 4. Lấy các thư viện (pub get)
-  - script: |
-      flutter pub get
-    displayName: 'Flutter Pub Get'
+#   # 4. Lấy các thư viện (pub get)
+#   - script: |
+#       flutter pub get
+#     displayName: 'Flutter Pub Get'
 
-  # 4.5. Ép Xcode chuyển sang cấu hình Manual Signing (Thủ thuật cho CI/CD)
-  - script: |
-      sed -i '' 's/ProvisioningStyle = Automatic;/ProvisioningStyle = Manual;/' ios/Runner.xcodeproj/project.pbxproj
-    displayName: 'Move mode Manual Signing'
+#   # 4.5. Ép Xcode chuyển sang cấu hình Manual Signing (Thủ thuật cho CI/CD)
+#   - script: |
+#       sed -i '' 's/ProvisioningStyle = Automatic;/ProvisioningStyle = Manual;/' ios/Runner.xcodeproj/project.pbxproj
+#     displayName: 'Move mode Manual Signing'
 
-  # 5. Build IPA Release (Bước cũ của bạn)
-  - script: |
-      flutter build ipa --release --build-number=$(Build.BuildId) --export-options-plist=ios/exportOptions.plist
-    displayName: 'Build file .ipa cho iOS'
+#   # 5. Build IPA Release (Bước cũ của bạn)
+#   - script: |
+#       flutter build ipa --release --build-number=$(Build.BuildId) --export-options-plist=ios/exportOptions.plist
+#     displayName: 'Build file .ipa cho iOS'
 
-  # 6. Đẩy ứng dụng lên TestFlight
-  - task: AppStoreRelease@1
-    displayName: 'Push application TestFlight'
-    inputs:
-      serviceEndpoint: 'Apple_App_Store_Connection' # Tên kết nối Service Connection .p8 bạn sẽ tạo
-      appIdentifier: 'com.caligym'                  # Bundle ID của ứng dụng
-      appType: 'iOS'
-      ipaPath: '**/*.ipa'
-      releaseTrack: 'TestFlight'
-      # THÊM DÒNG DƯỚI ĐÂY ĐỂ KHÔNG PHẢI ĐỢI
-      shouldWait: false
+#   # 6. Đẩy ứng dụng lên TestFlight
+#   - task: AppStoreRelease@1
+#     displayName: 'Push application TestFlight'
+#     inputs:
+#       serviceEndpoint: 'Apple_App_Store_Connection' # Tên kết nối Service Connection .p8 bạn sẽ tạo
+#       appIdentifier: 'com.caligym'                  # Bundle ID của ứng dụng
+#       appType: 'iOS'
+#       ipaPath: '**/*.ipa'
+#       releaseTrack: 'TestFlight'
+#       # THÊM DÒNG DƯỚI ĐÂY ĐỂ KHÔNG PHẢI ĐỢI
+#       shouldWait: false
 
   # - task: PublishBuildArtifacts@1
   #   displayName: 'Save file .ipa download Offline'

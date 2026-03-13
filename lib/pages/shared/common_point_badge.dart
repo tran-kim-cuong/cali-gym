@@ -9,6 +9,7 @@ class CommonPointBadge extends StatelessWidget {
   final bool showIcon;
   final bool useGradient; // THÊM: Điều khiển việc hiện nền vàng
   final bool hasBorder; // THÊM: Điều khiển việc vẽ khung ngoài (decoration)
+  final Gradient? backgroundGradient;
 
   const CommonPointBadge({
     super.key,
@@ -17,6 +18,7 @@ class CommonPointBadge extends StatelessWidget {
     this.showIcon = true,
     this.useGradient = true, // Mặc định là có hiện
     this.hasBorder = true, // Mặc định là có vẽ khung
+    this.backgroundGradient,
   });
 
   @override
@@ -31,11 +33,14 @@ class CommonPointBadge extends StatelessWidget {
               vertical: context.resH(4),
             )
           : EdgeInsets.zero,
-      decoration: hasBorder
+      decoration: hasBorder || backgroundGradient != null
           ? ShapeDecoration(
-              color: Colors.transparent,
+              color: backgroundGradient == null ? Colors.transparent : null,
+              gradient: backgroundGradient,
               shape: RoundedRectangleBorder(
-                side: const BorderSide(width: 1, color: Color(0xFFEF4822)),
+                side: hasBorder
+                    ? const BorderSide(width: 1, color: Color(0xFFEF4822))
+                    : BorderSide.none,
                 borderRadius: BorderRadius.circular(4),
               ),
             )

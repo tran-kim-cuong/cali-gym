@@ -38,6 +38,44 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
+  static const List<Map<String, String>> _homeLeadingCardVisuals = [
+    {
+      'img': 'https://booking.cali.vn/storage/app/media/Cards/Gold Premium.png',
+      'color': '#FDFDFD',
+    },
+    {
+      'img':
+          'https://booking.cali.vn/storage/app/media/Cards/Diamond X VIP Plus.png',
+      'color': '#000000',
+    },
+    {
+      'img':
+          'https://booking.cali.vn/storage/app/media/Cards/Diamond X VIP.png',
+      'color': '#FDFDFD',
+    },
+    {
+      'img': 'https://booking.cali.vn/storage/app/media/Cards/Excelsior.png',
+      'color': '#000000',
+    },
+    {
+      'img':
+          'https://booking.cali.vn/storage/app/media/Cards/Centuryon Charter.png',
+      'color': '#FDFDFD',
+    },
+  ];
+
+  static const LinearGradient _pointBadgeGradient = LinearGradient(
+    begin: Alignment.centerRight,
+    end: Alignment.centerLeft,
+    colors: [Color(0xFF00E200), Color(0xFF180F0F)],
+  );
+
+  static const LinearGradient _voucherBadgeGradient = LinearGradient(
+    begin: Alignment.centerRight,
+    end: Alignment.centerLeft,
+    colors: [Color(0xFFFFAF3D), Color(0xFF180F0F)],
+  );
+
   // int _selectedIndex = 0;
   String? _activeCardId;
   List<Map<String, dynamic>> _memberCards = [];
@@ -214,18 +252,14 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
           // LỚP 2: NỘI DUNG CHÍNH (SCROLLABLE)
           SafeArea(
             bottom: false,
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (ScrollNotification notification) {
-                if (notification.metrics.pixels < -100 &&
-                    notification is ScrollUpdateNotification) {
-                  // 2. KÍCH HOẠT: Chỉ gọi refresh khi không có loading nào đang chạy
-                  // Bạn có thể dùng một biến flag để tránh gọi liên tục nhiều lần trong 1 lần kéo
-                  _refreshHomeData();
-                }
-                return false;
-              },
+            child: RefreshIndicator(
+              color: const Color(0xFFD92229),
+              backgroundColor: const Color(0xFF242424),
+              onRefresh: () => _refreshHomeData(),
               child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -403,7 +437,7 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
               children: [
                 // GẮN SVG TẠI ĐÂY
                 SvgPicture.asset(
-                  'assets/images/CWG-Logo-White.svg', // Đường dẫn file SVG của bạn
+                  'assets/images/logo_cali.svg',
                   width: double
                       .infinity, // Để SVG tự giãn đầy chiều ngang Container
                   height:
@@ -474,11 +508,14 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
           CommonPointBadge(
             value: '500',
             svgPath: 'assets/images/vuesax/v5/ranking.svg',
+            useGradient: false,
+            backgroundGradient: _pointBadgeGradient,
           ),
           CommonPointBadge(
             value: '5 voucher',
             svgPath: 'assets/images/vuesax/v5/ticket-discount.svg',
             useGradient: false,
+            backgroundGradient: _voucherBadgeGradient,
           ),
         ],
       ),
@@ -821,6 +858,9 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
           final String uniqueKey = "${index}_${cardData['id']}";
           return CommonMembershipCard(
             data: cardData,
+            visualOverride: index < _homeLeadingCardVisuals.length
+                ? _homeLeadingCardVisuals[index]
+                : null,
             isExpanded: _activeCardId == uniqueKey,
             onToggle: () => setState(
               () => _activeCardId = (_activeCardId == uniqueKey
@@ -845,6 +885,10 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
     int displayCount = _upcomingClasses.length > 3
         ? 3
         : _upcomingClasses.length;
+    final bool shouldShowViewAllCard = _upcomingClasses.length > displayCount;
+    final int itemCount = shouldShowViewAllCard
+        ? displayCount + 1
+        : displayCount;
 
     return SizedBox(
       height: context.resH(265).clamp(250, 280),
@@ -852,7 +896,7 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.only(left: context.resW(20)),
-        itemCount: _upcomingClasses.length,
+        itemCount: itemCount,
         itemBuilder: (context, index) {
           if (index < displayCount) {
             final classData = _upcomingClasses[index];
@@ -900,7 +944,12 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
 
   Widget _buildViewAllCard() {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ClassScreen()),
+        );
+      },
       child: Container(
         width: context.resW(150),
         // Sử dụng margin và shadow đồng bộ với CommonClassCard
