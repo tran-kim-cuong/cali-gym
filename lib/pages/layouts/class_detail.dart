@@ -260,14 +260,17 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
           _buildInfoLine(
             Icons.location_on_outlined,
             '${schedule?.clubName}',
-            hasAction: true,
-            actionText: 'class_detail.info_googlemaps'.tr(),
+            // hasAction: true,
+            // actionText: 'class_detail.info_googlemaps'.tr(),
           ),
           _buildInfoLine(
             Icons.map_outlined,
             '${schedule?.numberSeat} ${'class_detail.info_sub_seat'.tr()}',
-            hasAction: true,
+            hasAction: schedule?.seatMapImage != null,
             actionText: 'class_detail.info_classmaps'.tr(),
+            onAction: schedule?.seatMapImage != null
+                ? () => _showSeatMapImage(schedule!.seatMapImage!)
+                : null,
           ),
 
           SizedBox(height: context.resH(20)),
@@ -329,6 +332,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
     String text, {
     bool hasAction = false,
     String? actionText,
+    VoidCallback? onAction,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -348,7 +352,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
           ),
           if (hasAction)
             GestureDetector(
-              onTap: () {},
+              onTap: onAction,
               child: Text(
                 actionText!,
                 style: const TextStyle(
@@ -359,6 +363,60 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  void _showSeatMapImage(String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Stack(
+          alignment: Alignment.topRight,
+          children: [
+            InteractiveViewer(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const SizedBox(
+                      height: 200,
+                      child: Center(
+                        child: CircularProgressIndicator(color: Colors.red),
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) => const SizedBox(
+                    height: 200,
+                    child: Center(
+                      child: Icon(
+                        Icons.broken_image,
+                        color: Colors.white54,
+                        size: 48,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.close, color: Colors.white, size: 20),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
