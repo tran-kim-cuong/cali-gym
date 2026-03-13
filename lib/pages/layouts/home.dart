@@ -38,6 +38,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
+  static const LinearGradient _pointBadgeGradient = LinearGradient(
+    begin: Alignment.centerRight,
+    end: Alignment.centerLeft,
+    colors: [Color(0xFF00E200), Color(0xFF180F0F)],
+  );
+
+  static const LinearGradient _voucherBadgeGradient = LinearGradient(
+    begin: Alignment.centerRight,
+    end: Alignment.centerLeft,
+    colors: [Color(0xFFFFAF3D), Color(0xFF180F0F)],
+  );
+
   // int _selectedIndex = 0;
   String? _activeCardId;
   List<Map<String, dynamic>> _memberCards = [];
@@ -474,11 +486,14 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
           CommonPointBadge(
             value: '500',
             svgPath: 'assets/images/vuesax/v5/ranking.svg',
+            useGradient: false,
+            backgroundGradient: _pointBadgeGradient,
           ),
           CommonPointBadge(
             value: '5 voucher',
             svgPath: 'assets/images/vuesax/v5/ticket-discount.svg',
             useGradient: false,
+            backgroundGradient: _voucherBadgeGradient,
           ),
         ],
       ),
