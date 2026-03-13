@@ -111,6 +111,11 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
         .toList();
   }
 
+  bool _isSelectedMemberCard(Map<String, dynamic> card) {
+    return _selectedCard?['membershipNumber'] == card['membershipNumber'] &&
+        _selectedCard?['membershipType'] == card['membershipType'];
+  }
+
   // HÀM HIỂN THỊ CHỌN THẺ (BOTTOM SHEET) THEO SNIPPET
   void _showMemberCardsBottomSheet() {
     showModalBottomSheet(
@@ -166,14 +171,17 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
                       itemCount: _memberCards.length,
                       itemBuilder: (context, index) {
                         final card = _memberCards[index];
-                        bool isCurrent = _selectedCard?['id'] == card['id'];
+                        final isCurrent = _isSelectedMemberCard(card);
 
                         return InkWell(
                           onTap: () {
-                            setState(() => _selectedCard = card);
-                            // print(_selectedCard);
-                            //Filtter Benefit
-                            getProductByCard();
+                            setState(() {
+                              _selectedCard = card;
+                              _msCard = SessionManager
+                                  .member
+                                  .listMembershipCard![index];
+                              getProductByCard();
+                            });
                             Navigator.pop(context);
                           },
                           child: Container(
