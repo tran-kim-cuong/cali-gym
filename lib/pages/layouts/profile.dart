@@ -143,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
                         ),
                       ),
                       _buildMenuItem(
-                        'assets/images/vuesax/teacher-2.svg',
+                        'assets/images/vuesax/teacher.svg',
                         'profile.sec_privacy_future_class'.tr(),
                         onTap: () => Navigator.push(
                           context,
@@ -304,7 +304,14 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
             SizedBox(
               width: context.resW(20),
               height: context.resW(20),
-              child: SvgPicture.asset(iconPath, fit: BoxFit.contain),
+              child: SvgPicture.asset(
+                iconPath,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+                fit: BoxFit.contain,
+              ),
             ),
             SizedBox(width: context.resW(12)),
             Expanded(
