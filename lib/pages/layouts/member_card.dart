@@ -26,6 +26,32 @@ class MemberListScreen extends StatefulWidget {
 
 class _MemberListScreenState extends State<MemberListScreen>
     with LoadingWrapper {
+  static const List<Map<String, String>> _leadingCardVisuals = [
+    {
+      'img': 'https://booking.cali.vn/storage/app/media/Cards/Gold Premium.png',
+      'color': '#FDFDFD',
+    },
+    {
+      'img':
+          'https://booking.cali.vn/storage/app/media/Cards/Diamond X VIP Plus.png',
+      'color': '#000000',
+    },
+    {
+      'img':
+          'https://booking.cali.vn/storage/app/media/Cards/Diamond X VIP.png',
+      'color': '#FDFDFD',
+    },
+    {
+      'img': 'https://booking.cali.vn/storage/app/media/Cards/Excelsior.png',
+      'color': '#000000',
+    },
+    {
+      'img':
+          'https://booking.cali.vn/storage/app/media/Cards/Centuryon Charter.png',
+      'color': '#FDFDFD',
+    },
+  ];
+
   String? _activeCardId;
 
   List<Map<String, dynamic>> _memberCards = [];
@@ -177,6 +203,9 @@ class _MemberListScreenState extends State<MemberListScreen>
     // debugPrint(data.toString());
     return CommonMembershipCard(
       data: data,
+      visualOverride: index < _leadingCardVisuals.length
+          ? _leadingCardVisuals[index]
+          : null,
       // Quản lý trạng thái mở mã QR từ biến _activeCardId của màn hình
       isExpanded: _activeCardId == uniqueKey,
       onToggle: () => setState(() {

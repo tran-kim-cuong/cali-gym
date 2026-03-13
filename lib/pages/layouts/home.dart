@@ -38,6 +38,32 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
+  static const List<Map<String, String>> _homeLeadingCardVisuals = [
+    {
+      'img': 'https://booking.cali.vn/storage/app/media/Cards/Gold Premium.png',
+      'color': '#FDFDFD',
+    },
+    {
+      'img':
+          'https://booking.cali.vn/storage/app/media/Cards/Diamond X VIP Plus.png',
+      'color': '#000000',
+    },
+    {
+      'img':
+          'https://booking.cali.vn/storage/app/media/Cards/Diamond X VIP.png',
+      'color': '#FDFDFD',
+    },
+    {
+      'img': 'https://booking.cali.vn/storage/app/media/Cards/Excelsior.png',
+      'color': '#000000',
+    },
+    {
+      'img':
+          'https://booking.cali.vn/storage/app/media/Cards/Centuryon Charter.png',
+      'color': '#FDFDFD',
+    },
+  ];
+
   static const LinearGradient _pointBadgeGradient = LinearGradient(
     begin: Alignment.centerRight,
     end: Alignment.centerLeft,
@@ -836,6 +862,9 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
           final String uniqueKey = "${index}_${cardData['id']}";
           return CommonMembershipCard(
             data: cardData,
+            visualOverride: index < _homeLeadingCardVisuals.length
+                ? _homeLeadingCardVisuals[index]
+                : null,
             isExpanded: _activeCardId == uniqueKey,
             onToggle: () => setState(
               () => _activeCardId = (_activeCardId == uniqueKey
