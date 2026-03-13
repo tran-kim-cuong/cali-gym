@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
@@ -12,6 +14,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
@@ -60,6 +63,65 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
         return '';
     }
   }
+
+  // ─── FILTER PERSISTENCE ─────────────────────────────────────────────────────
+
+  static const String _kFilterServices = 'schedule_filter_services';
+  static const String _kFilterCities = 'schedule_filter_cities';
+  static const String _kFilterClubs = 'schedule_filter_clubs';
+  static const String _kFilterSClubs = 'schedule_filter_sclubs';
+
+  Future<void> _saveFilterPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kFilterServices, jsonEncode(_services));
+    await prefs.setString(_kFilterCities, jsonEncode(_cities));
+    await prefs.setString(_kFilterClubs, jsonEncode(_clubs));
+    await prefs.setString(_kFilterSClubs, sClubs);
+  }
+
+  Future<void> _loadFilterPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final servicesJson = prefs.getString(_kFilterServices);
+    final citiesJson = prefs.getString(_kFilterCities);
+    final clubsJson = prefs.getString(_kFilterClubs);
+    final savedSClubs = prefs.getString(_kFilterSClubs) ?? '';
+
+    if (!mounted) return;
+    setState(() {
+      if (servicesJson != null) {
+        _services = List<Map<String, dynamic>>.from(
+          (jsonDecode(servicesJson) as List).map(
+            (e) => Map<String, dynamic>.from(e as Map),
+          ),
+        );
+      }
+      if (citiesJson != null) {
+        _cities = List<Map<String, dynamic>>.from(
+          (jsonDecode(citiesJson) as List).map(
+            (e) => Map<String, dynamic>.from(e as Map),
+          ),
+        );
+      }
+      if (clubsJson != null) {
+        _clubs = List<Map<String, dynamic>>.from(
+          (jsonDecode(clubsJson) as List).map(
+            (e) => Map<String, dynamic>.from(e as Map),
+          ),
+        );
+      }
+      sClubs = savedSClubs;
+    });
+  }
+
+  Future<void> _clearFilterPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kFilterServices);
+    await prefs.remove(_kFilterCities);
+    await prefs.remove(_kFilterClubs);
+    await prefs.remove(_kFilterSClubs);
+  }
+
+  // ────────────────────────────────────────────────────────────────────────────
 
   void _showFilterBottomSheet() {
     // print('khổi tạo bộ lọc');
@@ -583,6 +645,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     setState(() {
       _nowVietnam = nowVietnam;
     });
+
+    // Tải lại bộ lọc đã lưu trước khi fetch dữ liệu
+    await _loadFilterPreferences();
 
     _fetchDataForIndex(_selectedDateIndex);
   }
@@ -1159,7 +1224,17 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
         children: [
           Expanded(
             child: ElevatedButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                setState(() {
+                  _services = [];
+                  _cities = [];
+                  _clubs = [];
+                  sClubs = '';
+                });
+                _clearFilterPreferences();
+                _fetchDataForIndex(_selectedDateIndex);
+                Navigator.pop(context);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(
                   0xFF555555,
@@ -1180,6 +1255,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
             child: ElevatedButton(
               onPressed: () {
                 _fetchDataForIndex(_selectedDateIndex);
+                _saveFilterPreferences();
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
