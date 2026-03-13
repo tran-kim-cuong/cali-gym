@@ -710,7 +710,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
               children: [
                 // GẮN SVG TẠI ĐÂY
                 SvgPicture.asset(
-                  'assets/images/CWG-Logo-White.svg', // Đường dẫn file SVG của bạn
+                  'assets/images/logo_cali.svg',
                   width: double
                       .infinity, // Để SVG tự giãn đầy chiều ngang Container
                   height:
