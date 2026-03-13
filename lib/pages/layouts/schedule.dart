@@ -650,7 +650,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                           itemCount: _schedules.length,
                           itemBuilder: (context, index) {
                             final itemData = _schedules[index];
-                            return _buildClassCard(context, itemData);
+                            return _buildClassCard(context, itemData, index);
                           },
                         ),
                 ),
@@ -887,9 +887,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     );
   }
 
-  Widget _buildClassCard(BuildContext context, ScheduleModel data) {
+  Widget _buildClassCard(BuildContext context, ScheduleModel data, int index) {
     // Tăng độ bo góc lên 12 để mềm mại hơn
     final double cardRadius = 12.0;
+
+    final List<String> watermarks = [
+      'assets/images/watermark/image 1527.png',
+      'assets/images/watermark/image 1526.png',
+      'assets/images/watermark/image 1556.png',
+    ];
+    final String selectedWatermark = watermarks[index % watermarks.length];
 
     return GestureDetector(
       // 1. CLICK ĐỂ CHUYỂN MÀN HÌNH CHI TIẾT
@@ -940,47 +947,71 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
             ),
             // Phần nội dung thông tin lớp học
             Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(context.resW(8)), // Padding responsive
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      data.className ?? '',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Color(0xFFFFA514),
-                        fontSize: context.resClamp(13, 11, 15), // Font co giãn
-                        fontWeight: FontWeight.w600,
+              child: Stack(
+                children: [
+                  // 2. GẮN WATERMARK TRONG SUỐT CANH DƯỚI PHẢI
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Opacity(
+                      opacity: 0.8, // Độ mờ mượt mà theo hình mẫu
+                      child: Container(
+                        width: context.resW(
+                          87,
+                        ), // Kích thước khung 87x77 responsive
+                        height: context.resH(77),
+                        alignment: Alignment.bottomRight,
+                        child: Image.asset(
+                          selectedWatermark,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
-                    // Hiển thị thông tin từ Model thay vì text cứng
-                    // _buildIconRow(
-                    //   context,
-                    //   Icons.person_outline,
-                    //   data.trainerName ?? 'N/A',
-                    // ),
-                    _buildIconRow(
-                      context,
-                      Icons.calendar_today,
-                      DateFormat(
-                        'dd/MM/yyyy',
-                      ).format(data.startDate ?? DateTime.now()),
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.all(
+                      context.resW(8),
+                    ), // Padding responsive
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          data.className ?? '',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Color(0xFFFFA514),
+                            fontSize: context.resClamp(
+                              13,
+                              11,
+                              15,
+                            ), // Font co giãn
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        _buildIconRow(
+                          context,
+                          Icons.calendar_today,
+                          DateFormat(
+                            'dd/MM/yyyy',
+                          ).format(data.startDate ?? DateTime.now()),
+                        ),
+                        _buildIconRow(
+                          context,
+                          Icons.access_time,
+                          '${DateFormat('hh:mm a').format(data.startDate ?? DateTime.now())} - ${DateFormat('hh:mm a').format(data.endDate ?? DateTime.now())}',
+                        ),
+                        _buildIconRow(
+                          context,
+                          Icons.location_on_outlined,
+                          data.clubName ?? '',
+                        ),
+                      ],
                     ),
-                    _buildIconRow(
-                      context,
-                      Icons.access_time,
-                      '${DateFormat('hh:mm a').format(data.startDate ?? DateTime.now())} - ${DateFormat('hh:mm a').format(data.endDate ?? DateTime.now())}',
-                    ),
-                    _buildIconRow(
-                      context,
-                      Icons.location_on_outlined,
-                      data.clubName ?? '',
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],

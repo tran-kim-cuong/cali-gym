@@ -225,7 +225,9 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                           ),
                         ),
                         if (isCompleted)
-                          Container(color: Colors.black.withOpacity(0.35)),
+                          Container(
+                            color: Colors.black.withValues(alpha: 0.35),
+                          ),
                       ],
                     ),
                   ),
@@ -517,6 +519,8 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                                               .tr())
                                     : 'class_detail.class_already_evaluated'
                                           .tr();
+
+                                if (!context.mounted) return;
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(message),

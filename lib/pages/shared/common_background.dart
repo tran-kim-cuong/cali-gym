@@ -8,6 +8,7 @@ class CommonBackgroundWidget {
     BuildContext context,
     String assetPath, {
     double opacity = 1.0,
+    BoxFit boxFit = BoxFit.cover
   }) {
     return Positioned.fill(
       child: Align(
@@ -21,7 +22,7 @@ class CommonBackgroundWidget {
             height: MediaQuery.of(context).size.height,
 
             // BoxFit.contain để thấy trọn vẹn hình thể nhân vật không bị cắt
-            fit: BoxFit.cover,
+            fit: boxFit,
 
             errorBuilder: (context, error, stackTrace) => const SizedBox(),
           ),

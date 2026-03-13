@@ -93,8 +93,9 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
             ],
           ),
 
-          // 3. NÚT ĐẶT CHỖ CỐ ĐỊNH Ở ĐÁY
-          _buildStickyBookingButton(context, systemBottomPadding),
+          if (widget.schedule.capacityValid.isNotEmpty)
+            // 3. NÚT ĐẶT CHỖ CỐ ĐỊNH Ở ĐÁY
+            _buildStickyBookingButton(context, systemBottomPadding),
         ],
       ),
     );
@@ -279,6 +280,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
             'schedule_detail.lbl_seatno'.tr(),
             '${'schedule_detail.lbl_prefix_ifno'.tr()} ${widget.schedule.capacityValid.length}/${widget.schedule.capacityArr.length} ${'schedule_detail.lbl_subfix_seatno'.tr()}',
             isRich: true,
+            isFull: widget.schedule.capacityValid.isEmpty,
           ),
         ],
       ),
@@ -414,6 +416,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
     String label,
     String value, {
     bool isRich = false,
+    bool isFull = false,
   }) {
     return Expanded(
       child: Column(
@@ -423,45 +426,55 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
             style: const TextStyle(color: Color(0xFFC7C7C7), fontSize: 10),
           ),
           const SizedBox(height: 4),
-          isRich
-              ? Text.rich(
+          if (isFull)
+            Text(
+              'schedule_detail.lbl_full_seat'.tr(),
+              style: TextStyle(
+                color: Colors.red, // Màu đỏ theo yêu cầu
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            )
+          else if (isRich)
+            Text.rich(
+              TextSpan(
+                children: [
                   TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '${'schedule_detail.lbl_prefix_ifno'.tr()} ',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      TextSpan(
-                        text: value.split(' ')[1].split('/')[0],
-                        style: const TextStyle(
-                          color: Color(0xFF5BC146),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      TextSpan(
-                        text: '/${value.split('/')[1]}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
+                    text: '${'schedule_detail.lbl_prefix_ifno'.tr()} ',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                )
-              : Text(
-                  value,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                  TextSpan(
+                    text: value.split(' ')[1].split('/')[0],
+                    style: const TextStyle(
+                      color: Color(0xFF5BC146),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
+                  TextSpan(
+                    text: '/${value.split('/')[1]}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            Text(
+              value,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
         ],
       ),
     );
@@ -505,12 +518,15 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
                 children: [
                   // 1. LỚP NỀN (BACKGROUND)
                   Positioned.fill(
-                    child: Opacity(
-                      opacity:
-                          0.1, // Độ mờ thấp để không gây rối mắt khi chọn ghế
-                      child: CommonBackgroundWidget.buildBackgroundImage(
-                        context,
-                        "assets/images/v5/home_empty.png", // Sử dụng lại nền của app
+                    child: Center(
+                      child: Opacity(
+                        opacity:
+                            0.35, // Độ mờ thấp để không gây rối mắt khi chọn ghế
+                        child: CommonBackgroundWidget.buildBackgroundImage(
+                          context,
+                          "assets/images/v5/image 1517.png", // Sử dụng lại nền của app
+                          boxFit: BoxFit.contain,
+                        ),
                       ),
                     ),
                   ),

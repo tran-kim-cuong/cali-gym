@@ -56,8 +56,11 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
   @override
   void initState() {
     super.initState();
-
-    isShareCard = (defaultSupplementary == widget.data['mbClassificationName']);
+    debugPrint("isOwner ${widget.data['isOwner']}");
+    if (widget.data['isOwner'] == true &&
+        defaultSupplementary == widget.data['mbClassificationName']) {
+      isShareCard = true;
+    }
     _loadCardData();
 
     // Nếu khởi tạo mà đã mở sẵn thì chạy luôn (trường hợp hiếm)
