@@ -945,7 +945,34 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
           // SỬA TẠI ĐÂY: Thêm sự kiện click mở bộ lọc
           GestureDetector(
             onTap: _showFilterBottomSheet,
-            child: const Icon(Icons.filter_list, color: Colors.white, size: 20),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                const Icon(Icons.filter_list, color: Colors.white, size: 20),
+                if (_services.length + _cities.length + _clubs.length > 0)
+                  Positioned(
+                    top: -6,
+                    right: -6,
+                    child: Container(
+                      width: 16,
+                      height: 16,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFDA2128),
+                        shape: BoxShape.circle,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '${_services.length + _cities.length + _clubs.length}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ],
       ),
