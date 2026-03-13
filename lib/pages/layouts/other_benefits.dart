@@ -86,7 +86,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
   void _updateCount(int index, int delta) {
     setState(() {
       int newVal = _products[index]['count'] + delta;
-      if (newVal >= 0) _products[index]['count'] = newVal;
+      if (newVal >= 0 && newVal <= 1) _products[index]['count'] = newVal;
     });
   }
 
