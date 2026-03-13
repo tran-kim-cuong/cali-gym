@@ -74,12 +74,16 @@ class AppDebugLogger {
     }
 
     if (value is Map || value is List) {
-      return '\n${const JsonEncoder.withIndent('  ').convert(value)}';
+      try {
+        return '\n${const JsonEncoder.withIndent('  ').convert(value)}';
+      } catch (_) {
+        return ' $value';
+      }
     }
 
     if (value is FormData) {
       final formDataMap = <String, Object?>{
-        'fields': value.fields,
+        'fields': value.fields.map((e) => {e.key: e.value}).toList(),
         'files': value.files
             .map(
               (entry) => {
