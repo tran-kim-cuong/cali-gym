@@ -252,18 +252,14 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
           // LỚP 2: NỘI DUNG CHÍNH (SCROLLABLE)
           SafeArea(
             bottom: false,
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (ScrollNotification notification) {
-                if (notification.metrics.pixels < -100 &&
-                    notification is ScrollUpdateNotification) {
-                  // 2. KÍCH HOẠT: Chỉ gọi refresh khi không có loading nào đang chạy
-                  // Bạn có thể dùng một biến flag để tránh gọi liên tục nhiều lần trong 1 lần kéo
-                  _refreshHomeData();
-                }
-                return false;
-              },
+            child: RefreshIndicator(
+              color: const Color(0xFFD92229),
+              backgroundColor: const Color(0xFF242424),
+              onRefresh: () => _refreshHomeData(),
               child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
