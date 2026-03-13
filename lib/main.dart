@@ -9,21 +9,36 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 // 1. Khai báo Global Key ở ngoài cùng
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+const _kLocaleKey = 'app_locale';
+
+Future<Locale> _resolveStartLocale() async {
+  final prefs = await SharedPreferences.getInstance();
+  final saved = prefs.getString(_kLocaleKey);
+  if (saved != null) return Locale(saved);
+  final deviceLang =
+      WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+  final locale = deviceLang == 'vi' ? const Locale('vi') : const Locale('en');
+  await prefs.setString(_kLocaleKey, locale.languageCode);
+  return locale;
+}
+
 void main() async {
   // Đảm bảo các dịch vụ hệ thống đã sẵn sàng
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 1. Khởi tạo Firebase
+  // 1. Khởi tạo Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // 2. Khởi tạo Localization
   // GOM CHUNG CÁC TÁC VỤ CHỜ LOADING TẠI ĐÂY
   await MemberCacheManager().init();
+  final startLocale = await _resolveStartLocale();
   await Future.wait([
     EasyLocalization.ensureInitialized(), // Khởi tạo đa ngôn ngữ
     dotenv.load(fileName: ".env"), // Load cấu hình môi trường
@@ -48,7 +63,7 @@ void main() async {
       supportedLocales: const [Locale('en'), Locale('vi')],
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
-      startLocale: const Locale('vi'),
+      startLocale: startLocale,
       child: MyApp(isLoggedIn: AppSession().isLoggedIn),
     ),
   );
