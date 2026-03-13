@@ -845,6 +845,10 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
     int displayCount = _upcomingClasses.length > 3
         ? 3
         : _upcomingClasses.length;
+    final bool shouldShowViewAllCard = _upcomingClasses.length > displayCount;
+    final int itemCount = shouldShowViewAllCard
+        ? displayCount + 1
+        : displayCount;
 
     return SizedBox(
       height: context.resH(265).clamp(250, 280),
@@ -852,7 +856,7 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.only(left: context.resW(20)),
-        itemCount: _upcomingClasses.length,
+        itemCount: itemCount,
         itemBuilder: (context, index) {
           if (index < displayCount) {
             final classData = _upcomingClasses[index];
@@ -900,7 +904,12 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
 
   Widget _buildViewAllCard() {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ClassScreen()),
+        );
+      },
       child: Container(
         width: context.resW(150),
         // Sử dụng margin và shadow đồng bộ với CommonClassCard
