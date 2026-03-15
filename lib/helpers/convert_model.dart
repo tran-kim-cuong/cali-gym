@@ -21,6 +21,7 @@ List<Map<String, dynamic>> buildMemberCards(MemberModel? member) {
               .join(','),
           "mbMembershipNameCard": card.membershipNameCard ?? "",
           "mbClassificationName": card.mbClassificationName ?? "",
+          "isOwner": card.isOwner
         };
       }).toList() ??
       [];
