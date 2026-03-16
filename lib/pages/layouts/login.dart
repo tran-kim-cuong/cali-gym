@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
+import 'package:californiaflutter/helpers/loading_manager.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
@@ -80,6 +81,32 @@ class _LoginScreenState extends State<LoginScreen>
       "brand_name": dotenv.env["SMS_BRAND_NAME"],
       "sender": dotenv.env["SMS_SENDER"],
     });
+
+    final String clientId = _clientIdController.text.trim();
+    if (clientId.isNotEmpty) {
+      LoadingManager().show(context);
+      try {
+        final loginResponse = await BaseApi().client.post(
+          '/api/login',
+          data: {
+            "email": dotenv.env["CALIFORNIA_USER_NAME"],
+            "password": dotenv.env["CALIFORNIA_PASSWORD"],
+          },
+        );
+        if (loginResponse.statusCode != 200) {
+          showTopNotification("login.error_client_verify_failed".tr(), isError: true);
+          return;
+        }
+        final String token = loginResponse.data['token'];
+        await getMember(token, clientId, phoneNumber);
+      } catch (e) {
+        final msg = e.toString().replaceFirst('Exception: ', '');
+        showTopNotification(msg.isNotEmpty ? msg : "login.error_member_not_found".tr(), isError: true);
+        return;
+      } finally {
+        LoadingManager().hide();
+      }
+    }
 
     if (method == 'SMS') {
       try {

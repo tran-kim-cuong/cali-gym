@@ -58,6 +58,8 @@
   "login": {
     "phone_hint": "Phone number",
     "client_id_hint": "Client ID",
+    "error_client_verify_failed": "Verification failed, please try again",
+    "error_member_not_found": "Client ID is invalid or account is inactive",
     "agree_prefix": "Agree to ",
     "terms": "Terms & Conditions",
     "and": " and ",

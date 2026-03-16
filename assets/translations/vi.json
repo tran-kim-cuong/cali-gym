@@ -58,6 +58,8 @@
   "login": {
     "phone_hint": "Số điện thoại",
     "client_id_hint": "Client ID",
+    "error_client_verify_failed": "Không thể xác thực, vui lòng thử lại",
+    "error_member_not_found": "Client ID không hợp lệ hoặc tài khoản không hoạt động",
     "agree_prefix": "Đồng ý với ",
     "terms": "Điều khoản & Điều kiện",
     "and": " và ",
