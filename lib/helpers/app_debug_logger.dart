@@ -13,6 +13,10 @@ class AppDebugLogger {
     Object? data,
     Map<String, Object?> extra = const <String, Object?>{},
   }) {
+    if (!kDebugMode) {
+      return;
+    }
+
     final lines = <String>['$title${_formatValue(data)}'];
 
     for (final entry in extra.entries) {
