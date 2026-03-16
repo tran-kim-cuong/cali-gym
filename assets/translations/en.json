@@ -80,6 +80,18 @@
     "btn_loyalty": "Loyalty",
     "btn_profile": "Profile"
   },
+  "other_benefits": {
+    "select_card": "Select card",
+    "select_product": "Select product",
+    "product_towel_small": "Small towel",
+    "product_towel_large": "Large towel",
+    "product_towel_set": "Towel set (1 large + 1 small)",
+    "product_robe": "Robe",
+    "product_shirt": "Workout shirt",
+    "product_pants": "Workout pants",
+    "product_lock": "Lock",
+    "product_vip_access_card": "VIP access card"
+  },
   "otp": {
     "title": "Enter OTP",
     "subtitle_prefix": "We have sent a 4-digit verification code to ",

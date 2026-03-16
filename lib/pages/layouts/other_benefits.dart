@@ -5,6 +5,7 @@ import 'package:californiaflutter/models/member_model.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/common_modal.dart';
 import 'package:californiaflutter/services/api_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -27,56 +28,56 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
     {
       'id': 'towel_small',
       "code": "tsm",
-      'name': 'Khăn nhỏ',
+      'nameKey': 'other_benefits.product_towel_small',
       'count': 0,
       'icon': 'assets/images/vuesax/ic_towel.png',
     },
     {
       'id': 'towel_large',
       "code": "txl",
-      'name': 'Khăn to',
+      'nameKey': 'other_benefits.product_towel_large',
       'count': 0,
       'icon': 'assets/images/vuesax/ic_towel.png',
     },
     {
       'id': 'towel_set',
       "code": "set-1txl-1tsm",
-      'name': 'Set khăn (1 to + 1 nhỏ)',
+      'nameKey': 'other_benefits.product_towel_set',
       'count': 0,
       'icon': 'assets/images/vuesax/ic_towel.png',
     },
     {
       'id': 'robe',
       "code": "coa",
-      'name': 'Áo choàng',
+      'nameKey': 'other_benefits.product_robe',
       'count': 0,
       'icon': 'assets/images/vuesax/ic_robe.png',
     },
     {
       'id': 'shirt',
       "code": "vts",
-      'name': 'Áo tập',
+      'nameKey': 'other_benefits.product_shirt',
       'count': 0,
       'icon': 'assets/images/vuesax/ic_shirt.png',
     },
     {
       'id': 'pants',
       "code": "vpa",
-      'name': 'Quần tập',
+      'nameKey': 'other_benefits.product_pants',
       'count': 0,
       'icon': 'assets/images/vuesax/ic_pants.png',
     },
     {
       'id': 'lock',
       "code": "lok",
-      'name': 'Khoá',
+      'nameKey': 'other_benefits.product_lock',
       'count': 0,
       'icon': 'assets/images/vuesax/ic_lock.png',
     },
     {
       'id': 'vip',
       "code": "acc",
-      'name': 'Thẻ ra vào khu vực VIP',
+      'nameKey': 'other_benefits.product_vip_access_card',
       'count': 0,
       'icon': 'assets/images/vuesax/ic_vip_card.png',
     },
@@ -145,7 +146,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Chọn thẻ',
+                          'other_benefits.select_card'.tr(),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: context.resClamp(16, 14, 18),
@@ -314,7 +315,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
             onPressed: () => Navigator.pop(context),
           ),
           Text(
-            'Quyền lợi khác',
+            'home.fnc_other_benefit'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: context.resClamp(18, 16, 22),
@@ -339,7 +340,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Thẻ hội viên',
+            'home.section_member_card'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: context.resClamp(14, 12, 16),
@@ -406,7 +407,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Chọn sản phẩm',
+            'other_benefits.select_product'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: context.resClamp(14, 12, 16),
@@ -420,7 +421,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
             final item = _products[index];
             return _buildProductItem(
               index,
-              item['name'],
+              item['nameKey'],
               item['count'],
               item['icon'],
             );
@@ -430,7 +431,12 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
     );
   }
 
-  Widget _buildProductItem(int index, String name, int count, String iconPath) {
+  Widget _buildProductItem(
+    int index,
+    String nameKey,
+    int count,
+    String iconPath,
+  ) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: context.resH(8)),
       child: Row(
@@ -444,7 +450,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
           SizedBox(width: context.resW(12)),
           Expanded(
             child: Text(
-              name,
+              nameKey.tr(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: context.resClamp(14, 12, 16),
@@ -549,7 +555,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
             elevation: 0,
           ),
           child: Text(
-            'Xác nhận',
+            'common.accept'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: context.resClamp(16, 14, 18),
