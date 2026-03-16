@@ -57,6 +57,7 @@
   },
   "login": {
     "phone_hint": "Phone number",
+    "client_id_hint": "Client ID",
     "agree_prefix": "Agree to ",
     "terms": "Terms & Conditions",
     "and": " and ",

@@ -26,7 +26,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen>
     with LoadingWrapper, NotificationMixin {
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _clientIdController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  final FocusNode _clientIdFocusNode = FocusNode();
   bool _isAgreed = false;
   bool _isPhoneValid = false;
 
@@ -40,7 +42,9 @@ class _LoginScreenState extends State<LoginScreen>
   void dispose() {
     _phoneController.removeListener(_onPhoneChanged);
     _phoneController.dispose();
+    _clientIdController.dispose();
     _focusNode.dispose();
+    _clientIdFocusNode.dispose();
     super.dispose();
   }
 
@@ -94,7 +98,10 @@ class _LoginScreenState extends State<LoginScreen>
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => OtpScreen(phoneNumber: phoneNumber),
+                builder: (context) => OtpScreen(
+                  phoneNumber: phoneNumber,
+                  clientId: _clientIdController.text.trim(),
+                ),
               ),
             );
           }
@@ -209,6 +216,8 @@ class _LoginScreenState extends State<LoginScreen>
                                   ),
                                   SizedBox(height: context.resH(20)),
                                   _buildPhoneTextField(),
+                                  SizedBox(height: context.resH(12)),
+                                  _buildClientIdTextField(),
                                   SizedBox(height: context.resH(16)),
                                   _buildAgreementText(),
                                   SizedBox(height: context.resH(30)),
@@ -295,6 +304,31 @@ class _LoginScreenState extends State<LoginScreen>
         hintText: 'login.phone_hint'.tr(),
         hintStyle: const TextStyle(color: Color(0xFF6B6B6B)),
         prefixIcon: const Icon(Icons.smartphone, color: Color(0xFFC7C7C7)),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFF333333)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFFDA212D)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        filled: true,
+        fillColor: Colors.white.withValues(alpha: 0.05),
+        contentPadding: EdgeInsets.symmetric(vertical: context.resH(16)),
+      ),
+    );
+  }
+
+  Widget _buildClientIdTextField() {
+    return TextField(
+      controller: _clientIdController,
+      focusNode: _clientIdFocusNode,
+      keyboardType: TextInputType.text,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        hintText: 'login.client_id_hint'.tr(),
+        hintStyle: const TextStyle(color: Color(0xFF6B6B6B)),
+        prefixIcon: const Icon(Icons.badge_outlined, color: Color(0xFFC7C7C7)),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Color(0xFF333333)),
           borderRadius: BorderRadius.circular(8),
