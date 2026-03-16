@@ -94,14 +94,20 @@ class _LoginScreenState extends State<LoginScreen>
           },
         );
         if (loginResponse.statusCode != 200) {
-          showTopNotification("login.error_client_verify_failed".tr(), isError: true);
+          showTopNotification(
+            "login.error_client_verify_failed".tr(),
+            isError: true,
+          );
           return;
         }
         final String token = loginResponse.data['token'];
         await getMember(token, clientId, phoneNumber);
       } catch (e) {
         final msg = e.toString().replaceFirst('Exception: ', '');
-        showTopNotification(msg.isNotEmpty ? msg : "login.error_member_not_found".tr(), isError: true);
+        showTopNotification(
+          msg.isNotEmpty ? msg : "login.error_member_not_found".tr(),
+          isError: true,
+        );
         return;
       } finally {
         LoadingManager().hide();
@@ -269,11 +275,8 @@ class _LoginScreenState extends State<LoginScreen>
             ),
           ),
 
-          // 4. Lớp thông báo (Sử dụng IgnorePointer để không chặn touch trên iPad)
-          IgnorePointer(
-            ignoring: false, // NotificationMixin thường tự xử lý hiển thị
-            child: buildNotificationWidget(),
-          ),
+          // 4. Lớp thông báo
+          buildNotificationWidget(),
         ],
       ),
     );
