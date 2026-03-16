@@ -1,8 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 class LoadingWidget extends StatelessWidget {
+  static const double _indicatorSize = 36;
+  static const double _logoSize = 34;
+
   final Widget? child; // Chuyển thành tùy chọn (nullable)
   final bool isLoading; // Mặc định là true
 
@@ -22,13 +23,17 @@ class LoadingWidget extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             // 1. Vòng quay loading (Tự thích ứng nền tảng)
-            SizedBox(width: 70, height: 70, child: _buildIndicator()),
+            SizedBox(
+              width: _indicatorSize,
+              height: _indicatorSize,
+              child: _buildIndicator(),
+            ),
             // 2. Logo bo tròn nằm chính giữa (Bỏ khung nền bao quanh)
             ClipOval(
               child: Image.asset(
                 'assets/images/new_logo.png', // Đảm bảo đúng đường dẫn ảnh
-                width: 35,
-                height: 35,
+                width: _logoSize,
+                height: _logoSize,
                 fit: BoxFit.cover,
               ),
             ),
@@ -47,17 +52,9 @@ class LoadingWidget extends StatelessWidget {
   }
 
   Widget _buildIndicator() {
-    if (kIsWeb) {
-      return const CircularProgressIndicator(
-        strokeWidth: 3,
-        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFDA212D)),
-      );
-    }
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      return const CupertinoActivityIndicator(radius: 15, color: Colors.white);
-    }
     return const CircularProgressIndicator(
       strokeWidth: 3,
+      backgroundColor: Colors.white24,
       valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFDA212D)),
     );
   }
