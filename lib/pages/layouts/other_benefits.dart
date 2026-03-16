@@ -545,6 +545,8 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
             CommonModalWidget.showBigQrModal(
               context: context,
               qrData: buffer.toString(),
+              instructionText: 'other_benefits.qr_instruction'.tr(),
+              closeButtonText: 'other_benefits.btn_close'.tr(),
             );
           },
           style: ElevatedButton.styleFrom(

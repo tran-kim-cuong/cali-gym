@@ -11,6 +11,7 @@ class CommonModalWidget {
     required BuildContext context,
     required String qrData,
     String? instructionText,
+    String? closeButtonText,
   }) async {
     double? originalBrightness;
 
@@ -64,6 +65,24 @@ class CommonModalWidget {
                 ),
                 child: Column(
                   children: [
+                    // TEXT HƯỚNG DẪN phía trên QR
+                    if (instructionText != null) ...[
+                      SizedBox(
+                        width: context.resW(335),
+                        child: Text(
+                          instructionText,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: context.resClamp(14, 12, 16),
+                            fontWeight: FontWeight.w400,
+                            height: 1.50,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: context.resH(16)),
+                    ],
+
                     // KHUNG QR TRẮNG CÓ ĐỘ BO GÓC
                     Container(
                       padding: EdgeInsets.all(context.resW(12)),
@@ -82,21 +101,31 @@ class CommonModalWidget {
 
                     SizedBox(height: context.resH(16)),
 
-                    // TEXT HƯỚNG DẪN RESPONSIVE
-                    // SizedBox(
-                    //   width: context.resW(335),
-                    //   child: Text(
-                    //     text,
-                    //     textAlign: TextAlign.center,
-                    //     style: TextStyle(
-                    //       color: Colors.white,
-                    //       // Sử dụng resClamp để chữ không bị vỡ trên máy nhỏ
-                    //       fontSize: context.resClamp(16, 14, 18),
-                    //       fontWeight: FontWeight.w500,
-                    //       height: 1.50,
-                    //     ),
-                    //   ),
-                    // ),
+                    // NÚT ĐÓNG
+                    if (closeButtonText != null)
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFD92229),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            closeButtonText,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: context.resClamp(16, 14, 18),
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+
                     // Khoảng đệm dưới cùng né thanh tác vụ (Home Indicator)
                     SizedBox(
                       height:

@@ -93,7 +93,9 @@
     "product_shirt": "Áo tập",
     "product_pants": "Quần tập",
     "product_lock": "Khoá",
-    "product_vip_access_card": "Thẻ ra vào khu vực VIP"
+    "product_vip_access_card": "Thẻ ra vào khu vực VIP",
+    "qr_instruction": "Vui lòng cung cấp mã QR này cho nhân viên lễ tân để nhận đơn hàng bạn đã đặt trước và gửi trả các sản phẩm trong đơn hàng sau khi sử dụng xong trong ngày. Xin cảm ơn.",
+    "btn_close": "Đóng"
   },
   "otp": {
     "title": "Nhập mã OTP",
