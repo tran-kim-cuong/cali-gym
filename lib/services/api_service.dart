@@ -176,9 +176,25 @@ String createQRCheckIn(String membership, String keyCode) {
   return mbsTime + key;
 }
 
-Future<bool> canShowQrForFloatingCard(String membershipId) async {
+class FloatingMembershipCheckResult {
+  final bool canShowQr;
+  final String? fullName;
+  final String? membershipNumber;
+
+  const FloatingMembershipCheckResult({
+    required this.canShowQr,
+    this.fullName,
+    this.membershipNumber,
+  });
+}
+
+Future<FloatingMembershipCheckResult> checkFloatingMembershipForQr(
+  String membershipId,
+) async {
   final String normalizedMembershipId = membershipId.trim();
-  if (normalizedMembershipId.isEmpty) return true;
+  if (normalizedMembershipId.isEmpty) {
+    return const FloatingMembershipCheckResult(canShowQr: true);
+  }
 
   try {
     final response = await http.get(
@@ -191,17 +207,39 @@ Future<bool> canShowQrForFloatingCard(String membershipId) async {
       },
     );
 
-    if (response.statusCode != 200) return true;
+    if (response.statusCode != 200) {
+      return const FloatingMembershipCheckResult(canShowQr: true);
+    }
 
     final dynamic data = jsonDecode(response.body);
     if (data is Map<String, dynamic> && data['success'] is bool) {
-      return data['success'] as bool;
+      final bool success = data['success'] as bool;
+      if (success) {
+        return const FloatingMembershipCheckResult(canShowQr: true);
+      }
+
+      String? fullName;
+      String? membershipNumber;
+      final dynamic checkInData = data['data_checkin'];
+      if (checkInData is List && checkInData.isNotEmpty) {
+        final dynamic first = checkInData.first;
+        if (first is Map<String, dynamic>) {
+          fullName = first['FullName']?.toString();
+          membershipNumber = first['membership_number']?.toString();
+        }
+      }
+
+      return FloatingMembershipCheckResult(
+        canShowQr: false,
+        fullName: fullName,
+        membershipNumber: membershipNumber,
+      );
     }
   } catch (_) {
-    return true;
+    return const FloatingMembershipCheckResult(canShowQr: true);
   }
 
-  return true;
+  return const FloatingMembershipCheckResult(canShowQr: true);
 }
 
 String generateMd5(String input) {
