@@ -57,6 +57,9 @@
   },
   "login": {
     "phone_hint": "Phone number",
+    "client_id_hint": "Client ID",
+    "error_client_verify_failed": "Verification failed, please try again",
+    "error_member_not_found": "Client ID is invalid or account is inactive",
     "agree_prefix": "Agree to ",
     "terms": "Terms & Conditions",
     "and": " and ",
@@ -79,6 +82,20 @@
     "btn_class": "Classes",
     "btn_loyalty": "Loyalty",
     "btn_profile": "Profile"
+  },
+  "other_benefits": {
+    "select_card": "Select card",
+    "select_product": "Select product",
+    "product_towel_small": "Small towel",
+    "product_towel_large": "Large towel",
+    "product_towel_set": "Towel set (1 large + 1 small)",
+    "product_robe": "Robe",
+    "product_shirt": "Workout shirt",
+    "product_pants": "Workout pants",
+    "product_lock": "Lock",
+    "product_vip_access_card": "VIP access card",
+    "qr_instruction": "Please kindly give this QR code to the receptionist to receive your order and return all item(s) after use within the day. Thank you.",
+    "btn_close": "Close"
   },
   "otp": {
     "title": "Enter OTP",

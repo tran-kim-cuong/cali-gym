@@ -19,8 +19,13 @@ import 'package:flutter_svg/svg.dart';
 
 class OtpScreen extends StatefulWidget {
   final String phoneNumber;
+  final String clientId;
 
-  const OtpScreen({super.key, required this.phoneNumber});
+  const OtpScreen({
+    super.key,
+    required this.phoneNumber,
+    this.clientId = '',
+  });
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -82,18 +87,29 @@ class _OtpScreenState extends State<OtpScreen>
   }
 
   Future<void> getClientInfo(String phone) async {
-    String clientId = dotenv.get('CLIENT_ID');
-    try {
-      final response = await BaseApi().crmClient.get(
-        '/api/v1/Web/clientinfo',
-        queryParameters: {'phoneNumber': phone},
-      );
-      if (response.statusCode == 200 && response.data != null) {
-        final List<dynamic> dataList = response.data['Data'] ?? [];
-        if (dataList.isNotEmpty) {
-          clientId = dataList[0]['clientNumber'];
+    String clientId;
+
+    if (widget.clientId.isNotEmpty) {
+      clientId = widget.clientId;
+    } else {
+      clientId = dotenv.get('CLIENT_ID');
+      try {
+        final response = await BaseApi().crmClient.get(
+          '/api/v1/Web/clientinfo',
+          queryParameters: {'phoneNumber': phone},
+        );
+        if (response.statusCode == 200 && response.data != null) {
+          final List<dynamic> dataList = response.data['Data'] ?? [];
+          if (dataList.isNotEmpty) {
+            clientId = dataList[0]['clientNumber'];
+          }
         }
+      } catch (e) {
+        debugPrint("Lỗi lấy thông tin từ CRM: $e");
       }
+    }
+
+    try {
       MemberInfoModel? mi = await getUserId(clientId);
       if (mi != null) {
         String customerId = mi.data!.userId.toString();
@@ -102,9 +118,9 @@ class _OtpScreenState extends State<OtpScreen>
         await SessionManager.setCustomerId(customerId);
       }
     } catch (e) {
-      debugPrint("Lỗi lấy thông tin từ CRM: $e");
+      debugPrint("Lỗi lấy thông tin member: $e");
     }
-    // AppSession().clientId = clientId;
+
     AppSession().updateSession(phone: phone, cid: clientId);
     SessionManager.sClientId = clientId;
     await SessionManager.setClientId(clientId);

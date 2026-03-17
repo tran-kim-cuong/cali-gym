@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
+import 'package:californiaflutter/helpers/loading_manager.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
@@ -26,7 +27,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen>
     with LoadingWrapper, NotificationMixin {
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _clientIdController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  final FocusNode _clientIdFocusNode = FocusNode();
   bool _isAgreed = false;
   bool _isPhoneValid = false;
 
@@ -40,7 +43,9 @@ class _LoginScreenState extends State<LoginScreen>
   void dispose() {
     _phoneController.removeListener(_onPhoneChanged);
     _phoneController.dispose();
+    _clientIdController.dispose();
     _focusNode.dispose();
+    _clientIdFocusNode.dispose();
     super.dispose();
   }
 
@@ -77,6 +82,38 @@ class _LoginScreenState extends State<LoginScreen>
       "sender": dotenv.env["SMS_SENDER"],
     });
 
+    final String clientId = _clientIdController.text.trim();
+    if (clientId.isNotEmpty) {
+      LoadingManager().show(context);
+      try {
+        final loginResponse = await BaseApi().client.post(
+          '/api/login',
+          data: {
+            "email": dotenv.env["CALIFORNIA_USER_NAME"],
+            "password": dotenv.env["CALIFORNIA_PASSWORD"],
+          },
+        );
+        if (loginResponse.statusCode != 200) {
+          showTopNotification(
+            "login.error_client_verify_failed".tr(),
+            isError: true,
+          );
+          return;
+        }
+        final String token = loginResponse.data['token'];
+        await getMember(token, clientId, phoneNumber);
+      } catch (e) {
+        final msg = e.toString().replaceFirst('Exception: ', '');
+        showTopNotification(
+          msg.isNotEmpty ? msg : "login.error_member_not_found".tr(),
+          isError: true,
+        );
+        return;
+      } finally {
+        LoadingManager().hide();
+      }
+    }
+
     if (method == 'SMS') {
       try {
         final response = await handleApi(
@@ -94,7 +131,10 @@ class _LoginScreenState extends State<LoginScreen>
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => OtpScreen(phoneNumber: phoneNumber),
+                builder: (context) => OtpScreen(
+                  phoneNumber: phoneNumber,
+                  clientId: _clientIdController.text.trim(),
+                ),
               ),
             );
           }
@@ -209,6 +249,8 @@ class _LoginScreenState extends State<LoginScreen>
                                   ),
                                   SizedBox(height: context.resH(20)),
                                   _buildPhoneTextField(),
+                                  SizedBox(height: context.resH(12)),
+                                  _buildClientIdTextField(),
                                   SizedBox(height: context.resH(16)),
                                   _buildAgreementText(),
                                   SizedBox(height: context.resH(30)),
@@ -233,11 +275,8 @@ class _LoginScreenState extends State<LoginScreen>
             ),
           ),
 
-          // 4. Lớp thông báo (Sử dụng IgnorePointer để không chặn touch trên iPad)
-          IgnorePointer(
-            ignoring: false, // NotificationMixin thường tự xử lý hiển thị
-            child: buildNotificationWidget(),
-          ),
+          // 4. Lớp thông báo
+          buildNotificationWidget(),
         ],
       ),
     );
@@ -295,6 +334,31 @@ class _LoginScreenState extends State<LoginScreen>
         hintText: 'login.phone_hint'.tr(),
         hintStyle: const TextStyle(color: Color(0xFF6B6B6B)),
         prefixIcon: const Icon(Icons.smartphone, color: Color(0xFFC7C7C7)),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFF333333)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFFDA212D)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        filled: true,
+        fillColor: Colors.white.withValues(alpha: 0.05),
+        contentPadding: EdgeInsets.symmetric(vertical: context.resH(16)),
+      ),
+    );
+  }
+
+  Widget _buildClientIdTextField() {
+    return TextField(
+      controller: _clientIdController,
+      focusNode: _clientIdFocusNode,
+      keyboardType: TextInputType.text,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        hintText: 'login.client_id_hint'.tr(),
+        hintStyle: const TextStyle(color: Color(0xFF6B6B6B)),
+        prefixIcon: const Icon(Icons.badge_outlined, color: Color(0xFFC7C7C7)),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Color(0xFF333333)),
           borderRadius: BorderRadius.circular(8),
