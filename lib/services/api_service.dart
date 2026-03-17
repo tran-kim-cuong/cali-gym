@@ -176,6 +176,34 @@ String createQRCheckIn(String membership, String keyCode) {
   return mbsTime + key;
 }
 
+Future<bool> canShowQrForFloatingCard(String membershipId) async {
+  final String normalizedMembershipId = membershipId.trim();
+  if (normalizedMembershipId.isEmpty) return true;
+
+  try {
+    final response = await http.get(
+      Uri.https('es-api.cfyc.asia', '/api/v1/MBS/checkInfoMembership', {
+        'membership_number': normalizedMembershipId,
+      }),
+      headers: {
+        'accept': 'application/json',
+        'Authorization': dotenv.env['CRM_BASIC_AUTHORIZATION'] ?? '',
+      },
+    );
+
+    if (response.statusCode != 200) return true;
+
+    final dynamic data = jsonDecode(response.body);
+    if (data is Map<String, dynamic> && data['success'] is bool) {
+      return data['success'] as bool;
+    }
+  } catch (_) {
+    return true;
+  }
+
+  return true;
+}
+
 String generateMd5(String input) {
   // convert string -> bytes (UTF8)
   var bytes = utf8.encode(input);
