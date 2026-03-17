@@ -1,0 +1,14 @@
+{
+    "select_card": "Select card",
+    "select_product": "Select product",
+    "product_towel_small": "Small towel",
+    "product_towel_large": "Large towel",
+    "product_towel_set": "Towel set (1 large + 1 small)",
+    "product_robe": "Robe",
+    "product_shirt": "Workout shirt",
+    "product_pants": "Workout pants",
+    "product_lock": "Lock",
+    "product_vip_access_card": "VIP access card",
+    "qr_instruction": "Please kindly give this QR code to the receptionist to receive your order and return all item(s) after use within the day. Thank you.",
+    "btn_close": "Close"
+}

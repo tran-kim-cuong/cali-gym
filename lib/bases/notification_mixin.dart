@@ -32,29 +32,32 @@ mixin NotificationMixin<T extends StatefulWidget> on State<T> {
       top: _show ? 60 : -100,
       left: 20,
       right: 20,
-      child: Material(
-        // Cần Material để tránh lỗi render text
-        color: Colors.transparent,
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: const Color(0xFF1E1E1E),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                _isError ? Icons.error_outline : Icons.check_circle_outline,
-                color: _isError ? Colors.red : Colors.green,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  _message,
-                  style: const TextStyle(color: Colors.white, fontSize: 13),
+      child: IgnorePointer(
+        ignoring: true,
+        child: Material(
+          // Cần Material để tránh lỗi render text
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1E1E1E),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  _isError ? Icons.error_outline : Icons.check_circle_outline,
+                  color: _isError ? Colors.red : Colors.green,
                 ),
-              ),
-            ],
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    _message,
+                    style: const TextStyle(color: Colors.white, fontSize: 13),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

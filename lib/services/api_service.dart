@@ -66,6 +66,9 @@ Future<MemberModel> getMember(
 
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
+    if (data['success'] == false) {
+      throw Exception(data['message'] ?? 'Member not found or Inactive');
+    }
     MemberModel member = MemberModel.fromJson(data['data']);
     return member;
   } else {
