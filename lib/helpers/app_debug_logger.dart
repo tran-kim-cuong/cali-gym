@@ -7,11 +7,13 @@ class AppDebugLogger {
   static const String _yellow = '\u001B[33m';
   static const String _reset = '\u001B[0m';
   static const int _chunkSize = 800;
+  static const int _defaultMaxLines = 200;
 
   static void log(
     String title, {
     Object? data,
     Map<String, Object?> extra = const <String, Object?>{},
+    int maxLines = _defaultMaxLines,
   }) {
     if (!kDebugMode) {
       return;
@@ -23,7 +25,7 @@ class AppDebugLogger {
       lines.add('${entry.key}:${_formatValue(entry.value)}');
     }
 
-    _printLines(lines);
+    _printLines(lines, maxLines: maxLines);
   }
 
   static void apiRequest(RequestOptions options, {String scope = 'REQUEST'}) {
@@ -105,14 +107,29 @@ class AppDebugLogger {
     return ' $value';
   }
 
-  static void _printLines(List<String> messages) {
+  static void _printLines(
+    List<String> messages, {
+    int maxLines = _defaultMaxLines,
+  }) {
+    var printedLines = 0;
+
     for (final message in messages) {
+      if (printedLines >= maxLines) break;
+
       final safeMessage = message.replaceAll('\r\n', '\n');
       final lines = safeMessage.split('\n');
 
       for (final line in lines) {
+        if (printedLines >= maxLines) {
+          debugPrintSynchronously(
+            '$_yellow... (truncated, exceeded $maxLines lines)$_reset',
+          );
+          return;
+        }
+
         if (line.isEmpty) {
           debugPrintSynchronously('$_yellow$_reset');
+          printedLines++;
           continue;
         }
 
@@ -124,6 +141,7 @@ class AppDebugLogger {
             '$_yellow${line.substring(start, end)}$_reset',
           );
         }
+        printedLines++;
       }
     }
   }
