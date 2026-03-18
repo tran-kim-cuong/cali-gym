@@ -232,22 +232,26 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
               // ),
             ],
           ),
-          Row(
-            children: [
-              _buildIconText(
-                Icons.map_outlined,
-                widget.schedule.seatMapImage ?? 'N/A',
-              ),
-              const Spacer(),
-              // Text(
-              //   'schedule_detail.lnk_sitemaps'.tr(),
-              //   style: TextStyle(
-              //     color: const Color(0xFFE1494F),
-              //     fontSize: context.resClamp(12, 10, 14),
-              //   ),
-              // ),
-            ],
-          ),
+          if (widget.schedule.seatMapImage != null)
+            Row(
+              children: [
+                _buildIconText(
+                  Icons.map_outlined,
+                  '${widget.schedule.numberSeat} ${'class_detail.info_sub_seat'.tr()}',
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () => _showSeatMapImage(widget.schedule.seatMapImage!),
+                  child: Text(
+                    'schedule_detail.lnk_sitemaps'.tr(),
+                    style: TextStyle(
+                      color: const Color(0xFFE1494F),
+                      fontSize: context.resClamp(12, 10, 14),
+                    ),
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );
@@ -476,6 +480,60 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  void _showSeatMapImage(String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Stack(
+          alignment: Alignment.topRight,
+          children: [
+            InteractiveViewer(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const SizedBox(
+                      height: 200,
+                      child: Center(
+                        child: CircularProgressIndicator(color: Colors.red),
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) => const SizedBox(
+                    height: 200,
+                    child: Center(
+                      child: Icon(
+                        Icons.broken_image,
+                        color: Colors.white54,
+                        size: 48,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.close, color: Colors.white, size: 20),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
