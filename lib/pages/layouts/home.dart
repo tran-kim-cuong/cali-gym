@@ -9,7 +9,6 @@ import 'package:californiaflutter/models/member_model.dart';
 import 'package:californiaflutter/pages/layouts/class.dart';
 import 'package:californiaflutter/pages/layouts/class_detail.dart';
 // import 'package:californiaflutter/pages/layouts/loyalty.dart';
-import 'package:californiaflutter/pages/layouts/login.dart';
 import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/layouts/other_benefits.dart';
 import 'package:californiaflutter/pages/master.dart';
@@ -144,7 +143,10 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
       }
 
       if (hasRefreshError && mounted) {
-        await _handleRefreshErrorLogout();
+        showTopNotification(
+          "Không thể cập nhật dữ liệu mới, đang hiển thị dữ liệu đã lưu",
+          isError: true,
+        );
       }
     } finally {
       if (showBlockingLoading && mounted) {
@@ -222,20 +224,6 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
     }
 
     return null;
-  }
-
-  Future<void> _handleRefreshErrorLogout() async {
-    await SessionManager.logout();
-    await MemberCacheManager().clearMemberCache();
-    AppSession().clear();
-
-    if (!mounted) return;
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-      (route) => false,
-    );
   }
 
   Future<void> _checkNotificationPermission() async {
