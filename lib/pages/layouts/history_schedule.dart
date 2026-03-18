@@ -96,7 +96,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                       ),
                       Expanded(
                         child: Text(
-                          'Các lớp học trước',
+                          'history_schedule.lbl_title'.tr(),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: context.resClamp(18, 16, 22),
@@ -119,13 +119,13 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                   children: [
                     _buildTabItem(
                       context,
-                      'Hoàn thành',
+                      'history_schedule.tab_completed'.tr(),
                       isSelected: _isCompletedSelected,
                       onTap: () => _handleMainTabChange(true),
                     ),
                     _buildTabItem(
                       context,
-                      'Chưa hoàn thành',
+                      'history_schedule.tab_incomplete'.tr(),
                       isSelected: !_isCompletedSelected,
                       isError: true,
                       onTap: () => _handleMainTabChange(false),
@@ -328,7 +328,9 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                     ),
                   ),
                   child: Text(
-                    isCompleted ? 'Hoàn thành' : 'Chưa xong',
+                    isCompleted
+                        ? 'history_schedule.badge_completed'.tr()
+                        : 'history_schedule.badge_incomplete'.tr(),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 10,
@@ -357,7 +359,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                   size: context.resW(18),
                 ),
                 label: Text(
-                  'Đánh giá lớp học',
+                  'history_schedule.lbl_rate_class'.tr(),
                   style: TextStyle(
                     color: const Color(0xFFFFB359),
                     fontSize: context.resClamp(13, 12, 15),
@@ -374,6 +376,10 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
   // ── RATING BOTTOM SHEET ───────────────────────────────────────────────────
   void _showRatingBottomSheet(BuildContext context, BookingData item) {
     int selectedRating = 0;
+    int selectedRating1 = 0;
+    bool showTrainerCommentError = false;
+    final TextEditingController trainerCommentController =
+        TextEditingController();
     final TextEditingController commentController = TextEditingController();
 
     showModalBottomSheet(
@@ -383,12 +389,16 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
       builder: (ctx) {
         return StatefulBuilder(
           builder: (ctx2, setModalState) {
+            final bool canSubmit = selectedRating > 0 && selectedRating1 > 0;
+
             return Padding(
               padding: EdgeInsets.only(
                 bottom: MediaQuery.of(ctx2).viewInsets.bottom,
               ),
               child: Container(
-                padding: EdgeInsets.all(context.resW(24)),
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(ctx2).size.height * 0.92,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF242424),
                   borderRadius: BorderRadius.vertical(
@@ -397,150 +407,337 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Handle bar
-                    Center(
-                      child: Container(
-                        width: context.resW(40),
-                        height: context.resH(4),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF6B6B6B),
-                          borderRadius: BorderRadius.circular(context.resW(2)),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: context.resH(20)),
-
-                    // Title
-                    Text(
-                      'Đánh giá lớp học',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: context.resClamp(18, 16, 20),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: context.resH(4)),
-                    Text(
-                      item.serviceName ?? '',
-                      style: TextStyle(
-                        color: const Color(0xFF9A9A9A),
-                        fontSize: context.resClamp(13, 12, 15),
-                      ),
-                    ),
-                    SizedBox(height: context.resH(2)),
-                    Text(
-                      DateFormat('dd/MM/yyyy HH:mm').format(item.startDate!),
-                      style: TextStyle(
-                        color: const Color(0xFF6B6B6B),
-                        fontSize: context.resClamp(12, 11, 14),
-                      ),
-                    ),
-                    SizedBox(height: context.resH(24)),
-
-                    // Star rating row
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(5, (i) {
-                          return GestureDetector(
-                            onTap: () =>
-                                setModalState(() => selectedRating = i + 1),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: context.resW(6),
-                              ),
-                              child: Icon(
-                                i < selectedRating
-                                    ? Icons.star_rounded
-                                    : Icons.star_outline_rounded,
-                                color: const Color(0xFFFFB359),
-                                size: context.resW(40),
-                              ),
-                            ),
-                          );
-                        }),
-                      ),
-                    ),
-                    SizedBox(height: context.resH(20)),
-
-                    // Comment input
-                    TextField(
-                      controller: commentController,
-                      maxLines: 3,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: 'Chia sẻ cảm nhận của bạn...',
-                        hintStyle: const TextStyle(color: Color(0xFF6B6B6B)),
-                        filled: true,
-                        fillColor: const Color(0xFF3E3E3E),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(context.resW(12)),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: EdgeInsets.all(context.resW(12)),
-                      ),
-                    ),
-                    SizedBox(height: context.resH(20)),
-
-                    // Submit button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFE04A50),
-                          disabledBackgroundColor: const Color(0xFF6B6B6B),
-                          minimumSize: Size(double.infinity, context.resH(50)),
-                          shape: RoundedRectangleBorder(
+                    Padding(
+                      padding: EdgeInsets.only(top: context.resH(12)),
+                      child: Center(
+                        child: Container(
+                          width: context.resW(40),
+                          height: context.resH(4),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF6B6B6B),
                             borderRadius: BorderRadius.circular(
-                              context.resW(12),
+                              context.resW(2),
                             ),
-                          ),
-                        ),
-                        onPressed: selectedRating == 0
-                            ? null
-                            : () async {
-                                Navigator.pop(ctx);
-                                final result = await handleApi(
-                                  context,
-                                  BookingService.submitClassReview(
-                                    clientCode: AppSession().clientId,
-                                    scheduleId: item.scheduleId ?? 0,
-                                    rate: selectedRating,
-                                    description: commentController.text.trim(),
-                                  ),
-                                );
-                                if (!mounted) return;
-                                final isSuccess = result?['success'] == true;
-                                final message = isSuccess
-                                    ? (result?['message'] as String? ??
-                                          'class_detail.class_already_evaluated'
-                                              .tr())
-                                    : 'class_detail.class_already_evaluated'
-                                          .tr();
-
-                                if (!context.mounted) return;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(message),
-                                    backgroundColor: isSuccess
-                                        ? const Color(0xFF4CAF50)
-                                        : const Color(0xFFE04A50),
-                                  ),
-                                );
-                              },
-                        child: Text(
-                          'Gửi đánh giá',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: context.resClamp(16, 14, 18),
-                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(height: context.resH(8)),
+
+                    // Scrollable content
+                    Flexible(
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.fromLTRB(
+                          context.resW(24),
+                          context.resH(16),
+                          context.resW(24),
+                          context.resH(8),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Title
+                            Center(
+                              child: Text(
+                                'history_schedule.lbl_rate_class'.tr(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: context.resClamp(18, 16, 20),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: context.resH(12)),
+
+                            // Scale info
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: context.resW(12),
+                                vertical: context.resH(10),
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF3E3E3E),
+                                borderRadius: BorderRadius.circular(
+                                  context.resW(8),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.info_outline_rounded,
+                                    color: const Color(0xFF9A9A9A),
+                                    size: context.resW(16),
+                                  ),
+                                  SizedBox(width: context.resW(8)),
+                                  Expanded(
+                                    child: Text(
+                                      'history_schedule.lbl_rating_scale'.tr(),
+                                      style: TextStyle(
+                                        color: const Color(0xFF9A9A9A),
+                                        fontSize: context.resClamp(12, 11, 14),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: context.resH(16)),
+
+                            // Class info
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.access_time_rounded,
+                                  color: const Color(0xFF9A9A9A),
+                                  size: context.resW(18),
+                                ),
+                                SizedBox(width: context.resW(8)),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.serviceName ?? '',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: context.resClamp(
+                                            14,
+                                            12,
+                                            16,
+                                          ),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Text(
+                                        DateFormat(
+                                          'dd/MM/yyyy HH:mm',
+                                        ).format(item.startDate!),
+                                        style: TextStyle(
+                                          color: const Color(0xFF9A9A9A),
+                                          fontSize: context.resClamp(
+                                            12,
+                                            11,
+                                            14,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: context.resH(20)),
+                            const Divider(color: Color(0xFF3E3E3E), height: 1),
+                            SizedBox(height: context.resH(20)),
+
+                            // Overall experience rating
+                            Text(
+                              'history_schedule.lbl_rate_overall'.tr(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: context.resClamp(14, 12, 16),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: context.resH(10)),
+                            _buildNumberRatingRow(
+                              context,
+                              selectedRating,
+                              (v) => setModalState(() => selectedRating = v),
+                            ),
+                            SizedBox(height: context.resH(20)),
+
+                            // Trainer quality rating
+                            Text(
+                              'history_schedule.lbl_rate_trainer'.tr(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: context.resClamp(14, 12, 16),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: context.resH(10)),
+                            _buildNumberRatingRow(
+                              context,
+                              selectedRating1,
+                              (v) => setModalState(() => selectedRating1 = v),
+                            ),
+                            SizedBox(height: context.resH(16)),
+
+                            // Trainer comment (description1) – required
+                            TextField(
+                              controller: trainerCommentController,
+                              maxLines: 3,
+                              maxLength: 300,
+                              style: const TextStyle(color: Colors.white),
+                              onChanged: (_) {
+                                if (showTrainerCommentError) {
+                                  setModalState(
+                                    () => showTrainerCommentError = false,
+                                  );
+                                }
+                              },
+                              decoration: InputDecoration(
+                                hintText:
+                                    'history_schedule.hint_trainer_comment'
+                                        .tr(),
+                                hintStyle: const TextStyle(
+                                  color: Color(0xFF6B6B6B),
+                                ),
+                                filled: true,
+                                fillColor: const Color(0xFF3E3E3E),
+                                counterStyle: const TextStyle(
+                                  color: Color(0xFF6B6B6B),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    context.resW(12),
+                                  ),
+                                  borderSide: BorderSide.none,
+                                ),
+                                contentPadding: EdgeInsets.all(
+                                  context.resW(12),
+                                ),
+                              ),
+                            ),
+                            if (showTrainerCommentError) ...[
+                              Text(
+                                'history_schedule.err_trainer_comment'.tr(),
+                                style: TextStyle(
+                                  color: const Color(0xFFE04A50),
+                                  fontSize: context.resClamp(12, 11, 13),
+                                ),
+                              ),
+                              SizedBox(height: context.resH(8)),
+                            ],
+
+                            // Other opinions (description) – optional
+                            Text(
+                              'history_schedule.lbl_other_opinion'.tr(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: context.resClamp(14, 12, 16),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: context.resH(10)),
+                            TextField(
+                              controller: commentController,
+                              maxLines: 3,
+                              maxLength: 300,
+                              style: const TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText: 'history_schedule.hint_other_opinion'
+                                    .tr(),
+                                hintStyle: const TextStyle(
+                                  color: Color(0xFF6B6B6B),
+                                ),
+                                filled: true,
+                                fillColor: const Color(0xFF3E3E3E),
+                                counterStyle: const TextStyle(
+                                  color: Color(0xFF6B6B6B),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    context.resW(12),
+                                  ),
+                                  borderSide: BorderSide.none,
+                                ),
+                                contentPadding: EdgeInsets.all(
+                                  context.resW(12),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: context.resH(8)),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // Submit button (pinned at bottom)
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        context.resW(24),
+                        context.resH(8),
+                        context.resW(24),
+                        context.resH(24),
+                      ),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFE04A50),
+                            disabledBackgroundColor: const Color(0xFF6B6B6B),
+                            minimumSize: Size(
+                              double.infinity,
+                              context.resH(50),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                context.resW(12),
+                              ),
+                            ),
+                          ),
+                          onPressed: !canSubmit
+                              ? null
+                              : () async {
+                                  if (trainerCommentController.text
+                                      .trim()
+                                      .isEmpty) {
+                                    setModalState(
+                                      () => showTrainerCommentError = true,
+                                    );
+                                    return;
+                                  }
+                                  Navigator.pop(ctx);
+                                  final result = await handleApi(
+                                    context,
+                                    BookingService.submitClassReview(
+                                      clientCode: AppSession().clientId,
+                                      scheduleId: item.scheduleId ?? 0,
+                                      rate: selectedRating,
+                                      description: commentController.text
+                                          .trim(),
+                                      rate1: selectedRating1,
+                                      description1: trainerCommentController
+                                          .text
+                                          .trim(),
+                                      rate2: 1,
+                                      description2: '',
+                                      rate3: 1,
+                                      description3: '',
+                                    ),
+                                  );
+                                  if (!mounted) return;
+                                  final isSuccess = result?['success'] == true;
+                                  final message =
+                                      result?['message'] as String? ?? '';
+                                  if (message.isEmpty) return;
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(message),
+                                      backgroundColor: isSuccess
+                                          ? const Color(0xFF4CAF50)
+                                          : const Color(0xFFE04A50),
+                                    ),
+                                  );
+                                },
+                          child: Text(
+                            'history_schedule.btn_submit_rating'.tr(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: context.resClamp(16, 14, 18),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -548,6 +745,42 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
           },
         );
       },
+    );
+  }
+
+  Widget _buildNumberRatingRow(
+    BuildContext context,
+    int selectedValue,
+    ValueChanged<int> onSelect,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: List.generate(5, (i) {
+        final int val = i + 1;
+        final bool isSelected = val == selectedValue;
+        return GestureDetector(
+          onTap: () => onSelect(val),
+          child: Container(
+            width: context.resW(52),
+            height: context.resH(44),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? const Color(0xFFE04A50)
+                  : const Color(0xFF3E3E3E),
+              borderRadius: BorderRadius.circular(context.resW(8)),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              '$val',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: context.resClamp(16, 14, 18),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 
@@ -571,7 +804,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                   ),
                   SizedBox(height: context.resH(16)),
                   Text(
-                    'Hiện không có lớp học nào',
+                    'history_schedule.msg_no_classes'.tr(),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: const Color(0xFF9A9A9A),
@@ -691,7 +924,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
         ),
         onPressed: () {},
         child: Text(
-          'Tìm lớp học mới',
+          'history_schedule.btn_find_class'.tr(),
           style: TextStyle(
             color: Colors.white,
             fontSize: context.resClamp(16, 14, 18),

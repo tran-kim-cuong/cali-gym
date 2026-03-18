@@ -39,6 +39,26 @@
     "lbl_status_item_user_share_card": "Active",
     "msg_error_500": "An error occurred, please try again"
   },
+  "history_schedule": {
+    "lbl_title": "Previous Classes",
+    "tab_completed": "Completed",
+    "tab_incomplete": "Incomplete",
+    "badge_completed": "Completed",
+    "badge_incomplete": "Not done",
+    "lbl_rate_class": "Rate class",
+    "lbl_rating_title_prefix": "Rate your class experience and earn\n",
+    "lbl_rating_scale": "Scale: from 1 (lowest) to 5 (highest)",
+    "lbl_rate_overall": "Rate your overall class experience",
+    "lbl_rate_trainer": "Rate your trainer's quality",
+    "hint_trainer_comment": "Share your detailed feedback",
+    "err_trainer_comment": "Please share your feedback about the trainer",
+    "lbl_other_opinion": "Other opinions (Optional)",
+    "hint_other_opinion": "Enter your opinion here",
+    "hint_comment": "Share your thoughts...",
+    "btn_submit_rating": "Submit rating",
+    "msg_no_classes": "No classes available",
+    "btn_find_class": "Find new class"
+  },
   "home": {
     "hello": "Hello",
     "section_member_card": "Membership card",
@@ -153,6 +173,19 @@
     "lbl_pick_seat": "Book seat",
     "lbl_select_seat": "Select seat",
     "lbl_full_seat": "Full seats"
+  },
+  "towel_orders": {
+    "title": "Your orders",
+    "btn_my_orders": "My orders",
+    "error_loading": "Cannot load orders",
+    "empty": "No orders yet",
+    "select_order_hint": "Select order ID to return items",
+    "previous_orders": "Previous orders",
+    "order_code": "Order code : {}",
+    "taken_at": "Pickup at {}",
+    "return_at": "Return at {}",
+    "qr_return_instruction": "Please present this QR code at the reception to return the items. Thank you.",
+    "btn_return": "Return"
   },
   "welcome": {
     "lbl_title": "MORE THAN\nJUST AN APP",

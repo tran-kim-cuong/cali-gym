@@ -2,6 +2,7 @@ import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
 import 'package:californiaflutter/helpers/convert_model.dart';
+import 'package:californiaflutter/helpers/loading_manager.dart';
 import 'package:californiaflutter/helpers/loading_widget.dart';
 import 'package:californiaflutter/helpers/member_cache_manager.dart';
 import 'package:californiaflutter/models/booking_class_model.dart';
@@ -13,8 +14,11 @@ import 'package:californiaflutter/pages/layouts/member_card.dart';
 import 'package:californiaflutter/pages/layouts/other_benefits.dart';
 import 'package:californiaflutter/pages/master.dart';
 // import 'package:californiaflutter/pages/layouts/schedule.dart';
+import 'package:californiaflutter/models/booking_class_confirm_model.dart';
 import 'package:californiaflutter/pages/shared/check_in_bottom_sheet.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
+import 'package:californiaflutter/pages/shared/common_notification.dart';
+import 'package:californiaflutter/services/api_service.dart';
 // import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_class_card.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
@@ -923,11 +927,33 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
                   CheckInBottomSheet.show(
                     context,
                     classData,
-                    onScanned: (String qrData) {
-                      debugPrint(qrData);
-                    },
-                    onConfirm: (code) {
-                      debugPrint(code);
+                    onScanned: (String qrData) async {
+                      LoadingManager().show(context);
+                      try {
+                        String token = await getToken();
+                        BookingClassConfirmModel?
+                        bcc = await bookingClassConfirm(
+                          token,
+                          "${classData.scheduleId}${classData.clubCode}${AppSession().customerId}.${classData.code}",
+                          AppSession().clientId,
+                          qrData,
+                        );
+                        if (bcc != null) {
+                          CommonNotification.show(
+                            // ignore: use_build_context_synchronously
+                            context,
+                            message: bcc.message,
+                          );
+                        } else {
+                          CommonNotification.show(
+                            // ignore: use_build_context_synchronously
+                            context,
+                            message: "Checkin không thành công!",
+                          );
+                        }
+                      } finally {
+                        LoadingManager().hide();
+                      }
                     },
                   );
                 },

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
+import 'package:californiaflutter/helpers/loading_manager.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/booking_class_confirm_model.dart';
@@ -576,36 +577,32 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                   context,
                   bookingData,
                   onScanned: (String qrData) async {
-                    debugPrint(qrData);
-
-                    String token = await getToken();
-                    BookingClassConfirmModel? bcc = await bookingClassConfirm(
-                      token,
-                      "${widget.scheduleId}${widget.clubCode}${AppSession().customerId}.${widget.seatCode}",
-                      AppSession().clientId,
-                      qrData,
-                    );
-                    if (bcc != null && bcc.success == true) {
-                      CommonNotification.show(
-                        // ignore: use_build_context_synchronously
-                        context,
-                        message: bcc.message,
+                    LoadingManager().show(context);
+                    try {
+                      String token = await getToken();
+                      BookingClassConfirmModel? bcc = await bookingClassConfirm(
+                        token,
+                        "${widget.scheduleId}${widget.clubCode}${AppSession().customerId}.${widget.seatCode}",
+                        AppSession().clientId,
+                        qrData,
                       );
-                    } else {
-                      CommonNotification.show(
-                        // ignore: use_build_context_synchronously
-                        context,
-                        message: "Checkin không thành công!",
-                      );
+                      if (bcc != null) {
+                        CommonNotification.show(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          message: bcc.message,
+                        );
+                      } else {
+                        CommonNotification.show(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          message: "Checkin không thành công!",
+                        );
+                      }
+                    } finally {
+                      LoadingManager().hide();
                     }
                   },
-                  // onConfirm: (code) {
-                  //   debugPrint(code);
-                  //   CommonNotification.show(
-                  //     context,
-                  //     message: code,
-                  //   );
-                  // },
                 );
               },
               style: ElevatedButton.styleFrom(

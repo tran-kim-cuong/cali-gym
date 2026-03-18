@@ -1,0 +1,13 @@
+{
+    "title": "Your orders",
+    "btn_my_orders": "My orders",
+    "error_loading": "Cannot load orders",
+    "empty": "No orders yet",
+    "select_order_hint": "Select order ID to return items",
+    "previous_orders": "Previous orders",
+    "order_code": "Order code : {}",
+    "taken_at": "Pickup at {}",
+    "return_at": "Return at {}",
+    "qr_return_instruction": "Please present this QR code at the reception to return the items. Thank you.",
+    "btn_return": "Return"
+}

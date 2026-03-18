@@ -53,6 +53,7 @@ class MemberModel {
 
 class MembershipCard {
   final String? membershipNumber;
+  final String? mbMembershipId;
   final String? membershipType;
   final String? mbMemberId;
   final DateTime? startDate;
@@ -68,6 +69,7 @@ class MembershipCard {
 
   MembershipCard({
     this.membershipNumber,
+    this.mbMembershipId,
     this.membershipType,
     this.mbMemberId,
     this.startDate,
@@ -86,6 +88,7 @@ class MembershipCard {
   factory MembershipCard.fromJson(Map<String, dynamic> json) {
     return MembershipCard(
       membershipNumber: json['mB_membership_number'],
+      mbMembershipId: json['mB_MembershipId'],
       membershipType: json['mB_membership_type'],
       mbMemberId: json['mB_MemberId'],
       startDate: _parseDate(json['mB_start_date'] ?? '1990/01/01'),
