@@ -39,6 +39,26 @@
     "lbl_status_item_user_share_card": "Hoạt động",
     "msg_error_500": "Lỗi xảy ra vui lòng thử lại"
   },
+  "history_schedule": {
+    "lbl_title": "Các lớp học trước",
+    "tab_completed": "Hoàn thành",
+    "tab_incomplete": "Chưa hoàn thành",
+    "badge_completed": "Hoàn thành",
+    "badge_incomplete": "Chưa xong",
+    "lbl_rate_class": "Đánh giá lớp học",
+    "lbl_rating_title_prefix": "Đánh giá trải nghiệm lớp học và nhận\n",
+    "lbl_rating_scale": "Thang điểm: từ 1 (thấp nhất) đến 5 (cao nhất)",
+    "lbl_rate_overall": "Hãy đánh giá trải nghiệm tổng thể của lớp học",
+    "lbl_rate_trainer": "Hãy đánh giá chất lượng của huấn luyện viên",
+    "hint_trainer_comment": "Chia sẻ đánh giá chi tiết của bạn",
+    "err_trainer_comment": "Vui lòng chia sẻ phản hồi của bạn về giảng viên",
+    "lbl_other_opinion": "Ý kiến khác (Không bắt buộc)",
+    "hint_other_opinion": "Nhập ý kiến của bạn tại đây",
+    "hint_comment": "Chia sẻ cảm nhận của bạn...",
+    "btn_submit_rating": "Gửi đánh giá",
+    "msg_no_classes": "Hiện không có lớp học nào",
+    "btn_find_class": "Tìm lớp học mới"
+  },
   "home": {
     "hello": "Xin chào",
     "section_member_card": "Thẻ hội viên",
@@ -153,6 +173,19 @@
     "lbl_pick_seat": "Đặt chỗ",
     "lbl_select_seat": "Chọn chỗ",
     "lbl_full_seat": "Hết chỗ"
+  },
+  "towel_orders": {
+    "title": "Đơn bạn đã đặt",
+    "btn_my_orders": "Đơn hàng đã đặt",
+    "error_loading": "Không thể tải đơn hàng",
+    "empty": "Chưa có đơn hàng nào",
+    "select_order_hint": "Chọn ID đơn hàng để trả lại sản phẩm",
+    "previous_orders": "Đơn hàng trước",
+    "order_code": "Mã đơn hàng : {}",
+    "taken_at": "Nơi nhận {}",
+    "return_at": "Nơi trả {}",
+    "qr_return_instruction": "Vui lòng xuất trình mã QR này tại quầy lễ tân để hoàn trả sản phẩm. Xin cảm ơn.",
+    "btn_return": "Hoàn trả"
   },
   "welcome": {
     "lbl_title": "MORE THAN\nJUST AN APP",

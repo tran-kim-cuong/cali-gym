@@ -2,6 +2,7 @@ import 'package:californiaflutter/helpers/convert_model.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/member_model.dart';
+import 'package:californiaflutter/pages/layouts/towel_orders.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/common_modal.dart';
 import 'package:californiaflutter/services/api_service.dart';
@@ -314,14 +315,43 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
             ),
             onPressed: () => Navigator.pop(context),
           ),
-          Text(
-            'home.fnc_other_benefit'.tr(),
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: context.resClamp(18, 16, 22),
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
-              height: 1.5,
+          Expanded(
+            child: Text(
+              'home.fnc_other_benefit'.tr(),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: context.resClamp(18, 16, 22),
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w600,
+                height: 1.5,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const TowelOrdersScreen()),
+              );
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.resW(10),
+                vertical: context.resH(6),
+              ),
+              decoration: BoxDecoration(
+                color: const Color(0xFF242424),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                'towel_orders.btn_my_orders'.tr(),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: context.resClamp(12, 10, 14),
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ),
         ],

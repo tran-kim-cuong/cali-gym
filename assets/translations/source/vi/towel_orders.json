@@ -1,0 +1,13 @@
+{
+    "title": "Đơn bạn đã đặt",
+    "btn_my_orders": "Đơn hàng đã đặt",
+    "error_loading": "Không thể tải đơn hàng",
+    "empty": "Chưa có đơn hàng nào",
+    "select_order_hint": "Chọn ID đơn hàng để trả lại sản phẩm",
+    "previous_orders": "Đơn hàng trước",
+    "order_code": "Mã đơn hàng : {}",
+    "taken_at": "Nơi nhận {}",
+    "return_at": "Nơi trả {}",
+    "qr_return_instruction": "Vui lòng xuất trình mã QR này tại quầy lễ tân để hoàn trả sản phẩm. Xin cảm ơn.",
+    "btn_return": "Hoàn trả"
+}

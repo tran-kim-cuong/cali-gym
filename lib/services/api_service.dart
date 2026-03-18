@@ -296,3 +296,18 @@ Future<BookingClassConfirmModel?> bookingClassConfirm(
     return null;
   }
 }
+
+Future<List<dynamic>> getTowelOrders(String token, String clientCode) async {
+  final response = await http.post(
+    Uri.parse('${dotenv.get('CALIFORNIA_URI')}/api/towel/post/orderlist'),
+    headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+    body: {'clientcode': clientCode},
+  );
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    return (data['order_data'] as List?) ?? [];
+  } else {
+    throw Exception('Get towel orders failed');
+  }
+}
