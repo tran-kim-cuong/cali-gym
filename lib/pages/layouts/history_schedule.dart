@@ -96,7 +96,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                       ),
                       Expanded(
                         child: Text(
-                          'Các lớp học trước',
+                          'history_schedule.lbl_title'.tr(),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: context.resClamp(18, 16, 22),
@@ -119,13 +119,13 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                   children: [
                     _buildTabItem(
                       context,
-                      'Hoàn thành',
+                      'history_schedule.tab_completed'.tr(),
                       isSelected: _isCompletedSelected,
                       onTap: () => _handleMainTabChange(true),
                     ),
                     _buildTabItem(
                       context,
-                      'Chưa hoàn thành',
+                      'history_schedule.tab_incomplete'.tr(),
                       isSelected: !_isCompletedSelected,
                       isError: true,
                       onTap: () => _handleMainTabChange(false),
@@ -328,7 +328,9 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                     ),
                   ),
                   child: Text(
-                    isCompleted ? 'Hoàn thành' : 'Chưa xong',
+                    isCompleted
+                        ? 'history_schedule.badge_completed'.tr()
+                        : 'history_schedule.badge_incomplete'.tr(),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 10,
@@ -357,7 +359,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                   size: context.resW(18),
                 ),
                 label: Text(
-                  'Đánh giá lớp học',
+                  'history_schedule.lbl_rate_class'.tr(),
                   style: TextStyle(
                     color: const Color(0xFFFFB359),
                     fontSize: context.resClamp(13, 12, 15),
@@ -414,7 +416,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
 
                     // Title
                     Text(
-                      'Đánh giá lớp học',
+                      'history_schedule.lbl_rate_class'.tr(),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: context.resClamp(18, 16, 20),
@@ -471,7 +473,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                       maxLines: 3,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        hintText: 'Chia sẻ cảm nhận của bạn...',
+                        hintText: 'history_schedule.hint_comment'.tr(),
                         hintStyle: const TextStyle(color: Color(0xFF6B6B6B)),
                         filled: true,
                         fillColor: const Color(0xFF3E3E3E),
@@ -531,7 +533,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                                 );
                               },
                         child: Text(
-                          'Gửi đánh giá',
+                          'history_schedule.btn_submit_rating'.tr(),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: context.resClamp(16, 14, 18),
@@ -571,7 +573,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                   ),
                   SizedBox(height: context.resH(16)),
                   Text(
-                    'Hiện không có lớp học nào',
+                    'history_schedule.msg_no_classes'.tr(),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: const Color(0xFF9A9A9A),
@@ -691,7 +693,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
         ),
         onPressed: () {},
         child: Text(
-          'Tìm lớp học mới',
+          'history_schedule.btn_find_class'.tr(),
           style: TextStyle(
             color: Colors.white,
             fontSize: context.resClamp(16, 14, 18),

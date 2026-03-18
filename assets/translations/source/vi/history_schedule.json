@@ -1,0 +1,12 @@
+{
+    "lbl_title": "Các lớp học trước",
+    "tab_completed": "Hoàn thành",
+    "tab_incomplete": "Chưa hoàn thành",
+    "badge_completed": "Hoàn thành",
+    "badge_incomplete": "Chưa xong",
+    "lbl_rate_class": "Đánh giá lớp học",
+    "hint_comment": "Chia sẻ cảm nhận của bạn...",
+    "btn_submit_rating": "Gửi đánh giá",
+    "msg_no_classes": "Hiện không có lớp học nào",
+    "btn_find_class": "Tìm lớp học mới"
+}

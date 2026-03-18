@@ -1,0 +1,12 @@
+{
+    "lbl_title": "Previous Classes",
+    "tab_completed": "Completed",
+    "tab_incomplete": "Incomplete",
+    "badge_completed": "Completed",
+    "badge_incomplete": "Not done",
+    "lbl_rate_class": "Rate class",
+    "hint_comment": "Share your thoughts...",
+    "btn_submit_rating": "Submit rating",
+    "msg_no_classes": "No classes available",
+    "btn_find_class": "Find new class"
+}
