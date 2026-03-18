@@ -91,7 +91,7 @@ class _TowelOrdersScreenState extends State<TowelOrdersScreen> {
                       : _error != null
                       ? Center(
                           child: Text(
-                            'Không thể tải đơn hàng',
+                            'towel_orders.error_loading'.tr(),
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: context.resClamp(14, 12, 16),
@@ -102,7 +102,7 @@ class _TowelOrdersScreenState extends State<TowelOrdersScreen> {
                       : _orders.isEmpty
                       ? Center(
                           child: Text(
-                            'Chưa có đơn hàng nào',
+                            'towel_orders.empty'.tr(),
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: context.resClamp(14, 12, 16),
@@ -127,7 +127,7 @@ class _TowelOrdersScreenState extends State<TowelOrdersScreen> {
                                     bottom: context.resH(8),
                                   ),
                                   child: Text(
-                                    'Chọn ID đơn hàng để trả lại sản phẩm',
+                                    'towel_orders.select_order_hint'.tr(),
                                     style: TextStyle(
                                       color: const Color(0xFF9A9A9A),
                                       fontSize: context.resClamp(12, 10, 14),
@@ -153,7 +153,7 @@ class _TowelOrdersScreenState extends State<TowelOrdersScreen> {
                                     bottom: context.resH(12),
                                   ),
                                   child: Text(
-                                    'Đơn hàng trước',
+                                    'towel_orders.previous_orders'.tr(),
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: context.resClamp(16, 14, 18),
@@ -194,7 +194,7 @@ class _TowelOrdersScreenState extends State<TowelOrdersScreen> {
             onPressed: () => Navigator.pop(context),
           ),
           Text(
-            'Đơn bạn đã đặt',
+            'towel_orders.title'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: context.resClamp(18, 16, 22),
@@ -256,7 +256,7 @@ class _TowelOrdersScreenState extends State<TowelOrdersScreen> {
                         : null,
                   ),
                 Text(
-                  'Mã đơn hàng : $ticketCode',
+                  'towel_orders.order_code'.tr(args: [ticketCode]),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: context.resClamp(14, 12, 16),
@@ -377,7 +377,7 @@ class _TowelOrdersScreenState extends State<TowelOrdersScreen> {
                   children: [
                     if (takenAt.isNotEmpty)
                       Text(
-                        'Nơi nhận $takenAt',
+                        'towel_orders.taken_at'.tr(args: [takenAt]),
                         style: TextStyle(
                           color: const Color(0xFF9A9A9A),
                           fontSize: context.resClamp(12, 10, 14),
@@ -388,7 +388,7 @@ class _TowelOrdersScreenState extends State<TowelOrdersScreen> {
                       Padding(
                         padding: EdgeInsets.only(top: context.resH(2)),
                         child: Text(
-                          'Nơi trả $returnAt',
+                          'towel_orders.return_at'.tr(args: [returnAt]),
                           style: TextStyle(
                             color: const Color(0xFF9A9A9A),
                             fontSize: context.resClamp(12, 10, 14),
@@ -442,9 +442,8 @@ class _TowelOrdersScreenState extends State<TowelOrdersScreen> {
     await CommonModalWidget.showBigQrModal(
       context: context,
       qrData: buffer.toString(),
-      instructionText:
-          'Vui lòng xuất trình mã QR này tại quầy lễ tân để hoàn trả sản phẩm. Xin cảm ơn.',
-      closeButtonText: 'Đóng',
+      instructionText: 'towel_orders.qr_return_instruction'.tr(),
+      closeButtonText: 'other_benefits.btn_close'.tr(),
     );
 
     // Reload data sau khi đóng modal
@@ -464,7 +463,7 @@ class _TowelOrdersScreenState extends State<TowelOrdersScreen> {
           elevation: 0,
         ),
         child: Text(
-          'Hoàn trả',
+          'towel_orders.btn_return'.tr(),
           style: TextStyle(
             color: Colors.white,
             fontSize: context.resClamp(16, 14, 18),

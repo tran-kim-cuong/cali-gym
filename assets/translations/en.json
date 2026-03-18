@@ -154,6 +154,19 @@
     "lbl_select_seat": "Select seat",
     "lbl_full_seat": "Full seats"
   },
+  "towel_orders": {
+    "title": "Your orders",
+    "btn_my_orders": "My orders",
+    "error_loading": "Cannot load orders",
+    "empty": "No orders yet",
+    "select_order_hint": "Select order ID to return items",
+    "previous_orders": "Previous orders",
+    "order_code": "Order code : {}",
+    "taken_at": "Pickup at {}",
+    "return_at": "Return at {}",
+    "qr_return_instruction": "Please present this QR code at the reception to return the items. Thank you.",
+    "btn_return": "Return"
+  },
   "welcome": {
     "lbl_title": "MORE THAN\nJUST AN APP",
     "lbl_sub_title": "Live a healthy, stress-free life. Relax, stay in shape, and enjoy luxurious gifts at the same time.",

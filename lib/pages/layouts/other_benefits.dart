@@ -344,7 +344,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
-                'Đơn hàng đã đặt',
+                'towel_orders.btn_my_orders'.tr(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: context.resClamp(12, 10, 14),
