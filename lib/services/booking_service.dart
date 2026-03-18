@@ -46,6 +46,12 @@ class BookingService {
     required int scheduleId,
     required int rate,
     required String description,
+    required int rate1,
+    required String description1,
+    required int rate2,
+    required String description2,
+    required int rate3,
+    required String description3,
   }) async {
     try {
       final formData = FormData.fromMap({
@@ -53,17 +59,27 @@ class BookingService {
         'schedule_id': scheduleId.toString(),
         'rate': rate.toString(),
         'description': description,
+        'rate1': rate1.toString(),
+        'description1': description1,
+        'rate2': rate2.toString(),
+        'description2': description2,
+        'rate3': rate3.toString(),
+        'description3': description3,
       });
       final response = await BaseApi().client.post(
         '/post/submitClassReview',
         data: formData,
       );
-      if (response.statusCode == 200 && response.data != null) {
+      if (response.data != null) {
         return Map<String, dynamic>.from(response.data);
       }
       return {'success': false, 'message': 'Đã xảy ra lỗi, vui lòng thử lại'};
-    } catch (e) {
+    } on DioException catch (e) {
       debugPrint("--- BookingService.submitClassReview Error: $e ---");
+      final data = e.response?.data;
+      if (data is Map) {
+        return Map<String, dynamic>.from(data);
+      }
       return {'success': false, 'message': 'Đã xảy ra lỗi, vui lòng thử lại'};
     }
   }
