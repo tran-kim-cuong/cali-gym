@@ -1,8 +1,9 @@
 import 'dart:async';
-// import 'package:californiaflutter/bases/app_session.dart';
+
 import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/pages/shared/common_notification.dart';
 import 'package:californiaflutter/services/api_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -26,11 +27,10 @@ class CommonMembershipCard extends StatefulWidget {
     this.visualOverride,
     required this.isExpanded,
     required this.onToggle,
-    this.onQrClick, // --- THÊM DÒNG NÀY ---
+    this.onQrClick,
     this.onClickToShare,
   });
 
-  // --- THÊM DÒNG NÀY ---
   // Hàm này sẽ bắn chuỗi mã QR ra ngoài cho cha xử lý
   final Function(String qrData)? onQrClick;
   final Function? onClickToShare;
@@ -40,13 +40,15 @@ class CommonMembershipCard extends StatefulWidget {
 }
 
 class _CommonMembershipCardState extends State<CommonMembershipCard> {
-  Timer? _timer; // Dùng ? để có thể null
+  Timer? _timer;
   static const int _cycleTime = 60;
+
   int _timeLeft = _cycleTime;
   String _qrData = "";
 
-  bool isShareCard = false;
-  String defaultSupplementary = "Supplementary Card";
+  bool _isShareCardOwnerSup = false;
+  bool _isFloatingCard = false;
+  bool _isCheckingFloatingTap = false;
 
   // Dữ liệu thẻ từ JSON
   String _cardImageUrl =
@@ -55,20 +57,40 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
 
   Color get _textColorDim => _textColor.withValues(alpha: 0.7);
 
+  bool get _canShowQrByCardType {
+    return !_isShareCardOwnerSup;
+  }
+
+  bool get _shouldShowActionButton {
+    if (_isShareCardOwnerSup) return true;
+    return _canShowQrByCardType;
+  }
+
   @override
   void initState() {
     super.initState();
-    debugPrint("isOwner ${widget.data['isOwner']}");
-    if (widget.data['isOwner'] == true &&
-        defaultSupplementary == widget.data['mbClassificationName']) {
-      isShareCard = true;
-    }
+    _syncCardTypeFlags();
     _loadCardData();
 
     // Nếu khởi tạo mà đã mở sẵn thì chạy luôn (trường hợp hiếm)
-    if (widget.isExpanded) {
+    if (widget.isExpanded && _canShowQrByCardType) {
       _startQrSession();
     }
+  }
+
+  String _normalizedClassification() {
+    return (widget.data['mbClassificationName'] ?? '')
+        .toString()
+        .trim()
+        .toLowerCase();
+  }
+
+  void _syncCardTypeFlags() {
+    final String classification = _normalizedClassification();
+    final bool isOwner = widget.data['isOwner'] == true;
+
+    _isShareCardOwnerSup = isOwner && classification.contains('supplementary');
+    _isFloatingCard = classification.contains('floating');
   }
 
   Future<void> _loadCardData() async {
@@ -98,13 +120,29 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
             widget.data['mbMembershipNameCard'] ||
         oldWidget.visualOverride?['img'] != widget.visualOverride?['img'] ||
         oldWidget.visualOverride?['color'] != widget.visualOverride?['color'];
+    final hasCardRuleChanged =
+        oldWidget.data['mbClassificationName'] !=
+            widget.data['mbClassificationName'] ||
+        oldWidget.data['isOwner'] != widget.data['isOwner'];
 
     if (hasVisualDataChanged) {
       _loadCardData();
     }
 
+    if (hasCardRuleChanged) {
+      _syncCardTypeFlags();
+      if (widget.isExpanded && !_canShowQrByCardType) {
+        _stopQrSession();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && widget.isExpanded) {
+            widget.onToggle();
+          }
+        });
+      }
+    }
+
     if (widget.isExpanded != oldWidget.isExpanded) {
-      if (widget.isExpanded) {
+      if (widget.isExpanded && _canShowQrByCardType) {
         _startQrSession(); // Mở -> Bắt đầu tạo mã và đếm
       } else {
         _stopQrSession(); // Đóng -> Dừng đếm
@@ -119,8 +157,10 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
   }
 
   void _startQrSession() {
+    if (!_canShowQrByCardType) return;
+
     _generateNewCode();
-    _timer?.cancel(); // Hủy timer cũ nếu có
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) return;
       if (_timeLeft > 0) {
@@ -139,24 +179,76 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
   void _generateNewCode() {
     if (!mounted) return;
     setState(() {
-      //Tạo QR Code
-      // print(widget.data);
       _qrData = createQRCheckIn(
-        widget.data['mbMembershipNumber'],
+        (widget.data['mbMembershipNumber'] ?? '').toString(),
         SessionManager.sKeyCode,
       );
-      //print(_qrData);
-      // _qrData = "${widget.data['id']}_${DateTime.now().millisecondsSinceEpoch}";
       _timeLeft = _cycleTime;
     });
   }
 
+  Future<void> _handleActionTap() async {
+    if (_isShareCardOwnerSup) {
+      widget.onClickToShare?.call();
+      return;
+    }
+
+    if (!_isFloatingCard) {
+      widget.onToggle();
+      return;
+    }
+
+    if (_isCheckingFloatingTap) return;
+
+    setState(() {
+      _isCheckingFloatingTap = true;
+    });
+
+    final String membershipId =
+        (widget.data['mbMembershipId'] ??
+                widget.data['mbMembershipNumber'] ??
+                '')
+            .toString()
+            .trim();
+    final FloatingMembershipCheckResult checkResult =
+        await checkFloatingMembershipForQr(membershipId);
+    if (!mounted) return;
+
+    setState(() {
+      _isCheckingFloatingTap = false;
+    });
+
+    if (checkResult.canShowQr) {
+      widget.onToggle();
+      return;
+    }
+
+    final String displayName =
+        (checkResult.fullName ?? widget.data['name'] ?? '')
+            .toString()
+            .trim()
+            .isNotEmpty
+        ? (checkResult.fullName ?? widget.data['name']).toString().trim()
+        : 'Thành viên';
+    final String displayMembershipNumber =
+        (checkResult.membershipNumber ??
+                widget.data['mbMembershipNumber'] ??
+                '')
+            .toString()
+            .trim();
+
+    final String message = displayMembershipNumber.isNotEmpty
+        ? '$displayName đã checkin $displayMembershipNumber'
+        : '$displayName đã checkin';
+
+    CommonNotification.show(context, message: message, isError: true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _ = context
-        .locale; // THÊM DÒNG NÀY: Ép widget lắng nghe sự thay đổi của locale
+    final _ = context.locale;
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 300), // Hiệu ứng co giãn mượt mà
+      duration: const Duration(milliseconds: 300),
       width: double.infinity,
       height: 220,
       margin:
@@ -168,13 +260,6 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
           image: CachedNetworkImageProvider(_cardImageUrl),
           fit: BoxFit.cover,
         ),
-        // gradient: LinearGradient(
-        //   begin: const Alignment(0.95, 0.86),
-        //   end: const Alignment(0.04, -0.04),
-        //   colors:
-        //       widget.data['colors'] ??
-        //       [const Color(0xFF574E4C), const Color(0xFF231E1D)],
-        // ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.15),
@@ -203,7 +288,6 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header Logo
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -213,8 +297,7 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
                       fit: BoxFit.contain,
                       errorBuilder: (c, e, s) => const SizedBox(),
                     ),
-                    // Nút đóng nhanh nếu đang mở (Optional)
-                    if (widget.isExpanded)
+                    if (widget.isExpanded && _canShowQrByCardType)
                       GestureDetector(
                         onTap: widget.onToggle,
                         child: Icon(
@@ -228,10 +311,7 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
 
                 const Spacer(),
 
-                // === PHẦN LOGIC GIAO DIỆN ===
-                // Nếu đang MỞ -> Layout Hàng Ngang (Info + QR)
-                // Nếu đang ĐÓNG -> Layout Cột (Info + Nút Bấm)
-                widget.isExpanded
+                widget.isExpanded && _canShowQrByCardType
                     ? _buildExpandedLayout()
                     : _buildCollapsedLayout(),
               ],
@@ -248,35 +328,37 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Expanded(child: _buildInfoColumn()),
-        InkWell(
-          onTap: () {
-            if (isShareCard) {
-              // GỌI HÀM CHIA SẺ Ở MÀN HÌNH CHA
-              widget.onClickToShare?.call();
-            } else {
-              // GỌI HÀM MỞ QR
-              widget.onToggle();
-            }
-          }, // Gọi hàm toggle của cha
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              border: Border.all(color: _textColor),
-              borderRadius: BorderRadius.circular(6),
-              color: _textColor.withValues(alpha: 0.1),
-            ),
-            child: Text(
-              !isShareCard
-                  ? "member_card.btn_show_qr".tr()
-                  : "member_card.btn_share_card_title".tr(),
-              style: TextStyle(
-                color: _textColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
+        if (_shouldShowActionButton)
+          InkWell(
+            onTap: _isCheckingFloatingTap ? null : _handleActionTap,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                border: Border.all(color: _textColor),
+                borderRadius: BorderRadius.circular(6),
+                color: _textColor.withValues(alpha: 0.1),
               ),
+              child: _isCheckingFloatingTap
+                  ? SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(_textColor),
+                      ),
+                    )
+                  : Text(
+                      !_isShareCardOwnerSup
+                          ? "member_card.btn_show_qr".tr()
+                          : "member_card.btn_share_card_title".tr(),
+                      style: TextStyle(
+                        color: _textColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
             ),
           ),
-        ),
       ],
     );
   }
@@ -301,8 +383,6 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
               ),
             ),
             const SizedBox(height: 8),
-
-            // --- SỬA ĐOẠN NÀY ---
             GestureDetector(
               onTap: () {
                 // Nếu cha có truyền hàm xử lý thì gọi hàm đó và gửi kèm mã QR hiện tại

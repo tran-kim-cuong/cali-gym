@@ -11,8 +11,10 @@ import 'package:californiaflutter/pages/layouts/otp.dart';
 import 'package:californiaflutter/services/api_service.dart';
 import 'package:dio/dio.dart' as dio_form;
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
@@ -374,7 +376,19 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
+  Future<void> _launchURL(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
   Widget _buildAgreementText() {
+    final termsRecognizer = TapGestureRecognizer()
+      ..onTap = () => _launchURL('https://cali.vn/dieu-khoan-su-dung');
+    final privacyRecognizer = TapGestureRecognizer()
+      ..onTap = () => _launchURL('https://cali.vn/chinh-sach-bao-mat');
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -404,6 +418,7 @@ class _LoginScreenState extends State<LoginScreen>
                 TextSpan(text: 'login.agree_prefix'.tr()),
                 TextSpan(
                   text: 'login.terms'.tr(),
+                  recognizer: termsRecognizer,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -412,6 +427,7 @@ class _LoginScreenState extends State<LoginScreen>
                 TextSpan(text: 'login.and'.tr()),
                 TextSpan(
                   text: 'login.privacy'.tr(),
+                  recognizer: privacyRecognizer,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

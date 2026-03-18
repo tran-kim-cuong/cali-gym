@@ -176,6 +176,72 @@ String createQRCheckIn(String membership, String keyCode) {
   return mbsTime + key;
 }
 
+class FloatingMembershipCheckResult {
+  final bool canShowQr;
+  final String? fullName;
+  final String? membershipNumber;
+
+  const FloatingMembershipCheckResult({
+    required this.canShowQr,
+    this.fullName,
+    this.membershipNumber,
+  });
+}
+
+Future<FloatingMembershipCheckResult> checkFloatingMembershipForQr(
+  String membershipId,
+) async {
+  final String normalizedMembershipId = membershipId.trim();
+  if (normalizedMembershipId.isEmpty) {
+    return const FloatingMembershipCheckResult(canShowQr: true);
+  }
+
+  try {
+    final response = await http.get(
+      Uri.https('es-api.cfyc.asia', '/api/v1/MBS/checkInfoMembership', {
+        'membership_number': normalizedMembershipId,
+      }),
+      headers: {
+        'accept': 'application/json',
+        'Authorization': dotenv.env['CRM_BASIC_AUTHORIZATION'] ?? '',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      return const FloatingMembershipCheckResult(canShowQr: true);
+    }
+
+    final dynamic data = jsonDecode(response.body);
+    if (data is Map<String, dynamic> && data['success'] is bool) {
+      final bool success = data['success'] as bool;
+      if (success) {
+        return const FloatingMembershipCheckResult(canShowQr: true);
+      }
+
+      String? fullName;
+      String? membershipNumber;
+      final dynamic checkInData = data['data_checkin'];
+      if (checkInData is List && checkInData.isNotEmpty) {
+        final dynamic first = checkInData.first;
+        if (first is Map<String, dynamic>) {
+          fullName = first['FullName']?.toString();
+          membershipNumber = first['membership_number']?.toString();
+        }
+      }
+
+      return FloatingMembershipCheckResult(
+        canShowQr: false,
+        fullName: fullName,
+        membershipNumber: membershipNumber,
+      );
+    }
+  } catch (_) {
+    return const FloatingMembershipCheckResult(canShowQr: true);
+  }
+
+  return const FloatingMembershipCheckResult(canShowQr: true);
+}
+
 String generateMd5(String input) {
   // convert string -> bytes (UTF8)
   var bytes = utf8.encode(input);
