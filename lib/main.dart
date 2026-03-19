@@ -1,4 +1,5 @@
 // import 'package:californiaflutter/pages/layouts/home.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/member_cache_manager.dart';
@@ -97,7 +98,9 @@ class MyApp extends StatelessWidget {
       ),
 
       // 2. SỬ DỤNG BUILDER ĐỂ KHỐNG CHẾ TOÀN BỘ APP
+      navigatorObservers: [BotToastNavigatorObserver()],
       builder: (context, child) {
+        child = BotToastInit()(context, child);
         return AnnotatedRegion<SystemUiOverlayStyle>(
           // Ép kiểu hiển thị Light (chữ trắng) cho toàn bộ app
           value: const SystemUiOverlayStyle(
@@ -109,7 +112,7 @@ class MyApp extends StatelessWidget {
             ), // Đồng bộ thanh điều hướng dưới
             systemNavigationBarIconBrightness: Brightness.light,
           ),
-          child: child!,
+          child: child,
         );
       },
       // builder: (context, child) {

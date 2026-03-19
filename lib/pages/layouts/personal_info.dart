@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
@@ -96,13 +97,10 @@ class PersonalInfoScreen extends StatelessWidget {
     return GestureDetector(
       onLongPress: () {
         Clipboard.setData(ClipboardData(text: value));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('personal_info.msg_copied'.tr(args: [value])),
-            backgroundColor: const Color(0xFF3E3E3E),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-          ),
+        BotToast.showText(
+          text: 'personal_info.msg_copied'.tr(args: [value]),
+          contentColor: const Color(0xFF3E3E3E),
+          duration: const Duration(seconds: 2),
         );
       },
       child: Column(

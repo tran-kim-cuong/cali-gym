@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
@@ -717,14 +718,12 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                                   final message =
                                       result?['message'] as String? ?? '';
                                   if (message.isEmpty) return;
-                                  if (!context.mounted) return;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(message),
-                                      backgroundColor: isSuccess
-                                          ? const Color(0xFF4CAF50)
-                                          : const Color(0xFFE04A50),
-                                    ),
+                                  BotToast.showText(
+                                    text: message,
+                                    contentColor: isSuccess
+                                        ? const Color(0xFF4CAF50)
+                                        : const Color(0xFFE04A50),
+                                    duration: const Duration(seconds: 3),
                                   );
                                 },
                           child: Text(
