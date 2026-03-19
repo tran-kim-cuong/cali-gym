@@ -33,6 +33,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/providers/pinned_card_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -849,13 +851,16 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
 
   // --- REUSE OLD COMPONENTS ---
   Widget _buildMembershipList() {
+    final pinnedProvider = context.watch<PinnedCardProvider>();
+    final sortedCards = pinnedProvider.sortCards(_memberCards);
+
     return SizedBox(
       height: 220,
       child: PageView.builder(
         controller: PageController(viewportFraction: 0.9),
-        itemCount: _memberCards.length,
+        itemCount: sortedCards.length,
         itemBuilder: (context, index) {
-          final cardData = _memberCards[index];
+          final cardData = sortedCards[index];
           final String uniqueKey = "${index}_${cardData['id']}";
           return CommonMembershipCard(
             data: cardData,

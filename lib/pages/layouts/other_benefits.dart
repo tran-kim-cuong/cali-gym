@@ -5,10 +5,12 @@ import 'package:californiaflutter/models/member_model.dart';
 import 'package:californiaflutter/pages/layouts/towel_orders.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/common_modal.dart';
+import 'package:californiaflutter/providers/pinned_card_provider.dart';
 import 'package:californiaflutter/services/api_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 
 class OtherBenefitsScreen extends StatefulWidget {
   const OtherBenefitsScreen({super.key});
@@ -123,6 +125,9 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
 
   // HÀM HIỂN THỊ CHỌN THẺ (BOTTOM SHEET) THEO SNIPPET
   void _showMemberCardsBottomSheet() {
+    final pinnedProvider = context.read<PinnedCardProvider>();
+    final sortedCards = pinnedProvider.sortCards(_memberCards);
+
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xFF151515),
@@ -173,10 +178,15 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
                   Flexible(
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: _memberCards.length,
+                      itemCount: sortedCards.length,
                       itemBuilder: (context, index) {
-                        final card = _memberCards[index];
+                        final card = sortedCards[index];
                         final isCurrent = _isSelectedMemberCard(card);
+                        // Tìm index gốc trong _memberCards để map đúng listMembershipCard
+                        final originalIndex = _memberCards.indexWhere(
+                          (c) =>
+                              c['membershipNumber'] == card['membershipNumber'],
+                        );
 
                         return InkWell(
                           onTap: () {
@@ -184,7 +194,7 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
                               _selectedCard = card;
                               _msCard = SessionManager
                                   .member
-                                  .listMembershipCard![index];
+                                  .listMembershipCard![originalIndex];
                               getProductByCard();
                             });
                             Navigator.pop(context);

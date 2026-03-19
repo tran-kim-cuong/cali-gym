@@ -5,11 +5,13 @@ import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/member_cache_manager.dart';
 import 'package:californiaflutter/pages/layouts/welcome.dart';
 import 'package:californiaflutter/pages/master.dart';
+import 'package:californiaflutter/providers/pinned_card_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
@@ -65,7 +67,10 @@ void main() async {
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
       startLocale: startLocale,
-      child: MyApp(isLoggedIn: AppSession().isLoggedIn),
+      child: ChangeNotifierProvider(
+        create: (_) => PinnedCardProvider(),
+        child: MyApp(isLoggedIn: AppSession().isLoggedIn),
+      ),
     ),
   );
 }
