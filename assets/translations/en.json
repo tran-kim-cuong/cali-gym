@@ -36,6 +36,7 @@
     "btn_cancel": "Cancel",
     "btn_understand": "Got it",
     "scan_qr_to_checkin": "Scan QR code to check in",
+    "tap_to_scan": "Tap to Scan",
     "lbl_title_common_user_share_card": "Select user use card",
     "lbl_status_item_user_share_card": "Active",
     "msg_error_500": "An error occurred, please try again",

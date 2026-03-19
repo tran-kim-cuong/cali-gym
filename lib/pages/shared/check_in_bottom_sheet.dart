@@ -32,6 +32,7 @@ class CheckInBottomSheet extends StatefulWidget {
 class _CheckInBottomSheetState extends State<CheckInBottomSheet> {
   MobileScannerController cameraController = MobileScannerController();
   bool _hasScanned = false;
+  bool _isScanReady = false;
 
   @override
   void dispose() {
@@ -76,12 +77,13 @@ class _CheckInBottomSheetState extends State<CheckInBottomSheet> {
                 child: MobileScanner(
                   controller: cameraController,
                   onDetect: (capture) {
-                    if (_hasScanned) return;
+                    if (_hasScanned || !_isScanReady) return;
                     final List<Barcode> barcodes = capture.barcodes;
                     if (barcodes.isNotEmpty) {
                       final String? code = barcodes.first.rawValue;
                       if (code != null && code.isNotEmpty) {
                         _hasScanned = true;
+                        _isScanReady = false;
                         if (mounted) Navigator.pop(context);
                         if (widget.onScanned != null) {
                           widget.onScanned!(code);
@@ -94,8 +96,53 @@ class _CheckInBottomSheetState extends State<CheckInBottomSheet> {
               _buildScannerOverlay(),
             ],
           ),
-          SizedBox(height: context.resH(24)),
+          SizedBox(height: context.resH(20)),
+          _buildCaptureButton(),
+          SizedBox(height: context.resH(4)),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCaptureButton() {
+    return GestureDetector(
+      onTap: (_hasScanned || _isScanReady)
+          ? null
+          : () {
+              setState(() => _isScanReady = true);
+              Future.delayed(const Duration(seconds: 3), () {
+                if (mounted && !_hasScanned) {
+                  setState(() => _isScanReady = false);
+                }
+              });
+            },
+      child: Container(
+        width: context.resW(240).clamp(200.0, 300.0),
+        height: context.resH(50),
+        decoration: BoxDecoration(
+          color: _isScanReady
+              ? const Color(0xFFD92229).withValues(alpha: 0.6)
+              : const Color(0xFFD92229),
+          borderRadius: BorderRadius.circular(24),
+        ),
+        alignment: Alignment.center,
+        child: _isScanReady
+            ? const SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2.5,
+                ),
+              )
+            : Text(
+                'common.tap_to_scan'.tr(),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: context.resClamp(15, 13, 17),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
       ),
     );
   }
