@@ -610,9 +610,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
 
         fetchedSchedules =
             fetchedSchedules.where((schedule) {
-              final DateTime? endDate = schedule.endDate;
-              if (endDate == null) return false;
-              return !endDate.isBefore(nowVietnam);
+              final DateTime? startDate = schedule.startDate;
+              if (startDate == null) return false;
+              return startDate.isAfter(nowVietnam);
             }).toList()..sort((a, b) {
               if (a.startDate == null || b.startDate == null) return 0;
               return a.startDate!.compareTo(b.startDate!);
