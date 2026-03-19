@@ -118,6 +118,9 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
         _selectedCard?['membershipType'] == card['membershipType'];
   }
 
+  bool get _hasSelectedProducts =>
+      _products.any((item) => (item['count'] as int) > 0);
+
   // HÀM HIỂN THỊ CHỌN THẺ (BOTTOM SHEET) THEO SNIPPET
   void _showMemberCardsBottomSheet() {
     showModalBottomSheet(
@@ -528,6 +531,8 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
 
   // --- 4. Nút Xác nhận ở dưới đáy ---
   Widget _buildBottomAction() {
+    final hasSelectedProducts = _hasSelectedProducts;
+
     return Container(
       padding: EdgeInsets.fromLTRB(
         20,
@@ -539,48 +544,52 @@ class _OtherBenefitsScreenState extends State<OtherBenefitsScreen> {
         width: double.infinity,
         height: context.resH(48).clamp(44, 56),
         child: ElevatedButton(
-          onPressed: () {
-            // Xử lý xác nhận quyền lợi
-            List<Map<String, dynamic>> selectedProducts = _products
-                .where((item) => item['count'] > 0)
-                .toList();
-            String result = selectedProducts
-                .map((item) => "${item['count']}${item['code']}")
-                .join("-");
+          onPressed: hasSelectedProducts
+              ? () {
+                  // Xử lý xác nhận quyền lợi
+                  List<Map<String, dynamic>> selectedProducts = _products
+                      .where((item) => item['count'] > 0)
+                      .toList();
+                  String result = selectedProducts
+                      .map((item) => "${item['count']}${item['code']}")
+                      .join("-");
 
-            int milliseconds = DateTime.now()
-                .add(Duration(hours: 7))
-                .millisecondsSinceEpoch;
+                  int milliseconds = DateTime.now()
+                      .add(Duration(hours: 7))
+                      .millisecondsSinceEpoch;
 
-            String sSecrect =
-                "${SessionManager.sClientId}flg2022towel$result$milliseconds";
-            String sMd5 = generateMd5(sSecrect);
+                  String sSecrect =
+                      "${SessionManager.sClientId}flg2022towel$result$milliseconds";
+                  String sMd5 = generateMd5(sSecrect);
 
-            //Link booking towel
-            StringBuffer buffer = StringBuffer();
-            buffer.write(dotenv.env["CALIFORNIA_URI"]);
-            buffer.write("/fitlgbackend/fitlg/towel/towelorders/create?");
-            buffer.write("c=${SessionManager.sClientId}");
-            buffer.write("&ms=&p=$result");
-            buffer.write("&cn=${_msCard.membershipCardNumber}");
-            buffer.write("&nc=${_msCard.membershipType}");
-            buffer.write("&co=${_msCard.mbMemberId}");
-            buffer.write("&io=${_msCard.isOwner}");
-            buffer.write("&mb=${_msCard.membershipNumber}");
-            buffer.write("&t=$milliseconds");
-            buffer.write("&secrect=$sMd5");
+                  //Link booking towel
+                  StringBuffer buffer = StringBuffer();
+                  buffer.write(dotenv.env["CALIFORNIA_URI"]);
+                  buffer.write("/fitlgbackend/fitlg/towel/towelorders/create?");
+                  buffer.write("c=${SessionManager.sClientId}");
+                  buffer.write("&ms=&p=$result");
+                  buffer.write("&cn=${_msCard.membershipCardNumber}");
+                  buffer.write("&nc=${_msCard.membershipType}");
+                  buffer.write("&co=${_msCard.mbMemberId}");
+                  buffer.write("&io=${_msCard.isOwner}");
+                  buffer.write("&mb=${_msCard.membershipNumber}");
+                  buffer.write("&t=$milliseconds");
+                  buffer.write("&secrect=$sMd5");
 
-            debugPrint(buffer.toString());
+                  debugPrint(buffer.toString());
 
-            CommonModalWidget.showBigQrModal(
-              context: context,
-              qrData: buffer.toString(),
-              instructionText: 'other_benefits.qr_instruction'.tr(),
-              closeButtonText: 'other_benefits.btn_close'.tr(),
-            );
-          },
+                  CommonModalWidget.showBigQrModal(
+                    context: context,
+                    qrData: buffer.toString(),
+                    instructionText: 'other_benefits.qr_instruction'.tr(),
+                    closeButtonText: 'other_benefits.btn_close'.tr(),
+                  );
+                }
+              : null,
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFFD92229),
+            disabledBackgroundColor: Colors.grey,
+            disabledForegroundColor: Colors.white.withValues(alpha: 0.6),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4),
             ),
