@@ -820,13 +820,13 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
   Widget _buildHotProgram() {
     return Container(
       width: double.infinity,
-      height: context.resH(145),
       margin: EdgeInsets.symmetric(horizontal: context.resW(20)),
-      decoration: BoxDecoration(
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        image: const DecorationImage(
-          image: AssetImage("assets/images/hot_program.png"),
-          fit: BoxFit.cover,
+        child: Image.asset(
+          "assets/images/hot_program.png",
+          width: double.infinity,
+          fit: BoxFit.fitWidth,
         ),
       ),
     );
