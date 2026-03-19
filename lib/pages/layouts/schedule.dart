@@ -383,9 +383,21 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     }
 
     final List<Map<String, dynamic>> categories = [
-      {'id': 'service', 'label': 'Loại dịch vụ', 'count': serviceList.length},
-      {'id': 'city', 'label': 'Thành phố', 'count': cityList.length},
-      {'id': 'club', 'label': 'Câu lạc bộ', 'count': clubList.length},
+      {
+        'id': 'service',
+        'label': 'schedule.filter_category_service'.tr(),
+        'count': serviceList.length,
+      },
+      {
+        'id': 'city',
+        'label': 'schedule.filter_category_city'.tr(),
+        'count': cityList.length,
+      },
+      {
+        'id': 'club',
+        'label': 'schedule.filter_category_club'.tr(),
+        'count': clubList.length,
+      },
     ];
 
     String selectedCategoryId = 'service'; // Tab mặc định
@@ -1146,7 +1158,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
           ),
           const SizedBox(width: 8),
           Text(
-            currentCode == 'vi' ? 'Tiếng Việt' : 'English',
+            currentCode == 'vi' ? 'common.lang_vi'.tr() : 'common.lang_en'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: context.resClamp(12, 10, 14), // Responsive

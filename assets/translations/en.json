@@ -35,9 +35,11 @@
     "btn_agree": "Agree",
     "btn_cancel": "Cancel",
     "btn_understand": "Got it",
+    "scan_qr_to_checkin": "Scan QR code to check in",
     "lbl_title_common_user_share_card": "Select user use card",
     "lbl_status_item_user_share_card": "Active",
-    "msg_error_500": "An error occurred, please try again"
+    "msg_error_500": "An error occurred, please try again",
+    "msg_checkin_failed": "Check-in failed!"
   },
   "history_schedule": {
     "lbl_title": "Previous Classes",
@@ -46,14 +48,6 @@
     "badge_completed": "Completed",
     "badge_incomplete": "Not done",
     "lbl_rate_class": "Rate class",
-    "lbl_rating_title_prefix": "Rate your class experience and earn\n",
-    "lbl_rating_scale": "Scale: from 1 (lowest) to 5 (highest)",
-    "lbl_rate_overall": "Rate your overall class experience",
-    "lbl_rate_trainer": "Rate your trainer's quality",
-    "hint_trainer_comment": "Share your detailed feedback",
-    "err_trainer_comment": "Please share your feedback about the trainer",
-    "lbl_other_opinion": "Other opinions (Optional)",
-    "hint_other_opinion": "Enter your opinion here",
     "hint_comment": "Share your thoughts...",
     "btn_submit_rating": "Submit rating",
     "msg_no_classes": "No classes available",
@@ -72,6 +66,8 @@
     "section_practice_pt": "PT programs",
     "coming_soon": "Coming soon",
     "hot_program": "Hot programs",
+    "voucher_count": "{} voucher",
+    "msg_refresh_use_cached": "Unable to refresh data, showing cached data",
     "features_coming_soon": "Upcoming features",
     "features_developing": "Feature under development"
   },
@@ -89,13 +85,31 @@
     "verify_zalo": "Verify via Zalo",
     "phone_input_title": "Enter your phone number to log in"
   },
+  "loyalty": {
+    "section_energy": "Energy products",
+    "section_gifts": "Gifts",
+    "section_short_courses": "Short-term courses",
+    "label_region": "Region",
+    "region_ho_chi_minh": "Ho Chi Minh",
+    "label_points": "Points",
+    "label_my_vouchers": "My vouchers",
+    "product_strawberry_smoothie": "Cool strawberry smoothie",
+    "product_whey_pack": "Energy whey pack",
+    "product_sports_cap": "Sports cap",
+    "product_sports_bottle": "Sports bottle",
+    "product_dance_30_days": "30-day dance package",
+    "product_yoga_15_days": "15-day yoga package"
+  },
   "member_card": {
     "expire_date": "Expiry date: ",
     "btn_show_qr": "Show QR code",
     "pick_member_card": "Pin card",
     "title_member_card": "Membership card",
     "btn_share_card_title": "Share card",
-    "msg_select_one_user": "Please select at least one user to share"
+    "msg_select_one_user": "Please select at least one user to share",
+    "msg_member_default_name": "Member",
+    "msg_member_checked_in_with_code": "{} checked in {}",
+    "msg_member_checked_in": "{} checked in"
   },
   "navbar": {
     "btn_home": "Home",
@@ -126,6 +140,13 @@
     "verify_error": "Invalid OTP",
     "zalo_sent": "An OTP has been sent to your phone number. Please check and enter the code to log in"
   },
+  "personal_info": {
+    "title": "Personal information",
+    "lbl_member_code": "Member code",
+    "lbl_full_name": "Full name",
+    "lbl_phone_number": "Phone number",
+    "msg_copied": "Copied: {}"
+  },
   "profile": {
     "sec_privacy": "Personal",
     "sec_privacy_info": "Personal information",
@@ -145,6 +166,9 @@
   },
   "schedule": {
     "btn_filter": "Filter",
+    "filter_category_service": "Service type",
+    "filter_category_city": "City",
+    "filter_category_club": "Club",
     "msg_not_found_schedule": "No classes found",
     "lbl_schedule": "Classes",
     "btn_clear_filter": "Clear filter",

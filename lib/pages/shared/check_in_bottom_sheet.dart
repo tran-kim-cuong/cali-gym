@@ -1,5 +1,6 @@
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/booking_class_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
@@ -167,7 +168,7 @@ class _CheckInBottomSheetState extends State<CheckInBottomSheet> {
       children: [
         const SizedBox(width: 32),
         Text(
-          'Quét mã QR để checkin',
+          'common.scan_qr_to_checkin'.tr(),
           style: TextStyle(
             color: Colors.white,
             fontSize: context.resClamp(16, 14, 18),

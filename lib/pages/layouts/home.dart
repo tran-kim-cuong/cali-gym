@@ -147,10 +147,7 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
       }
 
       if (hasRefreshError && mounted) {
-        showTopNotification(
-          "Không thể cập nhật dữ liệu mới, đang hiển thị dữ liệu đã lưu",
-          isError: true,
-        );
+        showTopNotification("home.msg_refresh_use_cached".tr(), isError: true);
       }
     } finally {
       if (showBlockingLoading && mounted) {
@@ -516,7 +513,7 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
             backgroundGradient: _pointBadgeGradient,
           ),
           CommonPointBadge(
-            value: '5 voucher',
+            value: 'home.voucher_count'.tr(args: ['5']),
             svgPath: 'assets/images/vuesax/v5/ticket-discount.svg',
             useGradient: false,
             backgroundGradient: _voucherBadgeGradient,
@@ -948,7 +945,7 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
                           CommonNotification.show(
                             // ignore: use_build_context_synchronously
                             context,
-                            message: "Checkin không thành công!",
+                            message: "common.msg_checkin_failed".tr(),
                           );
                         }
                       } finally {
@@ -1033,7 +1030,7 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
           ),
           const SizedBox(width: 8),
           Text(
-            currentCode == 'vi' ? 'Tiếng Việt' : 'English',
+            currentCode == 'vi' ? 'common.lang_vi'.tr() : 'common.lang_en'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: context.resClamp(12, 10, 14), // Responsive

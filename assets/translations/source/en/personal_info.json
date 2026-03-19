@@ -1,0 +1,7 @@
+{
+    "title": "Personal information",
+    "lbl_member_code": "Member code",
+    "lbl_full_name": "Full name",
+    "lbl_phone_number": "Phone number",
+    "msg_copied": "Copied: {}"
+}

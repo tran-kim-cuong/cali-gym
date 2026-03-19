@@ -311,7 +311,9 @@ class _LoginScreenState extends State<LoginScreen>
             ),
             SizedBox(width: context.resW(8)),
             Text(
-              currentCode == 'vi' ? 'Tiếng Việt' : 'English',
+              currentCode == 'vi'
+                  ? 'common.lang_vi'.tr()
+                  : 'common.lang_en'.tr(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: context.resClamp(12, 11, 14),

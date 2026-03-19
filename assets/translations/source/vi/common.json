@@ -13,9 +13,11 @@
     "btn_agree": "Đồng ý",
     "btn_cancel": "Hủy",
     "btn_understand":"Đã hiểu",
+    "scan_qr_to_checkin": "Quét mã QR để checkin",
 
     "lbl_title_common_user_share_card":"Chọn người dùng thẻ",
     "lbl_status_item_user_share_card":"Hoạt động",
 
-    "msg_error_500": "Lỗi xảy ra vui lòng thử lại"
+    "msg_error_500": "Lỗi xảy ra vui lòng thử lại",
+    "msg_checkin_failed": "Checkin không thành công!"
 }

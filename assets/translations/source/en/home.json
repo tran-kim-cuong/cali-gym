@@ -11,6 +11,8 @@
     "section_practice_pt": "PT programs",
     "coming_soon": "Coming soon",
     "hot_program": "Hot programs",
+    "voucher_count": "{} voucher",
+    "msg_refresh_use_cached": "Unable to refresh data, showing cached data",
 
     "features_coming_soon": "Upcoming features",
     "features_developing": "Feature under development"

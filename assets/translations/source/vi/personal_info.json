@@ -1,0 +1,7 @@
+{
+    "title": "Thông tin cá nhân",
+    "lbl_member_code": "Mã hội viên",
+    "lbl_full_name": "Họ và tên",
+    "lbl_phone_number": "Số điện thoại",
+    "msg_copied": "Đã sao chép: {}"
+}

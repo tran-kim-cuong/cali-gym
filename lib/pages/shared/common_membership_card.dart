@@ -229,7 +229,7 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
             .trim()
             .isNotEmpty
         ? (checkResult.fullName ?? widget.data['name']).toString().trim()
-        : 'Thành viên';
+        : 'member_card.msg_member_default_name'.tr();
     final String displayMembershipNumber =
         (checkResult.membershipNumber ??
                 widget.data['mbMembershipNumber'] ??
@@ -238,8 +238,10 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
             .trim();
 
     final String message = displayMembershipNumber.isNotEmpty
-        ? '$displayName đã checkin $displayMembershipNumber'
-        : '$displayName đã checkin';
+        ? 'member_card.msg_member_checked_in_with_code'.tr(
+            args: [displayName, displayMembershipNumber],
+          )
+        : 'member_card.msg_member_checked_in'.tr(args: [displayName]);
 
     CommonNotification.show(context, message: message, isError: true);
   }

@@ -129,7 +129,7 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
             },
           ),
           Text(
-            'Lớp học sắp tới',
+            'home.section_next_class'.tr(),
             style: TextStyle(
               color: Colors.white,
               // Font scale theo thiết bị
@@ -260,7 +260,7 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
                             _buildIconInfo(
                               context,
                               Icons.person_outline,
-                              'Giáo viên ${item.trainerName ?? 'N/A'}',
+                              '${'class_detail.info_sub_trainer'.tr()} ${item.trainerName ?? 'N/A'}',
                             ),
                             _buildIconInfo(
                               context,

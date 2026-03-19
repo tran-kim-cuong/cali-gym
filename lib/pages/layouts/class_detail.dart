@@ -596,7 +596,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                         CommonNotification.show(
                           // ignore: use_build_context_synchronously
                           context,
-                          message: "Checkin không thành công!",
+                          message: "common.msg_checkin_failed".tr(),
                         );
                       }
                     } finally {
