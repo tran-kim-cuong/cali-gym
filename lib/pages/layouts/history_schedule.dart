@@ -8,6 +8,7 @@ import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/services/booking_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:californiaflutter/pages/layouts/class_detail.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -186,7 +187,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
     final String selectedWatermark = watermarks[index % watermarks.length];
     final bool isCompleted = item.confirmed == true;
 
-    return Container(
+    final Widget card = Container(
       width: double.infinity,
       margin: EdgeInsets.only(bottom: context.resH(16)),
       clipBehavior: Clip.antiAlias,
@@ -372,6 +373,23 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
         ],
       ),
     );
+
+    if (!isCompleted) {
+      return GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ClassDetailScreen(
+              scheduleId: item.scheduleId,
+              seatCode: item.code,
+              clubCode: item.clubCode,
+            ),
+          ),
+        ),
+        child: card,
+      );
+    }
+    return card;
   }
 
   // ── RATING BOTTOM SHEET ───────────────────────────────────────────────────
