@@ -618,12 +618,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
               return a.startDate!.compareTo(b.startDate!);
             });
 
-        // final selectedServiceIds = _services.map((s) => s['name']).toList();
-        // // print(selectedServiceIds);
-        // fetchedSchedules = fetchedSchedules.where((schedule) {
-        //   return selectedServiceIds.contains(schedule.classType.toString());
-        // }).toList();
-        // // print(fetchedSchedules.length);
+        if (_services.isNotEmpty) {
+          final selectedServiceNames = _services
+              .map((s) => s['name'] as String)
+              .toSet();
+          fetchedSchedules = fetchedSchedules.where((schedule) {
+            return selectedServiceNames.contains(schedule.classType);
+          }).toList();
+        }
 
         // 3. Cập nhật giao diện
         setState(() {
