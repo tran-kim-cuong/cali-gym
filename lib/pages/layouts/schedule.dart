@@ -444,6 +444,17 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                           (id) {
                             setModalState(() => selectedCategoryId = id);
                           },
+                          lockedIds: {
+                            if (!serviceList.any(
+                              (s) => s['isSelected'] == true,
+                            ))
+                              'city',
+                            if (!serviceList.any(
+                                  (s) => s['isSelected'] == true,
+                                ) ||
+                                !cityList.any((c) => c['isSelected'] == true))
+                              'club',
+                          },
                         ),
 
                         // Section bên phải: Hiển thị danh sách Options động
@@ -460,37 +471,58 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                                   city['isSelected'] = false;
                                 }
                                 cityList[index]['isSelected'] = true;
-
                                 _cities = cityList
-                                    .where((club) => club['isSelected'] == true)
+                                    .where((c) => c['isSelected'] == true)
                                     .toList();
 
+                                // Rebuild danh sách club theo thành phố mới, reset lựa chọn cũ
+                                _clubs = [];
                                 clubList = oriClub.where((club) {
                                   return _cities.any(
                                     (city) => city['name'] == club['city_name'],
                                   );
                                 }).toList();
+                                for (final c in clubList) {
+                                  c['isSelected'] = false;
+                                }
                                 categories[2]['count'] = clubList.length;
-                                // print(_cities);
-                                // print(clubList);
-                              } else {
+                                // Mặc định gửi tất cả club của thành phố đã chọn
+                                sClubs = clubList.map((e) => e['id']).join(',');
+                              } else if (selectedCategoryId == 'service') {
                                 // LOGIC CHECKBOX: Cho phép chọn nhiều
                                 currentOptions[index]['isSelected'] =
                                     !currentOptions[index]['isSelected'];
-                              }
-                              if (selectedCategoryId == 'service') {
                                 _services = currentOptions
-                                    .where((ite) => ite['isSelected'] == true)
+                                    .where((s) => s['isSelected'] == true)
                                     .toList();
-                                // print(_services);
-                              }
-                              if (selectedCategoryId == 'club') {
+                                // Nếu bỏ chọn tất cả service → cascade xóa city và club
+                                if (_services.isEmpty) {
+                                  _cities = [];
+                                  _clubs = [];
+                                  sClubs = '';
+                                  for (final c in cityList) {
+                                    c['isSelected'] = false;
+                                  }
+                                  clubList = [];
+                                  categories[2]['count'] = 0;
+                                  // Auto quay về tab service
+                                  selectedCategoryId = 'service';
+                                }
+                              } else {
+                                // LOGIC CHECKBOX club: Cho phép chọn nhiều
+                                currentOptions[index]['isSelected'] =
+                                    !currentOptions[index]['isSelected'];
                                 _clubs = currentOptions
-                                    .where((club) => club['isSelected'] == true)
+                                    .where((c) => c['isSelected'] == true)
                                     .toList();
-                                // print(currentOptions);
-                                // print(_clubs);
-                                sClubs = _clubs.map((e) => e['id']).join(',');
+                                if (_clubs.isEmpty) {
+                                  // Không chọn club cụ thể → dùng toàn bộ club của thành phố
+                                  sClubs = clubList
+                                      .map((e) => e['id'])
+                                      .join(',');
+                                } else {
+                                  sClubs = _clubs.map((e) => e['id']).join(',');
+                                }
                               }
                             });
                           },
@@ -1324,8 +1356,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     BuildContext context,
     List<Map<String, dynamic>> cats,
     String selectedId,
-    Function(String) onSelect,
-  ) {
+    Function(String) onSelect, {
+    Set<String> lockedIds = const {},
+  }) {
     return Container(
       width: context.resW(150),
       color: const Color(0xFF242424), // Sidebar xám đậm
@@ -1333,9 +1366,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
         itemCount: cats.length,
         itemBuilder: (context, index) {
           final cat = cats[index];
-          bool isSelected = selectedId == cat['id'];
+          final bool isSelected = selectedId == cat['id'];
+          final bool isLocked = lockedIds.contains(cat['id']);
           return GestureDetector(
-            onTap: () => onSelect(cat['id']),
+            onTap: isLocked ? null : () => onSelect(cat['id']),
             child: Container(
               padding: EdgeInsets.symmetric(
                 horizontal: context.resW(20),
@@ -1357,7 +1391,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
               child: Text(
                 '${cat['label']} (${cat['count']})',
                 style: TextStyle(
-                  color: isSelected ? Colors.white : const Color(0xFF9A9A9A),
+                  color: isLocked
+                      ? const Color(0xFF555555)
+                      : (isSelected ? Colors.white : const Color(0xFF9A9A9A)),
                   fontSize: context.resClamp(14, 13, 15),
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 ),
