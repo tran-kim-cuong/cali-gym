@@ -1,11 +1,16 @@
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
+import 'package:californiaflutter/helpers/loading_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/models/booking_class_confirm_model.dart';
 import 'package:californiaflutter/models/booking_class_model.dart';
 import 'package:californiaflutter/pages/layouts/class_detail.dart';
 import 'package:californiaflutter/pages/master.dart';
+import 'package:californiaflutter/pages/shared/check_in_bottom_sheet.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
+import 'package:californiaflutter/pages/shared/common_notification.dart';
+import 'package:californiaflutter/services/api_service.dart';
 import 'package:californiaflutter/services/booking_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +58,36 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
     } catch (e) {
       debugPrint("Lỗi nạp dữ liệu ClassScreen: $e");
     }
+  }
+
+  Future<void> _handleCheckIn(BuildContext ctx, BookingData item) async {
+    CheckInBottomSheet.show(
+      ctx,
+      item,
+      onScanned: (String qrData) async {
+        LoadingManager().show(ctx);
+        try {
+          final String token = await getToken();
+          final BookingClassConfirmModel? bcc = await bookingClassConfirm(
+            token,
+            "${item.scheduleId}${item.clubCode}${AppSession().customerId}.${item.code}",
+            AppSession().clientId,
+            qrData,
+          );
+          if (!ctx.mounted) return;
+          if (bcc != null) {
+            CommonNotification.show(ctx, message: bcc.message);
+          } else {
+            CommonNotification.show(
+              ctx,
+              message: 'common.msg_checkin_failed'.tr(),
+            );
+          }
+        } finally {
+          LoadingManager().hide();
+        }
+      },
+    );
   }
 
   @override
@@ -160,156 +195,192 @@ class _ClassScreenState extends State<ClassScreen> with LoadingWrapper {
         : const Color(0xFF59BFFF);
     final String tagText = (index % 2 == 0) ? '' : '';
 
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ClassDetailScreen(
-              // Truyền ID sang để trang chi tiết tự gọi API
-              scheduleId: item.scheduleId,
-              seatCode: item.code,
-              clubCode: item.clubCode,
-            ),
-          ),
-        );
-      },
-      child: Container(
-        width: double.infinity,
-        margin: EdgeInsets.only(bottom: context.resH(16)),
-        clipBehavior: Clip.antiAlias,
-        decoration: ShapeDecoration(
-          color: const Color(0xFF3E3E3E),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(context.resW(4)),
-            side: const BorderSide(color: Color(0xFFEF4822), width: 1.5),
-          ),
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(bottom: context.resH(16)),
+      clipBehavior: Clip.antiAlias,
+      decoration: ShapeDecoration(
+        color: const Color(0xFF3E3E3E),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(context.resW(4)),
+          side: const BorderSide(color: Color(0xFFEF4822), width: 1.5),
         ),
-        child: Stack(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ẢNH LỚP HỌC (LẤP ĐẦY CHIỀU CAO)
-                SizedBox(
-                  width: context.resW(140),
-                  height: context.resH(130),
-                  child: Image.asset(
-                    ImageHelper.getClassThumbnail(item.classType),
-                    fit: BoxFit.cover,
-                    errorBuilder: (c, e, s) => Image.asset(
-                      "assets/images/none.jpg",
-                      fit: BoxFit.cover,
-                    ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // PHẦN TRÊN: Nhấn để xem chi tiết lớp học
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ClassDetailScreen(
+                    scheduleId: item.scheduleId,
+                    seatCode: item.code,
+                    clubCode: item.clubCode,
                   ),
                 ),
-
-                // PHẦN THÔNG TIN BÊN PHẢI
-                Expanded(
-                  child: Stack(
-                    children: [
-                      // 3. GẮN WATERMARK CANH PHẢI DƯỚI
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Opacity(
-                          opacity: 0.8, // Độ mờ của hình watermark chìm
-                          child: Container(
-                            width: context.resW(87), // Chiều rộng responsive
-                            height: context.resH(77), // Chiều cao responsive
-                            alignment: Alignment.bottomRight,
-                            child: Image.asset(
-                              selectedWatermark,
-                              fit: BoxFit
-                                  .contain, // Đảm bảo ảnh nằm gọn trong khung 87x77
-                            ),
-                          ),
+              );
+            },
+            child: Stack(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ẢNH LỚP HỌC (LẤP ĐẦY CHIỀU CAO)
+                    SizedBox(
+                      width: context.resW(140),
+                      height: context.resH(130),
+                      child: Image.asset(
+                        ImageHelper.getClassThumbnail(item.classType),
+                        fit: BoxFit.cover,
+                        errorBuilder: (c, e, s) => Image.asset(
+                          "assets/images/none.jpg",
+                          fit: BoxFit.cover,
                         ),
                       ),
+                    ),
 
-                      // NỘI DUNG CHỮ
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          context.resW(12),
-                          context.resH(12), // 4. DỊCH CHUYỂN XUỐNG 1 TÍ
-                          context.resW(8),
-                          context.resH(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Tên lớp học màu cam rực
-                            Padding(
-                              padding: EdgeInsets.only(
-                                right: context.resW(85),
-                              ), // Chừa chỗ cho tag trạng thái
-                              child: Text(
-                                item.serviceName ?? 'N/A',
-                                maxLines:
-                                    2, // Cho phép xuống dòng nếu tên quá dài
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: const Color(0xFFF7941D),
-                                  fontSize: context.resClamp(16, 14, 18),
-                                  fontWeight: FontWeight.bold,
-                                  height: 1.2,
+                    // PHẦN THÔNG TIN BÊN PHẢI
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          // GẮN WATERMARK CANH PHẢI DƯỚI
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Opacity(
+                              opacity: 0.8,
+                              child: Container(
+                                width: context.resW(87),
+                                height: context.resH(77),
+                                alignment: Alignment.bottomRight,
+                                child: Image.asset(
+                                  selectedWatermark,
+                                  fit: BoxFit.contain,
                                 ),
                               ),
                             ),
-                            SizedBox(height: context.resH(10)),
-                            _buildIconInfo(
-                              context,
-                              Icons.person_outline,
-                              '${'class_detail.info_sub_trainer'.tr()} ${item.trainerName ?? 'N/A'}',
+                          ),
+
+                          // NỘI DUNG CHỮ
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(
+                              context.resW(12),
+                              context.resH(12),
+                              context.resW(8),
+                              context.resH(8),
                             ),
-                            _buildIconInfo(
-                              context,
-                              Icons.calendar_month_outlined,
-                              DateFormat(
-                                'dd/MM/yyyy h:mm a',
-                              ).format(item.startDate!),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Tên lớp học màu cam rực
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    right: context.resW(85),
+                                  ),
+                                  child: Text(
+                                    item.serviceName ?? 'N/A',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: const Color(0xFFF7941D),
+                                      fontSize: context.resClamp(16, 14, 18),
+                                      fontWeight: FontWeight.bold,
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: context.resH(10)),
+                                _buildIconInfo(
+                                  context,
+                                  Icons.person_outline,
+                                  '${'class_detail.info_sub_trainer'.tr()} ${item.trainerName ?? 'N/A'}',
+                                ),
+                                _buildIconInfo(
+                                  context,
+                                  Icons.calendar_month_outlined,
+                                  DateFormat(
+                                    'dd/MM/yyyy h:mm a',
+                                  ).format(item.startDate!),
+                                ),
+                                _buildIconInfo(
+                                  context,
+                                  Icons.location_on_outlined,
+                                  '${item.clubName}',
+                                ),
+                              ],
                             ),
-                            _buildIconInfo(
-                              context,
-                              Icons.location_on_outlined,
-                              '${item.clubName}',
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
+                  ],
+                ),
+
+                // TAG TRẠNG THÁI
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.resW(10),
+                      vertical: context.resH(6),
+                    ),
+                    decoration: BoxDecoration(
+                      color: tagColor,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(context.resW(8)),
+                      ),
+                    ),
+                    child: Text(
+                      tagText,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
+          ),
 
-            // TAG TRẠNG THÁI
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: context.resW(10),
-                  vertical: context.resH(6),
-                ),
-                decoration: BoxDecoration(
-                  color: tagColor,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(context.resW(8)),
-                  ),
-                ),
-                child: Text(
-                  tagText,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                  ),
+          // ĐƯỜNG KẺ PHÂN CÁCH
+          const Divider(height: 1, thickness: 0.5, color: Colors.white12),
+
+          // NÚT QUÉT ĐỂ CHECK-IN
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => _handleCheckIn(context, item),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: context.resH(10)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.qr_code_scanner_outlined,
+                      color: const Color(0xFFD92229),
+                      size: context.resW(16),
+                    ),
+                    SizedBox(width: context.resW(6)),
+                    Text(
+                      'class_detail.scan_checkin_button_text'.tr(),
+                      style: TextStyle(
+                        color: const Color(0xFFD92229),
+                        fontSize: context.resClamp(13, 12, 15),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
