@@ -34,16 +34,19 @@ class _LoginScreenState extends State<LoginScreen>
   final FocusNode _clientIdFocusNode = FocusNode();
   bool _isAgreed = false;
   bool _isPhoneValid = false;
+  bool _isClientIdValid = false;
 
   @override
   void initState() {
     super.initState();
     _phoneController.addListener(_onPhoneChanged);
+    _clientIdController.addListener(_onClientIdChanged);
   }
 
   @override
   void dispose() {
     _phoneController.removeListener(_onPhoneChanged);
+    _clientIdController.removeListener(_onClientIdChanged);
     _phoneController.dispose();
     _clientIdController.dispose();
     _focusNode.dispose();
@@ -61,12 +64,24 @@ class _LoginScreenState extends State<LoginScreen>
     }
   }
 
-  bool _canEnableButton() => _isAgreed && _isPhoneValid;
+  void _onClientIdChanged() {
+    setState(() {
+      _isClientIdValid = _clientIdController.text.trim().isNotEmpty;
+    });
+  }
+
+  bool _canEnableButton() => _isAgreed && _isPhoneValid && _isClientIdValid;
 
   Future<void> _handleLogin(String method) async {
     String phoneNumber = _phoneController.text;
     if (phoneNumber.isEmpty || phoneNumber.length < 10) {
       showTopNotification("login.error_invalid_phone".tr(), isError: true);
+      return;
+    }
+
+    final String clientId = _clientIdController.text.trim();
+    if (clientId.isEmpty) {
+      showTopNotification("login.error_invalid_client_no".tr(), isError: true);
       return;
     }
 
@@ -84,7 +99,6 @@ class _LoginScreenState extends State<LoginScreen>
       "sender": dotenv.env["SMS_SENDER"],
     });
 
-    final String clientId = _clientIdController.text.trim();
     if (clientId.isNotEmpty) {
       LoadingManager().show(context);
       try {

@@ -83,7 +83,8 @@
     "agree_suffix": " of our",
     "verify_sms": "Verify via SMS",
     "verify_zalo": "Verify via Zalo",
-    "phone_input_title": "Enter your phone number to log in"
+    "error_invalid_client_no": "Please enter your member ID",
+    "phone_input_title": "Enter your phone number and member ID to log in"
   },
   "loyalty": {
     "section_energy": "Energy products",

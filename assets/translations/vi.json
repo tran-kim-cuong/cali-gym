@@ -83,7 +83,8 @@
     "agree_suffix": " của chúng tôi",
     "verify_sms": "Xác thực qua SMS",
     "verify_zalo": "Xác thực qua Zalo",
-    "phone_input_title": "Hãy nhập số điện thoại của bạn để đăng nhập"
+    "phone_input_title": "Hãy nhập số điện thoại và mã Hội viên của bạn để đăng nhập",
+    "error_invalid_client_no": "Vui lòng nhập mã Hội viên"
   },
   "loyalty": {
     "section_energy": "Nạp năng lượng",
