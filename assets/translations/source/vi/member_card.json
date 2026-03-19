@@ -1,11 +1,13 @@
 {
-    "expire_date": "Ngày hết hạn: ",
-    "btn_show_qr": "Hiện mã QR",
-    "pick_member_card":"Ghim thẻ",
-    "title_member_card":"Thẻ hội viên",
+    "expire_date": "Ngày hết hạn: ",
+    "btn_show_qr": "Hiện mã QR",
+    "pick_member_card":"Ghim thẻ",
+    "title_member_card":"Thẻ hội viên",
+    "select_pin_card": "Chọn thẻ để ghim",
+    "pinned": "Đã ghim",
 
-    "btn_share_card_title":"Chia sẻ thẻ",
-    "msg_select_one_user": "Vui lòng chọn ít nhất 1 người dùng để chia sẻ",
+    "btn_share_card_title":"Chia sẻ thẻ",
+    "msg_select_one_user": "Vui lòng chọn ít nhất 1 người dùng để chia sẻ",
     "msg_member_default_name": "Thành viên",
     "msg_member_checked_in_with_code": "{} đã checkin {}",
     "msg_member_checked_in": "{} đã checkin"
