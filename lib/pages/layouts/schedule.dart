@@ -371,6 +371,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
         'city_name': 'Vung Tau',
         'isSelected': false,
       },
+      {
+        'id': 'BDS',
+        'name': 'Binh Duong Square',
+        'city_name': 'Binh Duong',
+        'isSelected': false,
+      },
     ];
     List<Map<String, dynamic>> clubList = [];
     if (_cities.isNotEmpty) {
