@@ -1,7 +1,12 @@
 // import 'package:californiaflutter/helpers/session_manager.dart';
+import 'package:californiaflutter/bases/app_session.dart';
+import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
+import 'package:californiaflutter/bases/notification_mixin.dart';
 import 'package:californiaflutter/helpers/convert_model.dart';
+import 'package:californiaflutter/helpers/member_cache_manager.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
+import 'package:californiaflutter/models/member_model.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/pages/shared/common_membership_card.dart';
@@ -27,7 +32,7 @@ class MemberListScreen extends StatefulWidget {
 }
 
 class _MemberListScreenState extends State<MemberListScreen>
-    with LoadingWrapper {
+    with LoadingWrapper, NotificationMixin {
   static const List<Map<String, String>> _leadingCardVisuals = [
     {
       'img': 'https://booking.cali.vn/storage/app/media/Cards/Gold Premium.png',
@@ -57,11 +62,56 @@ class _MemberListScreenState extends State<MemberListScreen>
   String? _activeCardId;
 
   List<Map<String, dynamic>> _memberCards = [];
+  Map<String, dynamic>? _latestMemberRaw;
+  bool _isRefreshing = false;
 
   @override
   void initState() {
     super.initState();
     _memberCards = buildMemberCards(SessionManager.member);
+  }
+
+  Future<void> _refreshMemberCards() async {
+    if (_isRefreshing) return;
+    _isRefreshing = true;
+    try {
+      final response = await BaseApi().client.post(
+        '/api/booking/check/member',
+        data: {
+          'clientcode': AppSession().clientId,
+          'phone_number': AppSession().phoneNumber,
+        },
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        final dynamic rawData = response.data['data'];
+        if (rawData is Map) {
+          _latestMemberRaw = Map<String, dynamic>.from(rawData);
+          final member = MemberModel.fromJson(_latestMemberRaw!);
+          if (mounted) {
+            setState(() {
+              AppSession().member = member;
+              SessionManager.member = member;
+              SessionManager.sTenKh = member.firstName ?? '';
+              SessionManager.sMembershipNumber = member.membershipNumber ?? '';
+              _memberCards = buildMemberCards(member);
+            });
+            await MemberCacheManager().saveMemberRaw(_latestMemberRaw!);
+          }
+          return;
+        }
+      }
+      if (mounted) {
+        showTopNotification('home.msg_refresh_use_cached'.tr(), isError: true);
+      }
+    } catch (e) {
+      debugPrint('Lỗi làm mới thẻ hội viên: $e');
+      if (mounted) {
+        showTopNotification('home.msg_refresh_use_cached'.tr(), isError: true);
+      }
+    } finally {
+      _isRefreshing = false;
+    }
   }
 
   @override
@@ -133,35 +183,43 @@ class _MemberListScreenState extends State<MemberListScreen>
                 ),
 
                 Expanded(
-                  child: ListView.builder(
-                    padding: EdgeInsets.fromLTRB(
-                      context.resW(20),
-                      0,
-                      context.resW(20),
-                      navBarHeight + systemBottomPadding + 20,
-                    ),
-                    itemCount: sortedCards.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          // CHỈ HIỂN THỊ GHIM THẺ Ở PHẦN TỬ ĐẦU TIÊN (Index 0)
-                          if (index == 0) ...[
-                            _buildPinSection(context),
-                            SizedBox(height: context.resH(8)),
+                  child: RefreshIndicator(
+                    color: const Color(0xFFD92229),
+                    backgroundColor: const Color(0xFF242424),
+                    onRefresh: _refreshMemberCards,
+                    child: ListView.builder(
+                      padding: EdgeInsets.fromLTRB(
+                        context.resW(20),
+                        0,
+                        context.resW(20),
+                        navBarHeight + systemBottomPadding + 20,
+                      ),
+                      physics: const BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics(),
+                      ),
+                      itemCount: sortedCards.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            // CHỈ HIỂN THỊ GHIM THẺ Ở PHẦN TỬ ĐẦU TIÊN (Index 0)
+                            if (index == 0) ...[
+                              _buildPinSection(context),
+                              SizedBox(height: context.resH(8)),
+                            ],
+
+                            // Hiển thị thẻ hội viên cho mọi index
+                            _buildSingleMembershipCard(
+                              context,
+                              sortedCards[index],
+                              index,
+                            ),
+
+                            // Khoảng cách giữa các thẻ
+                            SizedBox(height: context.resH(24)),
                           ],
-
-                          // Hiển thị thẻ hội viên cho mọi index
-                          _buildSingleMembershipCard(
-                            context,
-                            sortedCards[index],
-                            index,
-                          ),
-
-                          // Khoảng cách giữa các thẻ
-                          SizedBox(height: context.resH(24)),
-                        ],
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],
