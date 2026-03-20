@@ -100,6 +100,14 @@ class MyApp extends StatelessWidget {
         appBarTheme: const AppBarTheme(
           systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
+
+        // Dùng hiệu ứng chuyển màn hình kiểu iOS (slide từ phải) cho tất cả platform
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          },
+        ),
       ),
 
       // 2. SỬ DỤNG BUILDER ĐỂ KHỐNG CHẾ TOÀN BỘ APP

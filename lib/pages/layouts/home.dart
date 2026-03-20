@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
