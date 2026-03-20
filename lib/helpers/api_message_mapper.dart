@@ -14,11 +14,10 @@ class ApiMessageMapper {
       en: 'Tickets are duplicated',
       vi: 'Bạn đã chọn vé trùng',
     ),
-    'This membership card can not book tickets this period time':
-        _LocalizedApiMessage(
-          en: 'This membership card cannot book tickets during this period',
-          vi: 'Thẻ hội viên này không thể đặt vé trong thời gian này',
-        ),
+    'This membership card can not book tickets this period time': _LocalizedApiMessage(
+      en: 'This membership does not have booking benefit on Cali Life app or you cannot book ticket in this period time.',
+      vi: 'Thẻ hội viên này không có quyền đặt chỗ trên ứng dụng Cali Life hoặc bạn không thể đặt vé trong khoảng thời gian này.',
+    ),
     'End of time': _LocalizedApiMessage(
       en: "Couldn't complete your booking. End of time for booking on app",
       vi: 'Không thể hoàn tất đặt lớp học. Hết giờ đặt chỗ trên ứng dụng.',
