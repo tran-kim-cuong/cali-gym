@@ -729,11 +729,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
             .map((json) => ScheduleModel.fromJson(json))
             .toList();
 
+        final DateTime cutoff = nowVietnam.add(const Duration(hours: 2));
         fetchedSchedules =
             fetchedSchedules.where((schedule) {
               final DateTime? startDate = schedule.startDate;
               if (startDate == null) return false;
-              return startDate.isAfter(nowVietnam);
+              return startDate.isAfter(cutoff);
             }).toList()..sort((a, b) {
               if (a.startDate == null || b.startDate == null) return 0;
               return a.startDate!.compareTo(b.startDate!);
