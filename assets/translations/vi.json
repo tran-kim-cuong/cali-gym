@@ -144,13 +144,13 @@
     "btn_close": "Đóng"
   },
   "otp": {
-    "title": "Nhập mã OTP",
+    "title": "Nhập mã xác thực",
     "subtitle_prefix": "Chúng tôi đã gửi mã xác minh 4 số đến số điện thoại ",
     "resend_in": "Gửi lại mã trong ",
     "resend_link": "Gửi lại mã",
     "verify_success": "Xác thực thành công!",
-    "verify_error": "Mã OTP không chính xác",
-    "zalo_sent": "Mã OTP đã được gửi qua số điện thoại bạn. Vui lòng kiểm tra và nhập mã để đăng nhập"
+    "verify_error": "Mã xác thực không chính xác",
+    "zalo_sent": "Mã xác thực đã được gửi qua số điện thoại bạn. Vui lòng kiểm tra và nhập mã để đăng nhập"
   },
   "personal_info": {
     "title": "Thông tin cá nhân",
