@@ -273,9 +273,9 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
                     _buildUserGreeting(),
 
                     // 3. STATS ROW (500 POINT, 5 VOUCHER)
-                    _buildStatsRow(),
+                    // _buildStatsRow(),
 
-                    SizedBox(height: context.resH(24)),
+                    // SizedBox(height: context.resH(24)),
 
                     // 4. MEMBERSHIP SECTION
                     _buildSectionHeader(
