@@ -19,6 +19,10 @@ class ApiMessageMapper {
           en: 'This membership card cannot book tickets during this period',
           vi: 'Thẻ hội viên này không thể đặt vé trong thời gian này',
         ),
+    'End of time': _LocalizedApiMessage(
+      en: "Couldn't complete your booking. End of time for booking on app",
+      vi: 'Không thể hoàn tất đặt lớp học. Hết giờ đặt chỗ trên ứng dụng.',
+    ),
   };
 
   static String map(BuildContext context, String message) {
