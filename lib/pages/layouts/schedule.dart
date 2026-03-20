@@ -8,6 +8,7 @@ import 'package:californiaflutter/models/schedule_model.dart';
 import 'package:californiaflutter/pages/layouts/history_schedule.dart';
 import 'package:californiaflutter/pages/layouts/schedule_detail.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
+import 'package:californiaflutter/pages/shared/common_notification.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:californiaflutter/services/vietnam_time_service.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -112,6 +113,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
       sClubs = savedSClubs;
     });
   }
+
+  bool get _isFilterApplied =>
+      _services.isNotEmpty && _cities.isNotEmpty && _clubs.isNotEmpty;
 
   Future<void> _clearFilterPreferences() async {
     final prefs = await SharedPreferences.getInstance();
@@ -455,6 +459,31 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                                 !cityList.any((c) => c['isSelected'] == true))
                               'club',
                           },
+                          onLockedTap: (id) {
+                            final String requiredName;
+                            if (id == 'city') {
+                              requiredName = 'schedule.filter_category_service'
+                                  .tr();
+                            } else {
+                              // 'club' is locked
+                              if (!serviceList.any(
+                                (s) => s['isSelected'] == true,
+                              )) {
+                                requiredName =
+                                    'schedule.filter_category_service'.tr();
+                              } else {
+                                requiredName = 'schedule.filter_category_city'
+                                    .tr();
+                              }
+                            }
+                            CommonNotification.show(
+                              context,
+                              message: 'schedule.filter_locked_msg'.tr(
+                                namedArgs: {'name': requiredName},
+                              ),
+                              isError: true,
+                            );
+                          },
                         ),
 
                         // Section bên phải: Hiển thị danh sách Options động
@@ -530,7 +559,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                       ],
                     ),
                   ),
-                  _buildFilterActions(context, bottomPadding),
+                  _buildFilterActions(
+                    context,
+                    bottomPadding,
+                    canApply:
+                        serviceList.any((s) => s['isSelected'] == true) &&
+                        cityList.any((c) => c['isSelected'] == true) &&
+                        clubList.any((c) => c['isSelected'] == true),
+                  ),
                 ],
               ),
             );
@@ -608,6 +644,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     String toDateStr = DateFormat('yyyy-MM-dd HH:mm:ss').format(end);
 
     // Gọi API tải dữ liệu
+    if (!_isFilterApplied) {
+      setState(() => _schedules = []);
+      return;
+    }
     _fetchSchedulesByDate(fromDateStr, toDateStr);
   }
 
@@ -727,7 +767,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                 // Danh sách lớp học dạng Grid/Scroll
                 // Danh sách lớp học dạng Grid/Scroll
                 Expanded(
-                  child: _schedules.isEmpty
+                  child: !_isFilterApplied
+                      ? _buildNoFilterPlaceholder(context)
+                      : _schedules.isEmpty
                       ? Center(
                           // Hiển thị thông báo khi không có dữ liệu
                           child: Text(
@@ -777,6 +819,64 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
   }
 
   // MARK: - UI Helpers
+
+  Widget _buildNoFilterPlaceholder(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.filter_list,
+            color: const Color(0xFF555555),
+            size: context.resW(48),
+          ),
+          SizedBox(height: context.resH(16)),
+          Text(
+            'schedule.msg_no_filter_applied'.tr(),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.resClamp(16, 14, 18),
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Inter',
+            ),
+          ),
+          SizedBox(height: context.resH(8)),
+          Text(
+            'schedule.msg_no_filter_hint'.tr(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: const Color(0xFF9A9A9A),
+              fontSize: context.resClamp(13, 12, 15),
+              fontFamily: 'Inter',
+            ),
+          ),
+          SizedBox(height: context.resH(24)),
+          GestureDetector(
+            onTap: _showFilterBottomSheet,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.resW(24),
+                vertical: context.resH(12),
+              ),
+              decoration: BoxDecoration(
+                color: const Color(0xFFD92229),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                'schedule.btn_open_filter'.tr(),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: context.resClamp(14, 13, 16),
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Inter',
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   // Widget _buildBackground(BuildContext context) {
   //   return Positioned(
@@ -1281,7 +1381,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     );
   }
 
-  Widget _buildFilterActions(BuildContext context, double bottomPadding) {
+  Widget _buildFilterActions(
+    BuildContext context,
+    double bottomPadding, {
+    bool canApply = false,
+  }) {
     return Container(
       padding: EdgeInsets.fromLTRB(
         20,
@@ -1326,13 +1430,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
           const SizedBox(width: 12),
           Expanded(
             child: ElevatedButton(
-              onPressed: () {
-                _fetchDataForIndex(_selectedDateIndex);
-                _saveFilterPreferences();
-                Navigator.pop(context);
-              },
+              onPressed: canApply
+                  ? () {
+                      _fetchDataForIndex(_selectedDateIndex);
+                      _saveFilterPreferences();
+                      Navigator.pop(context);
+                    }
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFD92229), // Màu đỏ nút Áp dụng
+                disabledBackgroundColor: const Color(0xFF7A1015),
                 minimumSize: Size(0, context.resH(48)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -1341,7 +1448,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
               child: Text(
                 'schedule.btn_search'.tr(),
                 style: TextStyle(
-                  color: Colors.white,
+                  color: canApply ? Colors.white : Colors.white54,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -1358,6 +1465,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     String selectedId,
     Function(String) onSelect, {
     Set<String> lockedIds = const {},
+    Function(String)? onLockedTap,
   }) {
     return Container(
       width: context.resW(150),
@@ -1369,7 +1477,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
           final bool isSelected = selectedId == cat['id'];
           final bool isLocked = lockedIds.contains(cat['id']);
           return GestureDetector(
-            onTap: isLocked ? null : () => onSelect(cat['id']),
+            onTap: isLocked
+                ? () => onLockedTap?.call(cat['id'])
+                : () => onSelect(cat['id']),
             child: Container(
               padding: EdgeInsets.symmetric(
                 horizontal: context.resW(20),
