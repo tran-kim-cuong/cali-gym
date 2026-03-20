@@ -40,6 +40,7 @@
     "scan_qr_to_checkin": "Quét mã QR để checkin",
     "lbl_title_common_user_share_card": "Chọn người dùng thẻ",
     "lbl_status_item_user_share_card": "Hoạt động",
+    "btn_stop_share_card": "Ngừng chia sẻ",
     "msg_error_500": "Lỗi xảy ra vui lòng thử lại",
     "msg_checkin_failed": "Checkin không thành công!"
   },

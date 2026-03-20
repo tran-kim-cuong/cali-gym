@@ -62,4 +62,38 @@ class CommonUserShareCardService {
 
     return (null, 500);
   }
+
+  static Future<(String?, int)> deactivateUserShareCard(
+    String membershipNumber,
+    String basicAuthorization,
+    String clientId, {
+    String languageCode = "vi",
+  }) async {
+    final response = await BaseApi().crmClient.post(
+      "/api/v1/mbs/AddGuestToMBSForLivWellApp",
+      queryParameters: {
+        "MembershipId": membershipNumber,
+        "ClientId": clientId,
+        "IsActive": false,
+      },
+      data: {
+        "MembershipId": membershipNumber,
+        "ClientId": clientId,
+        "IsActive": false,
+      },
+      options: Options(headers: {'Authorization': basicAuthorization}),
+    );
+
+    if (response.statusCode == 200 && response.data != null) {
+      int code = response.data['Code'];
+      String message = response.data['Message']['VN'];
+      if (languageCode != 'vi') {
+        message = response.data['Message']['EN'];
+      }
+
+      return (message, code);
+    }
+
+    return (null, 500);
+  }
 }
