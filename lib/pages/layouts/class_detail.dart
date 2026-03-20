@@ -486,6 +486,8 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                   context: context,
                   imagePath: dotenv.get('IMAGES_QUESTION_ILLUSTRATION'),
                   title: 'class_detail.model_question_title_text'.tr(),
+                  confirmButtonText: 'common.btn_yes'.tr(),
+                  cancelButtonText: 'common.btn_no'.tr(),
                   onConfirm: () async {
                     String ticketNumber =
                         "${widget.scheduleId}${widget.clubCode}${AppSession().customerId}.${widget.seatCode}";

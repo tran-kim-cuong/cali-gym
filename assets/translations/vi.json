@@ -34,6 +34,8 @@
     "msg_new_version": "Đã có phiên bản mới {}. Bạn có muốn cập nhật ngay không?",
     "btn_agree": "Đồng ý",
     "btn_cancel": "Hủy",
+    "btn_yes": "Có",
+    "btn_no": "Không",
     "btn_understand": "Đã hiểu",
     "scan_qr_to_checkin": "Quét mã QR để checkin",
     "lbl_title_common_user_share_card": "Chọn người dùng thẻ",

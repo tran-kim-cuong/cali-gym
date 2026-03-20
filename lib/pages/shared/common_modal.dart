@@ -303,9 +303,11 @@ class CommonModalWidget {
     required VoidCallback onConfirm,
     VoidCallback? onCancel,
     String? opacityImage = 'assets/images/v5/image 1517.png',
+    String? confirmButtonText,
+    String? cancelButtonText,
   }) async {
-    String confirmButton = 'common.btn_agree'.tr();
-    String cancelButton = 'common.btn_cancel'.tr();
+    String confirmButton = confirmButtonText ?? 'common.btn_agree'.tr();
+    String cancelButton = cancelButtonText ?? 'common.btn_cancel'.tr();
 
     await showModalBottomSheet(
       context: context,
