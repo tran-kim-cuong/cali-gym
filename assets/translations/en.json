@@ -182,6 +182,8 @@
     "filter_category_city": "City",
     "filter_category_club": "Club",
     "filter_locked_msg": "Please select '{name}' first",
+    "filter_btn_select_all": "Select all",
+    "filter_btn_clear_all": "Clear all",
     "msg_not_found_schedule": "No classes found",
     "msg_no_filter_applied": "No filter selected yet",
     "msg_no_filter_hint": "Please use the filter to search for classes",

@@ -182,6 +182,8 @@
     "filter_category_city": "Thành phố",
     "filter_category_club": "Câu lạc bộ",
     "filter_locked_msg": "Vui lòng chọn '{name}' trước",
+    "filter_btn_select_all": "Chọn tất cả",
+    "filter_btn_clear_all": "Xóa tất cả",
     "msg_not_found_schedule": "Không tìm thấy lớp học nào",
     "msg_no_filter_applied": "Chưa có bộ lọc nào được chọn",
     "msg_no_filter_hint": "Vui lòng sử dụng bộ lọc để tìm kiếm lớp học",

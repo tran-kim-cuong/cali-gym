@@ -555,6 +555,55 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                               }
                             });
                           },
+                          onSelectAll: selectedCategoryId == 'city'
+                              ? null
+                              : () {
+                                  setModalState(() {
+                                    if (selectedCategoryId == 'service') {
+                                      for (final s in serviceList) {
+                                        s['isSelected'] = true;
+                                      }
+                                      _services = List.from(serviceList);
+                                    } else {
+                                      for (final c in clubList) {
+                                        c['isSelected'] = true;
+                                      }
+                                      _clubs = List.from(clubList);
+                                      sClubs = clubList
+                                          .map((e) => e['id'])
+                                          .join(',');
+                                    }
+                                  });
+                                },
+                          onClearAll: selectedCategoryId == 'city'
+                              ? null
+                              : () {
+                                  setModalState(() {
+                                    if (selectedCategoryId == 'service') {
+                                      for (final s in serviceList) {
+                                        s['isSelected'] = false;
+                                      }
+                                      _services = [];
+                                      _cities = [];
+                                      _clubs = [];
+                                      sClubs = '';
+                                      for (final c in cityList) {
+                                        c['isSelected'] = false;
+                                      }
+                                      clubList = [];
+                                      categories[2]['count'] = 0;
+                                      selectedCategoryId = 'service';
+                                    } else {
+                                      for (final c in clubList) {
+                                        c['isSelected'] = false;
+                                      }
+                                      _clubs = [];
+                                      sClubs = clubList
+                                          .map((e) => e['id'])
+                                          .join(',');
+                                    }
+                                  });
+                                },
                         ),
                       ],
                     ),
@@ -1305,78 +1354,135 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
 
   Widget _buildFilterOptions(
     BuildContext context,
-    List<Map<String, dynamic>> items, { // Đã bỏ VoidCallback? onToggle thừa
+    List<Map<String, dynamic>> items, {
     bool isRadio = false,
     required Function(int) onToggleIndex,
+    VoidCallback? onSelectAll,
+    VoidCallback? onClearAll,
   }) {
     return Expanded(
-      child: ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: context.resH(8)),
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final item = items[index];
-          bool isSelected = item['isSelected'] ?? false;
-
-          return GestureDetector(
-            onTap: () => onToggleIndex(index), // Sử dụng đúng onToggleIndex
-            child: Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Header row: Select All + Clear All — only shown when at least one action is available
+          if (onSelectAll != null || onClearAll != null)
+            Container(
               padding: EdgeInsets.symmetric(
                 horizontal: context.resW(16),
-                vertical: context.resH(12),
+                vertical: context.resH(8),
               ),
-              color: Colors.transparent,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Color(0xFF555555), width: 0.5),
+                ),
+              ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    item['name'] ?? '',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: context.resClamp(14, 13, 15),
-                      fontWeight: isSelected
-                          ? FontWeight.w500
-                          : FontWeight.w400,
+                  if (onSelectAll != null) ...[
+                    GestureDetector(
+                      onTap: onSelectAll,
+                      child: Text(
+                        'schedule.filter_btn_select_all'.tr(),
+                        style: TextStyle(
+                          color: const Color(0xFFD92229),
+                          fontSize: context.resClamp(12, 11, 13),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
-                  ),
-
-                  // UI Radio hoặc Checkbox
-                  Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? const Color(0xFFD92229)
-                          : Colors.transparent,
-                      shape: isRadio ? BoxShape.circle : BoxShape.rectangle,
-                      borderRadius: isRadio ? null : BorderRadius.circular(4),
-                      border: isSelected
-                          ? null
-                          : Border.all(color: const Color(0xFF6B6B6B)),
+                    SizedBox(width: context.resW(12)),
+                  ],
+                  if (onClearAll != null)
+                    GestureDetector(
+                      onTap: onClearAll,
+                      child: Text(
+                        'schedule.filter_btn_clear_all'.tr(),
+                        style: TextStyle(
+                          color: const Color(0xFF9A9A9A),
+                          fontSize: context.resClamp(12, 11, 13),
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                     ),
-                    child: isSelected
-                        ? (isRadio
-                              ? Center(
-                                  child: Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                )
-                              : const Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                  size: 16,
-                                ))
-                        : null,
-                  ),
                 ],
               ),
             ),
-          );
-        },
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.symmetric(vertical: context.resH(8)),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                bool isSelected = item['isSelected'] ?? false;
+
+                return GestureDetector(
+                  onTap: () => onToggleIndex(index),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.resW(16),
+                      vertical: context.resH(12),
+                    ),
+                    color: Colors.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          item['name'] ?? '',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: context.resClamp(14, 13, 15),
+                            fontWeight: isSelected
+                                ? FontWeight.w500
+                                : FontWeight.w400,
+                          ),
+                        ),
+
+                        // UI Radio hoặc Checkbox
+                        Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFFD92229)
+                                : Colors.transparent,
+                            shape: isRadio
+                                ? BoxShape.circle
+                                : BoxShape.rectangle,
+                            borderRadius: isRadio
+                                ? null
+                                : BorderRadius.circular(4),
+                            border: isSelected
+                                ? null
+                                : Border.all(color: const Color(0xFF6B6B6B)),
+                          ),
+                          child: isSelected
+                              ? (isRadio
+                                    ? Center(
+                                        child: Container(
+                                          width: 8,
+                                          height: 8,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      )
+                                    : const Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ))
+                              : null,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
