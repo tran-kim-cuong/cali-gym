@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/loading_wrapper.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
@@ -7,6 +8,7 @@ import 'package:californiaflutter/pages/shared/common_background.dart';
 import 'package:californiaflutter/services/booking_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:californiaflutter/pages/layouts/class_detail.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -185,7 +187,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
     final String selectedWatermark = watermarks[index % watermarks.length];
     final bool isCompleted = item.confirmed == true;
 
-    return Container(
+    final Widget card = Container(
       width: double.infinity,
       margin: EdgeInsets.only(bottom: context.resH(16)),
       clipBehavior: Clip.antiAlias,
@@ -371,14 +373,32 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
         ],
       ),
     );
+
+    if (!isCompleted) {
+      return GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ClassDetailScreen(
+              scheduleId: item.scheduleId,
+              seatCode: item.code,
+              clubCode: item.clubCode,
+            ),
+          ),
+        ),
+        child: card,
+      );
+    }
+    return card;
   }
 
   // ── RATING BOTTOM SHEET ───────────────────────────────────────────────────
   void _showRatingBottomSheet(BuildContext context, BookingData item) {
-    int selectedRating = 0;
     int selectedRating1 = 0;
-    bool showTrainerCommentError = false;
-    final TextEditingController trainerCommentController =
+    int selectedRating2 = 0;
+    final TextEditingController description1Controller =
+        TextEditingController();
+    final TextEditingController description2Controller =
         TextEditingController();
     final TextEditingController commentController = TextEditingController();
 
@@ -389,7 +409,7 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
       builder: (ctx) {
         return StatefulBuilder(
           builder: (ctx2, setModalState) {
-            final bool canSubmit = selectedRating > 0 && selectedRating1 > 0;
+            final bool canSubmit = selectedRating1 > 0 && selectedRating2 > 0;
 
             return Padding(
               padding: EdgeInsets.only(
@@ -546,9 +566,41 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                             SizedBox(height: context.resH(10)),
                             _buildNumberRatingRow(
                               context,
-                              selectedRating,
-                              (v) => setModalState(() => selectedRating = v),
+                              selectedRating1,
+                              (v) => setModalState(() => selectedRating1 = v),
                             ),
+                            if (selectedRating1 > 0 &&
+                                selectedRating1 <= 3) ...[
+                              SizedBox(height: context.resH(12)),
+                              TextField(
+                                controller: description1Controller,
+                                maxLines: 3,
+                                maxLength: 300,
+                                style: const TextStyle(color: Colors.white),
+                                decoration: InputDecoration(
+                                  hintText:
+                                      'history_schedule.hint_trainer_comment'
+                                          .tr(),
+                                  hintStyle: const TextStyle(
+                                    color: Color(0xFF6B6B6B),
+                                  ),
+                                  filled: true,
+                                  fillColor: const Color(0xFF3E3E3E),
+                                  counterStyle: const TextStyle(
+                                    color: Color(0xFF6B6B6B),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      context.resW(12),
+                                    ),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  contentPadding: EdgeInsets.all(
+                                    context.resW(12),
+                                  ),
+                                ),
+                              ),
+                            ],
                             SizedBox(height: context.resH(20)),
 
                             // Trainer quality rating
@@ -563,59 +615,44 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                             SizedBox(height: context.resH(10)),
                             _buildNumberRatingRow(
                               context,
-                              selectedRating1,
-                              (v) => setModalState(() => selectedRating1 = v),
+                              selectedRating2,
+                              (v) => setModalState(() => selectedRating2 = v),
                             ),
-                            SizedBox(height: context.resH(16)),
-
-                            // Trainer comment (description1) – required
-                            TextField(
-                              controller: trainerCommentController,
-                              maxLines: 3,
-                              maxLength: 300,
-                              style: const TextStyle(color: Colors.white),
-                              onChanged: (_) {
-                                if (showTrainerCommentError) {
-                                  setModalState(
-                                    () => showTrainerCommentError = false,
-                                  );
-                                }
-                              },
-                              decoration: InputDecoration(
-                                hintText:
-                                    'history_schedule.hint_trainer_comment'
-                                        .tr(),
-                                hintStyle: const TextStyle(
-                                  color: Color(0xFF6B6B6B),
-                                ),
-                                filled: true,
-                                fillColor: const Color(0xFF3E3E3E),
-                                counterStyle: const TextStyle(
-                                  color: Color(0xFF6B6B6B),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(
+                            if (selectedRating2 > 0 &&
+                                selectedRating2 <= 3) ...[
+                              SizedBox(height: context.resH(12)),
+                              TextField(
+                                controller: description2Controller,
+                                maxLines: 3,
+                                maxLength: 300,
+                                style: const TextStyle(color: Colors.white),
+                                decoration: InputDecoration(
+                                  hintText:
+                                      'history_schedule.hint_trainer_comment'
+                                          .tr(),
+                                  hintStyle: const TextStyle(
+                                    color: Color(0xFF6B6B6B),
+                                  ),
+                                  filled: true,
+                                  fillColor: const Color(0xFF3E3E3E),
+                                  counterStyle: const TextStyle(
+                                    color: Color(0xFF6B6B6B),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      context.resW(12),
+                                    ),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  contentPadding: EdgeInsets.all(
                                     context.resW(12),
                                   ),
-                                  borderSide: BorderSide.none,
-                                ),
-                                contentPadding: EdgeInsets.all(
-                                  context.resW(12),
                                 ),
                               ),
-                            ),
-                            if (showTrainerCommentError) ...[
-                              Text(
-                                'history_schedule.err_trainer_comment'.tr(),
-                                style: TextStyle(
-                                  color: const Color(0xFFE04A50),
-                                  fontSize: context.resClamp(12, 11, 13),
-                                ),
-                              ),
-                              SizedBox(height: context.resH(8)),
                             ],
+                            SizedBox(height: context.resH(16)),
 
-                            // Other opinions (description) – optional
+                            // Other opinions (description) – always visible
                             Text(
                               'history_schedule.lbl_other_opinion'.tr(),
                               style: TextStyle(
@@ -685,29 +722,21 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                           onPressed: !canSubmit
                               ? null
                               : () async {
-                                  if (trainerCommentController.text
-                                      .trim()
-                                      .isEmpty) {
-                                    setModalState(
-                                      () => showTrainerCommentError = true,
-                                    );
-                                    return;
-                                  }
                                   Navigator.pop(ctx);
                                   final result = await handleApi(
                                     context,
                                     BookingService.submitClassReview(
                                       clientCode: AppSession().clientId,
                                       scheduleId: item.scheduleId ?? 0,
-                                      rate: selectedRating,
+                                      rate: 1,
                                       description: commentController.text
                                           .trim(),
                                       rate1: selectedRating1,
-                                      description1: trainerCommentController
-                                          .text
+                                      description1: description1Controller.text
                                           .trim(),
-                                      rate2: 1,
-                                      description2: '',
+                                      rate2: selectedRating2,
+                                      description2: description2Controller.text
+                                          .trim(),
                                       rate3: 1,
                                       description3: '',
                                     ),
@@ -717,14 +746,12 @@ class _HistoryScheduleScreenState extends State<HistoryScheduleScreen>
                                   final message =
                                       result?['message'] as String? ?? '';
                                   if (message.isEmpty) return;
-                                  if (!context.mounted) return;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(message),
-                                      backgroundColor: isSuccess
-                                          ? const Color(0xFF4CAF50)
-                                          : const Color(0xFFE04A50),
-                                    ),
+                                  BotToast.showText(
+                                    text: message,
+                                    contentColor: isSuccess
+                                        ? const Color(0xFF4CAF50)
+                                        : const Color(0xFFE04A50),
+                                    duration: const Duration(seconds: 3),
                                   );
                                 },
                           child: Text(

@@ -1,5 +1,8 @@
 {
     "btn_filter": "Filter",
+    "filter_category_service": "Service type",
+    "filter_category_city": "City",
+    "filter_category_club": "Club",
     "msg_not_found_schedule": "No classes found",
     "lbl_schedule": "Classes",
     "btn_clear_filter": "Clear filter",

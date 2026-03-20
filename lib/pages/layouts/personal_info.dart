@@ -1,6 +1,8 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -45,7 +47,7 @@ class PersonalInfoScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Thông tin cá nhân',
+                        'personal_info.title'.tr(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: context.resClamp(20, 18, 24),
@@ -62,19 +64,19 @@ class PersonalInfoScreen extends StatelessWidget {
                 // ── INFO ROWS ────────────────────────────────────────────
                 _buildInfoRow(
                   context,
-                  label: 'Mã hội viên',
+                  label: 'personal_info.lbl_member_code'.tr(),
                   value: session.clientId.isNotEmpty ? session.clientId : '-',
                 ),
                 _buildInfoRow(
                   context,
-                  label: 'Họ và tên',
+                  label: 'personal_info.lbl_full_name'.tr(),
                   value: session.member?.firstName?.isNotEmpty == true
                       ? session.member!.firstName!
                       : '-',
                 ),
                 _buildInfoRow(
                   context,
-                  label: 'Số điện thoại',
+                  label: 'personal_info.lbl_phone_number'.tr(),
                   value: session.phoneNumber.isNotEmpty
                       ? session.phoneNumber
                       : '-',
@@ -95,13 +97,10 @@ class PersonalInfoScreen extends StatelessWidget {
     return GestureDetector(
       onLongPress: () {
         Clipboard.setData(ClipboardData(text: value));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Đã sao chép: $value'),
-            backgroundColor: const Color(0xFF3E3E3E),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-          ),
+        BotToast.showText(
+          text: 'personal_info.msg_copied'.tr(args: [value]),
+          contentColor: const Color(0xFF3E3E3E),
+          duration: const Duration(seconds: 2),
         );
       },
       child: Column(

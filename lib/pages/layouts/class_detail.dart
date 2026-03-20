@@ -8,7 +8,6 @@ import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/models/booking_class_confirm_model.dart';
 import 'package:californiaflutter/models/schedule_model.dart';
-import 'package:californiaflutter/pages/layouts/class.dart';
 import 'package:californiaflutter/pages/master.dart';
 import 'package:californiaflutter/pages/shared/check_in_bottom_sheet.dart';
 import 'package:californiaflutter/pages/shared/common_modal.dart';
@@ -142,25 +141,22 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
       height: context.resH(325), // Chiều cao ảnh theo snippet
       child: Stack(
         children: [
-          Image.asset(
-            ImageHelper.getClassThumbnail(schedule?.classType),
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.cover,
-            errorBuilder: (c, e, s) =>
-                Image.asset("assets/images/none.jpg", fit: BoxFit.cover),
+          ImageFiltered(
+            imageFilter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Image.asset(
+              ImageHelper.getClassThumbnail(schedule?.classType),
+              width: double.infinity,
+              height: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (c, e, s) =>
+                  Image.asset("assets/images/none.jpg", fit: BoxFit.cover),
+            ),
           ),
 
-          Positioned.fill(
-            child: BackdropFilter(
-              // Điều chỉnh sigmaX và sigmaY để tăng/giảm độ mờ (số càng cao càng mờ)
-              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-              child: Container(
-                // Phủ một lớp màu tối nhẹ để đảm bảo chữ phía trên luôn rõ nét
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.2),
-                ),
-              ),
+          // Phủ một lớp màu tối nhẹ để đảm bảo chữ phía trên luôn rõ nét
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.2),
             ),
           ),
 
@@ -182,13 +178,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
         children: [
           IconButton(
             onPressed: () {
-              // SỬA TẠI ĐÂY: Luôn điều hướng về MasterScreen tab Lịch tập (Index 1)
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const ClassScreen()),
-                (route) =>
-                    false, // Xóa sạch các route cũ để đảm bảo hiện Nav Bar mới
-              );
+              Navigator.pop(context);
             },
             icon: const Icon(
               Icons.arrow_back_ios_new,
@@ -254,10 +244,14 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
             Icons.calendar_month_outlined,
             _formatClassTime(schedule?.startDate, schedule?.endDate),
           ), // Format cứng theo hình mẫu
+
           _buildInfoLine(
             Icons.person_outline,
             '${'class_detail.info_sub_trainer'.tr()} ${schedule?.trainerName ?? 'class_detail.default_null'.tr()}',
           ),
+          if (schedule?.studioName != null && schedule!.studioName!.isNotEmpty)
+            _buildInfoLine(Icons.meeting_room_outlined, schedule!.studioName!),
+
           _buildInfoLine(
             Icons.location_on_outlined,
             '${schedule?.clubName}',
@@ -486,6 +480,8 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                   context: context,
                   imagePath: dotenv.get('IMAGES_QUESTION_ILLUSTRATION'),
                   title: 'class_detail.model_question_title_text'.tr(),
+                  confirmButtonText: 'common.btn_yes'.tr(),
+                  cancelButtonText: 'common.btn_no'.tr(),
                   onConfirm: () async {
                     String ticketNumber =
                         "${widget.scheduleId}${widget.clubCode}${AppSession().customerId}.${widget.seatCode}";
@@ -596,7 +592,7 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
                         CommonNotification.show(
                           // ignore: use_build_context_synchronously
                           context,
-                          message: "Checkin không thành công!",
+                          message: "common.msg_checkin_failed".tr(),
                         );
                       }
                     } finally {

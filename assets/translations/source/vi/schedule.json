@@ -1,5 +1,8 @@
 {
     "btn_filter": "Bộ lọc",
+    "filter_category_service": "Loại dịch vụ",
+    "filter_category_city": "Thành phố",
+    "filter_category_club": "Câu lạc bộ",
     "msg_not_found_schedule": "Không tìm thấy lớp học nào",
     "lbl_schedule": "Lớp học",
     "btn_clear_filter": "Xóa bộ lọc",

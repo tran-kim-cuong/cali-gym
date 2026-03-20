@@ -3,7 +3,11 @@
     "btn_show_qr": "Show QR code",
     "pick_member_card": "Pin card",
     "title_member_card": "Membership card",
-
+    "select_pin_card": "Select card to pin",
+    "pinned": "Pinned",
     "btn_share_card_title": "Share card",
-    "msg_select_one_user": "Please select at least one user to share"
+    "msg_select_one_user": "Please select at least one user to share",
+    "msg_member_default_name": "Member",
+    "msg_member_checked_in_with_code": "{} checked in {}",
+    "msg_member_checked_in": "{} checked in"
 }

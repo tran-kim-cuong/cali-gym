@@ -42,6 +42,7 @@ class _CommonUserShareCardWidgetState extends State<CommonUserShareCardWidget>
     with LoadingWrapper {
   List<CardUserModel> users = [];
   CardUserModel? _selectedUser;
+  CardUserModel? _deactivatingUser;
 
   @override
   void initState() {
@@ -159,13 +160,20 @@ class _CommonUserShareCardWidgetState extends State<CommonUserShareCardWidget>
 
   Widget _buildUserItem(BuildContext context, CardUserModel user) {
     final bool isSelected = _selectedUser?.clientId == user.clientId;
+    final bool isDeactivating = _deactivatingUser?.clientId == user.clientId;
 
     return InkWell(
       onTap: user.isActive
-          ? null
+          ? () {
+              setState(() {
+                _selectedUser = null;
+                _deactivatingUser = isDeactivating ? null : user;
+              });
+            }
           : () {
               setState(() {
-                _selectedUser = user;
+                _deactivatingUser = null;
+                _selectedUser = isSelected ? null : user;
               });
             },
       child: Container(
@@ -208,11 +216,20 @@ class _CommonUserShareCardWidgetState extends State<CommonUserShareCardWidget>
               ),
             ),
 
-            // 2. Nhãn trạng thái bên phải (Chỉ hiện khi isActive = true)
+            // 2. Nhãn trạng thái bên phải
             if (isSelected)
               _buildSelectedTick(context)
-            else if (user.isActive) //
-              _buildStatusBadge(context),
+            else if (user.isActive)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildStatusBadge(context),
+                  if (isDeactivating) ...[
+                    SizedBox(width: context.resW(6)),
+                    _buildSelectedTick(context),
+                  ],
+                ],
+              ),
           ],
         ),
       ),
@@ -264,57 +281,98 @@ class _CommonUserShareCardWidgetState extends State<CommonUserShareCardWidget>
               onPressed: () => Navigator.pop(context),
             ),
           ),
-          // Nút Xác nhận
+          // Nút Xác nhận / Ngừng chia sẻ
           Expanded(
-            child: _customButton(
-              context: context,
-              text: 'common.accept'.tr(),
-              color: const Color(0xFFD92229),
-              textColor: Colors.white,
-              onPressed: () async {
-                if (_selectedUser == null) {
-                  CommonNotification.show(
-                    context,
-                    message: "member_card.msg_select_one_user".tr(),
-                    isError: true,
-                  );
-                  return;
-                } else {
-                  await handleApi(context, () async {
-                    final result =
-                        await CommonUserShareCardService.confirmUserShareCard(
-                          widget.membershipNumber,
-                          dotenv.get('CRM_BASIC_AUTHORIZATION'),
-                          _selectedUser?.clientId ?? '',
-                          languageCode: context.locale.languageCode,
+            child: _deactivatingUser != null
+                ? _customButton(
+                    context: context,
+                    text: 'common.btn_stop_share_card'.tr(),
+                    color: const Color(0xFFD92229),
+                    textColor: Colors.white,
+                    onPressed: () async {
+                      await handleApi(context, () async {
+                        final result =
+                            await CommonUserShareCardService.deactivateUserShareCard(
+                              widget.membershipNumber,
+                              dotenv.get('CRM_BASIC_AUTHORIZATION'),
+                              _deactivatingUser?.clientId ?? '',
+                              languageCode: context.locale.languageCode,
+                            );
+
+                        final (message, code) = result;
+
+                        if (code == 200) {
+                          setState(() {
+                            _deactivatingUser = null;
+                          });
+
+                          await WidgetsBinding.instance.endOfFrame;
+
+                          if (!context.mounted) return;
+                          CommonNotification.show(
+                            context,
+                            message: message ?? 'N/A',
+                          );
+                          Navigator.pop(context);
+                        } else if (code == 500) {
+                          if (!context.mounted) return;
+                          CommonNotification.show(
+                            context,
+                            message: "common.msg_error_500".tr(),
+                            isError: true,
+                          );
+                        }
+                      }());
+                    },
+                  )
+                : _customButton(
+                    context: context,
+                    text: 'common.accept'.tr(),
+                    color: const Color(0xFFD92229),
+                    textColor: Colors.white,
+                    onPressed: () async {
+                      if (_selectedUser == null) {
+                        CommonNotification.show(
+                          context,
+                          message: "member_card.msg_select_one_user".tr(),
+                          isError: true,
                         );
+                        return;
+                      } else {
+                        await handleApi(context, () async {
+                          final result =
+                              await CommonUserShareCardService.confirmUserShareCard(
+                                widget.membershipNumber,
+                                dotenv.get('CRM_BASIC_AUTHORIZATION'),
+                                _selectedUser?.clientId ?? '',
+                                languageCode: context.locale.languageCode,
+                              );
 
-                    final (message, code) = result;
+                          final (message, code) = result;
 
-                    if (code == 200) {
-                      setState(() {});
+                          if (code == 200) {
+                            setState(() {});
 
-                      await WidgetsBinding.instance.endOfFrame;
+                            await WidgetsBinding.instance.endOfFrame;
 
-                      if (!context.mounted) return;
-
-                      CommonNotification.show(
-                        context,
-                        message: message ?? 'N/A',
-                      );
-                      Navigator.pop(context);
-                    } else if (code == 500) {
-                      if (!context.mounted) return;
-                      CommonNotification.show(
-                        context,
-                        message: "common.msg_error_500".tr(),
-                        isError: true
-                      );
-                    } else {}
-                  }());
-                }
-              },
-            ),
+                            if (!context.mounted) return;
+                            CommonNotification.show(
+                              context,
+                              message: message ?? 'N/A',
+                            );
+                            Navigator.pop(context);
+                          } else if (code == 500) {
+                            if (!context.mounted) return;
+                            CommonNotification.show(
+                              context,
+                              message: "common.msg_error_500".tr(),
+                              isError: true,
+                            );
+                          } else {}
+                        }());
+                      }
+                    },
+                  ),
           ),
         ],
       ),

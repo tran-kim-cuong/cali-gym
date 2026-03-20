@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/bases/base_api.dart';
 import 'package:californiaflutter/bases/notification_mixin.dart';
@@ -33,6 +35,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:californiaflutter/helpers/session_manager.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
+import 'package:californiaflutter/providers/pinned_card_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -147,10 +151,7 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
       }
 
       if (hasRefreshError && mounted) {
-        showTopNotification(
-          "Không thể cập nhật dữ liệu mới, đang hiển thị dữ liệu đã lưu",
-          isError: true,
-        );
+        showTopNotification("home.msg_refresh_use_cached".tr(), isError: true);
       }
     } finally {
       if (showBlockingLoading && mounted) {
@@ -274,9 +275,9 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
                     _buildUserGreeting(),
 
                     // 3. STATS ROW (500 POINT, 5 VOUCHER)
-                    _buildStatsRow(),
+                    // _buildStatsRow(),
 
-                    SizedBox(height: context.resH(24)),
+                    // SizedBox(height: context.resH(24)),
 
                     // 4. MEMBERSHIP SECTION
                     _buildSectionHeader(
@@ -516,7 +517,7 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
             backgroundGradient: _pointBadgeGradient,
           ),
           CommonPointBadge(
-            value: '5 voucher',
+            value: 'home.voucher_count'.tr(args: ['5']),
             svgPath: 'assets/images/vuesax/v5/ticket-discount.svg',
             useGradient: false,
             backgroundGradient: _voucherBadgeGradient,
@@ -821,13 +822,13 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
   Widget _buildHotProgram() {
     return Container(
       width: double.infinity,
-      height: context.resH(145),
       margin: EdgeInsets.symmetric(horizontal: context.resW(20)),
-      decoration: BoxDecoration(
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        image: const DecorationImage(
-          image: AssetImage("assets/images/hot_program.png"),
-          fit: BoxFit.cover,
+        child: Image.asset(
+          "assets/images/hot_program.png",
+          width: double.infinity,
+          fit: BoxFit.fitWidth,
         ),
       ),
     );
@@ -852,13 +853,16 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
 
   // --- REUSE OLD COMPONENTS ---
   Widget _buildMembershipList() {
+    final pinnedProvider = context.watch<PinnedCardProvider>();
+    final sortedCards = pinnedProvider.sortCards(_memberCards);
+
     return SizedBox(
       height: 220,
       child: PageView.builder(
         controller: PageController(viewportFraction: 0.9),
-        itemCount: _memberCards.length,
+        itemCount: sortedCards.length,
         itemBuilder: (context, index) {
-          final cardData = _memberCards[index];
+          final cardData = sortedCards[index];
           final String uniqueKey = "${index}_${cardData['id']}";
           return CommonMembershipCard(
             data: cardData,
@@ -948,7 +952,7 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
                           CommonNotification.show(
                             // ignore: use_build_context_synchronously
                             context,
-                            message: "Checkin không thành công!",
+                            message: "common.msg_checkin_failed".tr(),
                           );
                         }
                       } finally {
@@ -1033,7 +1037,7 @@ class _HomeScreenState extends State<HomeScreen> with NotificationMixin {
           ),
           const SizedBox(width: 8),
           Text(
-            currentCode == 'vi' ? 'Tiếng Việt' : 'English',
+            currentCode == 'vi' ? 'common.lang_vi'.tr() : 'common.lang_en'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: context.resClamp(12, 10, 14), // Responsive
