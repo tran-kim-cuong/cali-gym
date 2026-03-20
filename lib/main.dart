@@ -1,14 +1,17 @@
 // import 'package:californiaflutter/pages/layouts/home.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:californiaflutter/bases/app_session.dart';
 import 'package:californiaflutter/helpers/image_helper.dart';
 import 'package:californiaflutter/helpers/member_cache_manager.dart';
 import 'package:californiaflutter/pages/layouts/welcome.dart';
 import 'package:californiaflutter/pages/master.dart';
+import 'package:californiaflutter/providers/pinned_card_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
@@ -64,7 +67,10 @@ void main() async {
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
       startLocale: startLocale,
-      child: MyApp(isLoggedIn: AppSession().isLoggedIn),
+      child: ChangeNotifierProvider(
+        create: (_) => PinnedCardProvider(),
+        child: MyApp(isLoggedIn: AppSession().isLoggedIn),
+      ),
     ),
   );
 }
@@ -94,10 +100,20 @@ class MyApp extends StatelessWidget {
         appBarTheme: const AppBarTheme(
           systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
+
+        // Dùng hiệu ứng chuyển màn hình kiểu iOS (slide từ phải) cho tất cả platform
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          },
+        ),
       ),
 
       // 2. SỬ DỤNG BUILDER ĐỂ KHỐNG CHẾ TOÀN BỘ APP
+      navigatorObservers: [BotToastNavigatorObserver()],
       builder: (context, child) {
+        child = BotToastInit()(context, child);
         return AnnotatedRegion<SystemUiOverlayStyle>(
           // Ép kiểu hiển thị Light (chữ trắng) cho toàn bộ app
           value: const SystemUiOverlayStyle(
@@ -109,7 +125,7 @@ class MyApp extends StatelessWidget {
             ), // Đồng bộ thanh điều hướng dưới
             systemNavigationBarIconBrightness: Brightness.light,
           ),
-          child: child!,
+          child: child,
         );
       },
       // builder: (context, child) {

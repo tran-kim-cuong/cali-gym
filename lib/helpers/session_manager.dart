@@ -1,11 +1,14 @@
 import 'package:californiaflutter/models/member_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionManager {
   static const String keyIsLoggedIn = "isLoggedIn";
   static String otp = "1234";
   static String sSdt = "phone_number";
-  static String sTenKh = "";
+  static final ValueNotifier<String> sTenKhNotifier = ValueNotifier("");
+  static String get sTenKh => sTenKhNotifier.value;
+  static set sTenKh(String v) => sTenKhNotifier.value = v;
   static String sClientId = "";
   static String sMembershipNumber = "";
   static String sKeyCode = "JKLM012NOBCDQRS3456TUEFGPAHIVWXYZ7890";
@@ -45,7 +48,7 @@ class SessionManager {
     await prefs.remove(_keyCustomerId);
 
     member = MemberModel();
-    sTenKh = "";
+    sTenKhNotifier.value = "";
     sMembershipNumber = "";
     sClientId = "";
     sCustomerId = "";

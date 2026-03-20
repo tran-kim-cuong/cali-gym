@@ -2,6 +2,7 @@ import 'package:californiaflutter/helpers/size_utils.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
 // import 'package:californiaflutter/pages/shared/common_bottom_nav_bar.dart';
 import 'package:californiaflutter/pages/shared/common_point_badge.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -18,12 +19,12 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
   // 1. MẢNG DỮ LIỆU MẪU (Dễ dàng thay thế bằng API sau này)
   final List<Map<String, dynamic>> _energyProducts = [
     {
-      'name': 'Sinh tố dâu tây mát lạnh',
+      'nameKey': 'loyalty.product_strawberry_smoothie',
       'points': '500',
       'image': 'assets/images/loyalty/sinh_to_dau.png',
     },
     {
-      'name': 'Gói whey uống nạp năng lượng',
+      'nameKey': 'loyalty.product_whey_pack',
       'points': '500',
       'image': 'assets/images/loyalty/goi_whey_uong.png',
     },
@@ -31,12 +32,12 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
 
   final List<Map<String, dynamic>> _gifts = [
     {
-      'name': 'Nón thể thao',
+      'nameKey': 'loyalty.product_sports_cap',
       'points': '100',
       'image': 'assets/images/loyalty/non.png',
     },
     {
-      'name': 'Bình nước thể thao',
+      'nameKey': 'loyalty.product_sports_bottle',
       'points': '150',
       'image': 'assets/images/loyalty/binh_nuoc.png',
     },
@@ -44,12 +45,12 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
 
   final List<Map<String, dynamic>> _shortCourses = [
     {
-      'name': '30 ngày tập nhảy',
+      'nameKey': 'loyalty.product_dance_30_days',
       'points': '100',
       'image': 'assets/images/loyalty/30_tap_nhay.png',
     },
     {
-      'name': '15 ngày tập Yoga',
+      'nameKey': 'loyalty.product_yoga_15_days',
       'points': '100',
       'image': 'assets/images/loyalty/15_tap_yoga.png',
     },
@@ -93,12 +94,15 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                         _buildLoyaltyStatsCards(),
                         SizedBox(height: context.resH(16)),
                         _buildHorizontalSection(
-                          'Nạp năng lượng',
+                          'loyalty.section_energy'.tr(),
                           _energyProducts,
                         ),
-                        _buildHorizontalSection('Quà tặng', _gifts),
                         _buildHorizontalSection(
-                          'Khoá tập ngắn hạn',
+                          'loyalty.section_gifts'.tr(),
+                          _gifts,
+                        ),
+                        _buildHorizontalSection(
+                          'loyalty.section_short_courses'.tr(),
                           _shortCourses,
                         ),
                         // SizedBox(height: context.resH(80) + bottomSafeHeight),
@@ -161,7 +165,7 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Khu vực',
+            'loyalty.label_region'.tr(),
             style: TextStyle(
               color: const Color(0xFFC7C7C7),
               fontSize: context.resClamp(14, 12, 16),
@@ -172,7 +176,7 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
           Row(
             children: [
               Text(
-                'Ho Chi Minh',
+                'loyalty.region_ho_chi_minh'.tr(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: context.resClamp(16, 14, 18),
@@ -215,7 +219,7 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Điểm tích luỹ',
+                  'loyalty.label_points'.tr(),
                   style: TextStyle(
                     color: const Color(0xFF9A9A9A),
                     fontSize: context.resClamp(12, 10, 14),
@@ -260,7 +264,7 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Voucher của tôi',
+                  'loyalty.label_my_vouchers'.tr(),
                   style: TextStyle(
                     color: const Color(0xFF9A9A9A),
                     fontSize: context.resClamp(12, 10, 14),
@@ -351,7 +355,7 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                 ),
               ),
               Text(
-                'Xem tất cả',
+                'home.see_all'.tr(),
                 style: TextStyle(
                   color: const Color(0xFF9A9A9A),
                   fontSize: context.resClamp(14, 12, 16),
@@ -417,7 +421,7 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                 SizedBox(
                   height: context.resH(42), // Đủ cho tối đa 2 dòng chữ
                   child: Text(
-                    item['name'],
+                    item['nameKey'].toString().tr(),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(

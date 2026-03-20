@@ -211,24 +211,29 @@ class _ProfileScreenState extends State<ProfileScreen> with LoadingWrapper {
   // MARK: - UI Helper Methods
 
   Widget _buildUserInfo() {
-    return Column(
-      children: [
-        Image.asset(
-          'assets/images/logo_profile.png',
-          height: context.resH(80),
-          fit: BoxFit.contain,
-        ),
-        SizedBox(height: context.resH(12)),
-        Text(
-          SessionManager.sTenKh.isNotEmpty ? SessionManager.sTenKh : '',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: context.resClamp(16, 14, 18),
-            fontFamily: 'Mulish',
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
+    return ValueListenableBuilder<String>(
+      valueListenable: SessionManager.sTenKhNotifier,
+      builder: (context, name, _) {
+        return Column(
+          children: [
+            Image.asset(
+              'assets/images/logo_profile.png',
+              height: context.resH(80),
+              fit: BoxFit.contain,
+            ),
+            SizedBox(height: context.resH(12)),
+            Text(
+              name,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: context.resClamp(16, 14, 18),
+                fontFamily: 'Mulish',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

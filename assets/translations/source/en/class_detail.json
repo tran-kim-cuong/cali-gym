@@ -7,7 +7,7 @@
     "model_question_title_text": "Are you sure you want to \ncancel this class?",
     "default_message": "Information is being updated...",
     "default_null": "N/A",
-    "content_notice": "Class booking on the app will close 2 hours before the class starts.\nAdvance class booking privileges will be suspended for 14 days if a member accumulates 3 no-shows within 30 days from the most recent violation.",
+    "content_notice": "• Booking benefit is allowed up till before class start 2 hours.\n• Your pre-booking benefit will be blocked for 14 days IF you do not show up for training (No Show) for 3 times (combined) within 30 days (from the last violation if any).",
     "info_introduce": "Introduction",
     "info_notice": "Notes",
     "info_seat": "Seat",

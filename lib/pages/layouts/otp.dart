@@ -21,11 +21,7 @@ class OtpScreen extends StatefulWidget {
   final String phoneNumber;
   final String clientId;
 
-  const OtpScreen({
-    super.key,
-    required this.phoneNumber,
-    this.clientId = '',
-  });
+  const OtpScreen({super.key, required this.phoneNumber, this.clientId = ''});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -340,7 +336,9 @@ class _OtpScreenState extends State<OtpScreen>
             ),
             const SizedBox(width: 8),
             Text(
-              currentCode == 'vi' ? 'Tiếng Việt' : 'English',
+              currentCode == 'vi'
+                  ? 'common.lang_vi'.tr()
+                  : 'common.lang_en'.tr(),
               style: const TextStyle(color: Colors.white, fontSize: 12),
             ),
           ],

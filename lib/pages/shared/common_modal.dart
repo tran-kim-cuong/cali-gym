@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qr_flutter/qr_flutter.dart'; // Cần thêm thư viện này
 import 'package:screen_brightness/screen_brightness.dart'; // Cần thêm thư viện này
+import 'package:californiaflutter/helpers/api_message_mapper.dart';
 import 'package:californiaflutter/helpers/size_utils.dart';
 
 class CommonModalWidget {
@@ -161,6 +162,8 @@ class CommonModalWidget {
     required String buttonText,
     VoidCallback? onConfirm,
   }) async {
+    final displayDescription = ApiMessageMapper.map(context, description);
+
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -227,7 +230,7 @@ class CommonModalWidget {
                           ),
                           SizedBox(height: context.resH(12)),
                           Text(
-                            description,
+                            displayDescription,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: const Color(0xFFC7C7C7),
@@ -300,9 +303,11 @@ class CommonModalWidget {
     required VoidCallback onConfirm,
     VoidCallback? onCancel,
     String? opacityImage = 'assets/images/v5/image 1517.png',
+    String? confirmButtonText,
+    String? cancelButtonText,
   }) async {
-    String confirmButton = 'common.btn_agree'.tr();
-    String cancelButton = 'common.btn_cancel'.tr();
+    String confirmButton = confirmButtonText ?? 'common.btn_agree'.tr();
+    String cancelButton = cancelButtonText ?? 'common.btn_cancel'.tr();
 
     await showModalBottomSheet(
       context: context,

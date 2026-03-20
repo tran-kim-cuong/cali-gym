@@ -111,30 +111,24 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
       height: context.resH(325),
       child: Stack(
         children: [
-          Image.asset(
-            ImageHelper.getClassThumbnail(
-              widget.schedule.classType,
-            ), // Thay bằng image từ model nếu có
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.cover,
+          ImageFiltered(
+            imageFilter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+            child: Image.asset(
+              ImageHelper.getClassThumbnail(widget.schedule.classType),
+              width: double.infinity,
+              height: double.infinity,
+              fit: BoxFit.cover,
+            ),
           ),
-          Positioned.fill(
-            child: BackdropFilter(
-              // Điều chỉnh sigmaX và sigmaY để tăng/giảm độ mờ (số càng cao càng mờ)
-              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-              child: Container(
-                // Phủ một lớp màu tối nhẹ để đảm bảo chữ phía trên luôn rõ nét
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.2),
-                ),
-              ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.15),
             ),
           ),
           // Lớp phủ tối dần lên trên
           Container(
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.55),
+              color: Colors.black.withValues(alpha: 0.3),
             ),
           ),
         ],
@@ -184,7 +178,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: const Color(0xFF8B66F0),
+              color: const Color(0xFFEF4822),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
@@ -207,15 +201,26 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
           ),
           SizedBox(height: context.resH(8)),
           _buildIconText(
-            Icons.calendar_month_outlined,
-            // ignore: unnecessary_string_interpolations
-            '${DateFormat('dd/MM/yyyy hh:mm a').format(widget.schedule.startDate ?? DateTime.now())}',
+            Icons.calendar_today,
+            DateFormat(
+              'dd/MM/yyyy',
+            ).format(widget.schedule.startDate ?? DateTime.now()),
+          ),
+          _buildIconText(
+            Icons.access_time,
+            '${DateFormat('hh:mm a').format(widget.schedule.startDate ?? DateTime.now())} - ${DateFormat('hh:mm a').format(widget.schedule.endDate ?? DateTime.now())}',
           ),
           _buildIconText(
             Icons.person_outline,
             // 'Giáo viên ${widget.schedule.trainerName ?? 'N/A'}',
             '${'schedule_detail.lbl_trainer'.tr()} ${widget.schedule.trainerName ?? 'N/A'}',
           ),
+          if (widget.schedule.studioName != null &&
+              widget.schedule.studioName!.isNotEmpty)
+            _buildIconText(
+              Icons.meeting_room_outlined,
+              widget.schedule.studioName!,
+            ),
           Row(
             children: [
               _buildIconText(

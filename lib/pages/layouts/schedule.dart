@@ -8,6 +8,7 @@ import 'package:californiaflutter/models/schedule_model.dart';
 import 'package:californiaflutter/pages/layouts/history_schedule.dart';
 import 'package:californiaflutter/pages/layouts/schedule_detail.dart';
 import 'package:californiaflutter/pages/shared/common_background.dart';
+import 'package:californiaflutter/pages/shared/common_notification.dart';
 import 'package:californiaflutter/pages/shared/language_bottom_sheet.dart';
 import 'package:californiaflutter/services/vietnam_time_service.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -112,6 +113,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
       sClubs = savedSClubs;
     });
   }
+
+  bool get _isFilterApplied =>
+      _services.isNotEmpty && _cities.isNotEmpty && _clubs.isNotEmpty;
 
   Future<void> _clearFilterPreferences() async {
     final prefs = await SharedPreferences.getInstance();
@@ -367,6 +371,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
         'city_name': 'Vung Tau',
         'isSelected': false,
       },
+      {
+        'id': 'BDS',
+        'name': 'Binh Duong Square',
+        'city_name': 'Binh Duong',
+        'isSelected': false,
+      },
     ];
     List<Map<String, dynamic>> clubList = [];
     if (_cities.isNotEmpty) {
@@ -383,9 +393,21 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     }
 
     final List<Map<String, dynamic>> categories = [
-      {'id': 'service', 'label': 'Loại dịch vụ', 'count': serviceList.length},
-      {'id': 'city', 'label': 'Thành phố', 'count': cityList.length},
-      {'id': 'club', 'label': 'Câu lạc bộ', 'count': clubList.length},
+      {
+        'id': 'service',
+        'label': 'schedule.filter_category_service'.tr(),
+        'count': serviceList.length,
+      },
+      {
+        'id': 'city',
+        'label': 'schedule.filter_category_city'.tr(),
+        'count': cityList.length,
+      },
+      {
+        'id': 'club',
+        'label': 'schedule.filter_category_club'.tr(),
+        'count': clubList.length,
+      },
     ];
 
     String selectedCategoryId = 'service'; // Tab mặc định
@@ -432,6 +454,42 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                           (id) {
                             setModalState(() => selectedCategoryId = id);
                           },
+                          lockedIds: {
+                            if (!serviceList.any(
+                              (s) => s['isSelected'] == true,
+                            ))
+                              'city',
+                            if (!serviceList.any(
+                                  (s) => s['isSelected'] == true,
+                                ) ||
+                                !cityList.any((c) => c['isSelected'] == true))
+                              'club',
+                          },
+                          onLockedTap: (id) {
+                            final String requiredName;
+                            if (id == 'city') {
+                              requiredName = 'schedule.filter_category_service'
+                                  .tr();
+                            } else {
+                              // 'club' is locked
+                              if (!serviceList.any(
+                                (s) => s['isSelected'] == true,
+                              )) {
+                                requiredName =
+                                    'schedule.filter_category_service'.tr();
+                              } else {
+                                requiredName = 'schedule.filter_category_city'
+                                    .tr();
+                              }
+                            }
+                            CommonNotification.show(
+                              context,
+                              message: 'schedule.filter_locked_msg'.tr(
+                                namedArgs: {'name': requiredName},
+                              ),
+                              isError: true,
+                            );
+                          },
                         ),
 
                         // Section bên phải: Hiển thị danh sách Options động
@@ -448,45 +506,122 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                                   city['isSelected'] = false;
                                 }
                                 cityList[index]['isSelected'] = true;
-
                                 _cities = cityList
-                                    .where((club) => club['isSelected'] == true)
+                                    .where((c) => c['isSelected'] == true)
                                     .toList();
 
+                                // Rebuild danh sách club theo thành phố mới, reset lựa chọn cũ
+                                _clubs = [];
                                 clubList = oriClub.where((club) {
                                   return _cities.any(
                                     (city) => city['name'] == club['city_name'],
                                   );
                                 }).toList();
+                                for (final c in clubList) {
+                                  c['isSelected'] = false;
+                                }
                                 categories[2]['count'] = clubList.length;
-                                // print(_cities);
-                                // print(clubList);
-                              } else {
+                                // Mặc định gửi tất cả club của thành phố đã chọn
+                                sClubs = clubList.map((e) => e['id']).join(',');
+                              } else if (selectedCategoryId == 'service') {
                                 // LOGIC CHECKBOX: Cho phép chọn nhiều
                                 currentOptions[index]['isSelected'] =
                                     !currentOptions[index]['isSelected'];
-                              }
-                              if (selectedCategoryId == 'service') {
                                 _services = currentOptions
-                                    .where((ite) => ite['isSelected'] == true)
+                                    .where((s) => s['isSelected'] == true)
                                     .toList();
-                                // print(_services);
-                              }
-                              if (selectedCategoryId == 'club') {
+                                // Nếu bỏ chọn tất cả service → cascade xóa city và club
+                                if (_services.isEmpty) {
+                                  _cities = [];
+                                  _clubs = [];
+                                  sClubs = '';
+                                  for (final c in cityList) {
+                                    c['isSelected'] = false;
+                                  }
+                                  clubList = [];
+                                  categories[2]['count'] = 0;
+                                  // Auto quay về tab service
+                                  selectedCategoryId = 'service';
+                                }
+                              } else {
+                                // LOGIC CHECKBOX club: Cho phép chọn nhiều
+                                currentOptions[index]['isSelected'] =
+                                    !currentOptions[index]['isSelected'];
                                 _clubs = currentOptions
-                                    .where((club) => club['isSelected'] == true)
+                                    .where((c) => c['isSelected'] == true)
                                     .toList();
-                                // print(currentOptions);
-                                // print(_clubs);
-                                sClubs = _clubs.map((e) => e['id']).join(',');
+                                if (_clubs.isEmpty) {
+                                  // Không chọn club cụ thể → dùng toàn bộ club của thành phố
+                                  sClubs = clubList
+                                      .map((e) => e['id'])
+                                      .join(',');
+                                } else {
+                                  sClubs = _clubs.map((e) => e['id']).join(',');
+                                }
                               }
                             });
                           },
+                          onSelectAll: selectedCategoryId == 'city'
+                              ? null
+                              : () {
+                                  setModalState(() {
+                                    if (selectedCategoryId == 'service') {
+                                      for (final s in serviceList) {
+                                        s['isSelected'] = true;
+                                      }
+                                      _services = List.from(serviceList);
+                                    } else {
+                                      for (final c in clubList) {
+                                        c['isSelected'] = true;
+                                      }
+                                      _clubs = List.from(clubList);
+                                      sClubs = clubList
+                                          .map((e) => e['id'])
+                                          .join(',');
+                                    }
+                                  });
+                                },
+                          onClearAll: selectedCategoryId == 'city'
+                              ? null
+                              : () {
+                                  setModalState(() {
+                                    if (selectedCategoryId == 'service') {
+                                      for (final s in serviceList) {
+                                        s['isSelected'] = false;
+                                      }
+                                      _services = [];
+                                      _cities = [];
+                                      _clubs = [];
+                                      sClubs = '';
+                                      for (final c in cityList) {
+                                        c['isSelected'] = false;
+                                      }
+                                      clubList = [];
+                                      categories[2]['count'] = 0;
+                                      selectedCategoryId = 'service';
+                                    } else {
+                                      for (final c in clubList) {
+                                        c['isSelected'] = false;
+                                      }
+                                      _clubs = [];
+                                      sClubs = clubList
+                                          .map((e) => e['id'])
+                                          .join(',');
+                                    }
+                                  });
+                                },
                         ),
                       ],
                     ),
                   ),
-                  _buildFilterActions(context, bottomPadding),
+                  _buildFilterActions(
+                    context,
+                    bottomPadding,
+                    canApply:
+                        serviceList.any((s) => s['isSelected'] == true) &&
+                        cityList.any((c) => c['isSelected'] == true) &&
+                        clubList.any((c) => c['isSelected'] == true),
+                  ),
                 ],
               ),
             );
@@ -564,6 +699,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     String toDateStr = DateFormat('yyyy-MM-dd HH:mm:ss').format(end);
 
     // Gọi API tải dữ liệu
+    if (!_isFilterApplied) {
+      setState(() => _schedules = []);
+      return;
+    }
     _fetchSchedulesByDate(fromDateStr, toDateStr);
   }
 
@@ -596,22 +735,25 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
             .map((json) => ScheduleModel.fromJson(json))
             .toList();
 
+        final DateTime cutoff = nowVietnam.add(const Duration(hours: 2));
         fetchedSchedules =
             fetchedSchedules.where((schedule) {
-              final DateTime? endDate = schedule.endDate;
-              if (endDate == null) return false;
-              return !endDate.isBefore(nowVietnam);
+              final DateTime? startDate = schedule.startDate;
+              if (startDate == null) return false;
+              return startDate.isAfter(cutoff);
             }).toList()..sort((a, b) {
               if (a.startDate == null || b.startDate == null) return 0;
               return a.startDate!.compareTo(b.startDate!);
             });
 
-        // final selectedServiceIds = _services.map((s) => s['name']).toList();
-        // // print(selectedServiceIds);
-        // fetchedSchedules = fetchedSchedules.where((schedule) {
-        //   return selectedServiceIds.contains(schedule.classType.toString());
-        // }).toList();
-        // // print(fetchedSchedules.length);
+        if (_services.isNotEmpty) {
+          final selectedServiceNames = _services
+              .map((s) => s['name'] as String)
+              .toSet();
+          fetchedSchedules = fetchedSchedules.where((schedule) {
+            return selectedServiceNames.contains(schedule.classType);
+          }).toList();
+        }
 
         // 3. Cập nhật giao diện
         setState(() {
@@ -681,7 +823,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
                 // Danh sách lớp học dạng Grid/Scroll
                 // Danh sách lớp học dạng Grid/Scroll
                 Expanded(
-                  child: _schedules.isEmpty
+                  child: !_isFilterApplied
+                      ? _buildNoFilterPlaceholder(context)
+                      : _schedules.isEmpty
                       ? Center(
                           // Hiển thị thông báo khi không có dữ liệu
                           child: Text(
@@ -731,6 +875,64 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
   }
 
   // MARK: - UI Helpers
+
+  Widget _buildNoFilterPlaceholder(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.filter_list,
+            color: const Color(0xFF555555),
+            size: context.resW(48),
+          ),
+          SizedBox(height: context.resH(16)),
+          Text(
+            'schedule.msg_no_filter_applied'.tr(),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.resClamp(16, 14, 18),
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Inter',
+            ),
+          ),
+          SizedBox(height: context.resH(8)),
+          Text(
+            'schedule.msg_no_filter_hint'.tr(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: const Color(0xFF9A9A9A),
+              fontSize: context.resClamp(13, 12, 15),
+              fontFamily: 'Inter',
+            ),
+          ),
+          SizedBox(height: context.resH(24)),
+          GestureDetector(
+            onTap: _showFilterBottomSheet,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.resW(24),
+                vertical: context.resH(12),
+              ),
+              decoration: BoxDecoration(
+                color: const Color(0xFFD92229),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                'schedule.btn_open_filter'.tr(),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: context.resClamp(14, 13, 16),
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Inter',
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   // Widget _buildBackground(BuildContext context) {
   //   return Positioned(
@@ -1146,7 +1348,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
           ),
           const SizedBox(width: 8),
           Text(
-            currentCode == 'vi' ? 'Tiếng Việt' : 'English',
+            currentCode == 'vi' ? 'common.lang_vi'.tr() : 'common.lang_en'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: context.resClamp(12, 10, 14), // Responsive
@@ -1159,83 +1361,144 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
 
   Widget _buildFilterOptions(
     BuildContext context,
-    List<Map<String, dynamic>> items, { // Đã bỏ VoidCallback? onToggle thừa
+    List<Map<String, dynamic>> items, {
     bool isRadio = false,
     required Function(int) onToggleIndex,
+    VoidCallback? onSelectAll,
+    VoidCallback? onClearAll,
   }) {
     return Expanded(
-      child: ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: context.resH(8)),
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final item = items[index];
-          bool isSelected = item['isSelected'] ?? false;
-
-          return GestureDetector(
-            onTap: () => onToggleIndex(index), // Sử dụng đúng onToggleIndex
-            child: Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Header row: Select All + Clear All — only shown when at least one action is available
+          if (onSelectAll != null || onClearAll != null)
+            Container(
               padding: EdgeInsets.symmetric(
                 horizontal: context.resW(16),
-                vertical: context.resH(12),
+                vertical: context.resH(8),
               ),
-              color: Colors.transparent,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Color(0xFF555555), width: 0.5),
+                ),
+              ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    item['name'] ?? '',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: context.resClamp(14, 13, 15),
-                      fontWeight: isSelected
-                          ? FontWeight.w500
-                          : FontWeight.w400,
+                  if (onSelectAll != null) ...[
+                    GestureDetector(
+                      onTap: onSelectAll,
+                      child: Text(
+                        'schedule.filter_btn_select_all'.tr(),
+                        style: TextStyle(
+                          color: const Color(0xFFD92229),
+                          fontSize: context.resClamp(12, 11, 13),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
-                  ),
-
-                  // UI Radio hoặc Checkbox
-                  Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? const Color(0xFFD92229)
-                          : Colors.transparent,
-                      shape: isRadio ? BoxShape.circle : BoxShape.rectangle,
-                      borderRadius: isRadio ? null : BorderRadius.circular(4),
-                      border: isSelected
-                          ? null
-                          : Border.all(color: const Color(0xFF6B6B6B)),
+                    SizedBox(width: context.resW(12)),
+                  ],
+                  if (onClearAll != null)
+                    GestureDetector(
+                      onTap: onClearAll,
+                      child: Text(
+                        'schedule.filter_btn_clear_all'.tr(),
+                        style: TextStyle(
+                          color: const Color(0xFF9A9A9A),
+                          fontSize: context.resClamp(12, 11, 13),
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                     ),
-                    child: isSelected
-                        ? (isRadio
-                              ? Center(
-                                  child: Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                )
-                              : const Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                  size: 16,
-                                ))
-                        : null,
-                  ),
                 ],
               ),
             ),
-          );
-        },
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.symmetric(vertical: context.resH(8)),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                bool isSelected = item['isSelected'] ?? false;
+
+                return GestureDetector(
+                  onTap: () => onToggleIndex(index),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.resW(16),
+                      vertical: context.resH(12),
+                    ),
+                    color: Colors.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          item['name'] ?? '',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: context.resClamp(14, 13, 15),
+                            fontWeight: isSelected
+                                ? FontWeight.w500
+                                : FontWeight.w400,
+                          ),
+                        ),
+
+                        // UI Radio hoặc Checkbox
+                        Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFFD92229)
+                                : Colors.transparent,
+                            shape: isRadio
+                                ? BoxShape.circle
+                                : BoxShape.rectangle,
+                            borderRadius: isRadio
+                                ? null
+                                : BorderRadius.circular(4),
+                            border: isSelected
+                                ? null
+                                : Border.all(color: const Color(0xFF6B6B6B)),
+                          ),
+                          child: isSelected
+                              ? (isRadio
+                                    ? Center(
+                                        child: Container(
+                                          width: 8,
+                                          height: 8,
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      )
+                                    : const Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ))
+                              : null,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildFilterActions(BuildContext context, double bottomPadding) {
+  Widget _buildFilterActions(
+    BuildContext context,
+    double bottomPadding, {
+    bool canApply = false,
+  }) {
     return Container(
       padding: EdgeInsets.fromLTRB(
         20,
@@ -1280,13 +1543,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
           const SizedBox(width: 12),
           Expanded(
             child: ElevatedButton(
-              onPressed: () {
-                _fetchDataForIndex(_selectedDateIndex);
-                _saveFilterPreferences();
-                Navigator.pop(context);
-              },
+              onPressed: canApply
+                  ? () {
+                      _fetchDataForIndex(_selectedDateIndex);
+                      _saveFilterPreferences();
+                      Navigator.pop(context);
+                    }
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFD92229), // Màu đỏ nút Áp dụng
+                disabledBackgroundColor: const Color(0xFF7A1015),
                 minimumSize: Size(0, context.resH(48)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -1295,7 +1561,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
               child: Text(
                 'schedule.btn_search'.tr(),
                 style: TextStyle(
-                  color: Colors.white,
+                  color: canApply ? Colors.white : Colors.white54,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -1310,8 +1576,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
     BuildContext context,
     List<Map<String, dynamic>> cats,
     String selectedId,
-    Function(String) onSelect,
-  ) {
+    Function(String) onSelect, {
+    Set<String> lockedIds = const {},
+    Function(String)? onLockedTap,
+  }) {
     return Container(
       width: context.resW(150),
       color: const Color(0xFF242424), // Sidebar xám đậm
@@ -1319,9 +1587,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
         itemCount: cats.length,
         itemBuilder: (context, index) {
           final cat = cats[index];
-          bool isSelected = selectedId == cat['id'];
+          final bool isSelected = selectedId == cat['id'];
+          final bool isLocked = lockedIds.contains(cat['id']);
           return GestureDetector(
-            onTap: () => onSelect(cat['id']),
+            onTap: isLocked
+                ? () => onLockedTap?.call(cat['id'])
+                : () => onSelect(cat['id']),
             child: Container(
               padding: EdgeInsets.symmetric(
                 horizontal: context.resW(20),
@@ -1343,7 +1614,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> with LoadingWrapper {
               child: Text(
                 '${cat['label']} (${cat['count']})',
                 style: TextStyle(
-                  color: isSelected ? Colors.white : const Color(0xFF9A9A9A),
+                  color: isLocked
+                      ? const Color(0xFF555555)
+                      : (isSelected ? Colors.white : const Color(0xFF9A9A9A)),
                   fontSize: context.resClamp(14, 13, 15),
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 ),
