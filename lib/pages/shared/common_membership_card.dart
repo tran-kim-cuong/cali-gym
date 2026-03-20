@@ -166,7 +166,8 @@ class _CommonMembershipCardState extends State<CommonMembershipCard> {
       if (_timeLeft > 0) {
         setState(() => _timeLeft--);
       } else {
-        _generateNewCode();
+        _stopQrSession();
+        widget.onToggle();
       }
     });
   }
