@@ -244,10 +244,14 @@ class _ClassDetailScreenState extends State<ClassDetailScreen>
             Icons.calendar_month_outlined,
             _formatClassTime(schedule?.startDate, schedule?.endDate),
           ), // Format cứng theo hình mẫu
+
           _buildInfoLine(
             Icons.person_outline,
             '${'class_detail.info_sub_trainer'.tr()} ${schedule?.trainerName ?? 'class_detail.default_null'.tr()}',
           ),
+          if (schedule?.studioName != null && schedule!.studioName!.isNotEmpty)
+            _buildInfoLine(Icons.meeting_room_outlined, schedule!.studioName!),
+
           _buildInfoLine(
             Icons.location_on_outlined,
             '${schedule?.clubName}',

@@ -215,6 +215,12 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
             // 'Giáo viên ${widget.schedule.trainerName ?? 'N/A'}',
             '${'schedule_detail.lbl_trainer'.tr()} ${widget.schedule.trainerName ?? 'N/A'}',
           ),
+          if (widget.schedule.studioName != null &&
+              widget.schedule.studioName!.isNotEmpty)
+            _buildIconText(
+              Icons.meeting_room_outlined,
+              widget.schedule.studioName!,
+            ),
           Row(
             children: [
               _buildIconText(
