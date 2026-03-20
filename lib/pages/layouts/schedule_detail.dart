@@ -121,12 +121,10 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
           ),
           Positioned.fill(
             child: BackdropFilter(
-              // Điều chỉnh sigmaX và sigmaY để tăng/giảm độ mờ (số càng cao càng mờ)
-              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
               child: Container(
-                // Phủ một lớp màu tối nhẹ để đảm bảo chữ phía trên luôn rõ nét
                 decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.2),
+                  color: Colors.black.withValues(alpha: 0.15),
                 ),
               ),
             ),
@@ -134,7 +132,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
           // Lớp phủ tối dần lên trên
           Container(
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.55),
+              color: Colors.black.withValues(alpha: 0.3),
             ),
           ),
         ],
@@ -184,7 +182,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: const Color(0xFF8B66F0),
+              color: const Color(0xFFEF4822),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
@@ -207,9 +205,14 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
           ),
           SizedBox(height: context.resH(8)),
           _buildIconText(
-            Icons.calendar_month_outlined,
-            // ignore: unnecessary_string_interpolations
-            '${DateFormat('dd/MM/yyyy hh:mm a').format(widget.schedule.startDate ?? DateTime.now())}',
+            Icons.calendar_today,
+            DateFormat(
+              'dd/MM/yyyy',
+            ).format(widget.schedule.startDate ?? DateTime.now()),
+          ),
+          _buildIconText(
+            Icons.access_time,
+            '${DateFormat('hh:mm a').format(widget.schedule.startDate ?? DateTime.now())} - ${DateFormat('hh:mm a').format(widget.schedule.endDate ?? DateTime.now())}',
           ),
           _buildIconText(
             Icons.person_outline,
