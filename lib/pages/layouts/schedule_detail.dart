@@ -111,22 +111,18 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen>
       height: context.resH(325),
       child: Stack(
         children: [
-          Image.asset(
-            ImageHelper.getClassThumbnail(
-              widget.schedule.classType,
-            ), // Thay bằng image từ model nếu có
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.cover,
+          ImageFiltered(
+            imageFilter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+            child: Image.asset(
+              ImageHelper.getClassThumbnail(widget.schedule.classType),
+              width: double.infinity,
+              height: double.infinity,
+              fit: BoxFit.cover,
+            ),
           ),
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.15),
-                ),
-              ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.15),
             ),
           ),
           // Lớp phủ tối dần lên trên
